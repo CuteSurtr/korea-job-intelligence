@@ -85,5 +85,34 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v7
+
       - name: Build image
         run: docker build -f backend/Dockerfile -t korea-job-intelligence-backend:${{ github.sha }} backend
+
+      - name: Start the image against a real database
+        run: |
+          docker network create kji-ci
+          docker run -d --name kji-postgres --network kji-ci             -e POSTGRES_DB=kji -e POSTGRES_USER=kji -e POSTGRES_PASSWORD=kji             postgres:16-alpine
+          for i in $(seq 1 30); do
+            docker exec kji-postgres pg_isready -U kji -d kji && break
+            sleep 2
+          done
+          docker run -d --name kji-backend --network kji-ci -p 8080:8080             -e DATABASE_URL=jdbc:postgresql://kji-postgres:5432/kji             -e DATABASE_USERNAME=kji -e DATABASE_PASSWORD=kji             -e INTERNAL_API_TOKEN=ci-token             korea-job-intelligence-backend:${{ github.sha }}
+
+      - name: Verify it serves with the schema migrated
+        run: |
+          for i in $(seq 1 45); do
+            if curl -fsS http://localhost:8080/actuator/health > /dev/null 2>&1; then
+              break
+            fi
+            sleep 2
+          done
+          curl -fsS http://localhost:8080/actuator/health
+          echo
+          curl -fsS "http://localhost:8080/api/sources" | head -c 400
+          echo
+          curl -fsS "http://localhost:8080/api/jobs?size=1"
+
+      - name: Container logs on failure
+        if: failure()
+        run: docker logs kji-backend 2>&1 | tail -60

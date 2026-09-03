@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-kji}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kji}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - kji-postgres:/var/lib/postgresql/data
     healthcheck:
@@ -18,7 +18,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "${REDIS_HOST_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -40,7 +40,7 @@ services:
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-change-me-local-only}
       INGESTION_SCHEDULER_ENABLED: "false"
     ports:
-      - "8080:8080"
+      - "${BACKEND_PORT:-8080}:8080"
 
   frontend:
     build: ./frontend
@@ -49,7 +49,7 @@ services:
     environment:
       BACKEND_URL: http://backend:8080
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
 
   prometheus:
     image: prom/prometheus:v2.54.1
@@ -59,7 +59,7 @@ services:
     volumes:
       - ./ops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
-      - "9090:9090"
+      - "${PROMETHEUS_PORT:-9090}:9090"
 
   grafana:
     image: grafana/grafana:11.2.0
@@ -75,7 +75,7 @@ services:
       - ./ops/grafana/dashboards:/var/lib/grafana/dashboards:ro
       - kji-grafana:/var/lib/grafana
     ports:
-      - "3001:3000"
+      - "${GRAFANA_PORT:-3001}:3000"
 
 volumes:
   kji-postgres:
