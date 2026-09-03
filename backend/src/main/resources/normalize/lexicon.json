@@ -189,6 +189,31 @@
     { "terms": ["qa", "품질", "test engineer"], "value": "QA" },
     { "terms": ["임베디드", "embedded", "펌웨어", "firmware"], "value": "EMBEDDED" }
   ],
+  "sectionHeadings": [
+    {
+      "section": "RESPONSIBILITIES",
+      "terms": ["주요업무", "주요 업무", "담당업무", "담당 업무", "업무 내용", "하시게 될 일", "이런 일을 합니다",
+                "what you will do", "what you'll do", "responsibilities", "about the role", "the role"]
+    },
+    {
+      "section": "REQUIREMENTS",
+      "terms": ["자격요건", "자격 요건", "필수요건", "필수 요건", "필수 자격", "지원자격", "지원 자격",
+                "이런 분을 찾습니다", "requirements", "qualifications", "what we look for",
+                "must have", "basic qualifications", "minimum qualifications", "who you are"]
+    },
+    {
+      "section": "PREFERRED",
+      "terms": ["우대사항", "우대 사항", "우대조건", "우대 조건", "이런 분이면 더 좋습니다",
+                "preferred qualifications", "preferred", "nice to have", "bonus points",
+                "plus points", "good to have"]
+    }
+  ],
+  "salaryPatterns": [
+    { "regex": "(\\d{3,5})\\s*만원\\s*[~-]\\s*(\\d{3,5})\\s*만원", "unit": "KRW_10K", "kind": "RANGE" },
+    { "regex": "연봉\\s*(\\d{3,5})\\s*만원", "unit": "KRW_10K", "kind": "EXACT" },
+    { "regex": "krw\\s*([\\d,]{6,12})\\s*[~-]\\s*krw?\\s*([\\d,]{6,12})", "unit": "KRW", "kind": "RANGE" },
+    { "regex": "\\$\\s*([\\d,]{4,9})\\s*[~-]\\s*\\$?\\s*([\\d,]{4,9})", "unit": "USD", "kind": "RANGE" }
+  ],
   "locationCityAliases": [
     { "terms": ["서울", "seoul"], "city": "Seoul", "region": "Seoul" },
     { "terms": ["성남", "판교", "seongnam", "pangyo"], "city": "Seongnam", "region": "Gyeonggi" },

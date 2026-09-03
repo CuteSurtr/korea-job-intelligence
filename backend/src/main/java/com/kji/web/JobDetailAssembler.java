@@ -1,18 +1,31 @@
 package com.kji.web;
 
+import com.kji.intelligence.JobIntelligence;
+import com.kji.intelligence.JobIntelligenceField;
+import com.kji.intelligence.JobIntelligenceFieldRepository;
+import com.kji.intelligence.JobIntelligenceRepository;
+import com.kji.intelligence.JobSkill;
+import com.kji.intelligence.JobSkillRepository;
+import com.kji.intelligence.Skill;
+import com.kji.intelligence.SkillRepository;
 import com.kji.job.Job;
 import com.kji.job.JobLifecycleEventRepository;
 import com.kji.job.JobRepository;
-import com.kji.job.JobSource;
 import com.kji.job.JobSourceRepository;
 import com.kji.job.JobVerificationRepository;
+import com.kji.scoring.CandidateProfile;
+import com.kji.scoring.CandidateProfileRepository;
+import com.kji.scoring.JobScoreRepository;
 import com.kji.snapshot.JobSnapshot;
 import com.kji.snapshot.JobSnapshotRepository;
 import com.kji.source.Source;
 import com.kji.source.SourceRepository;
 import com.kji.web.dto.JobDetailResponse;
+import com.kji.web.dto.JobIntelligenceResponse;
 import com.kji.web.dto.JobResponse;
+import com.kji.web.dto.JobScoreResponse;
 import com.kji.web.dto.JobSourceResponse;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +44,12 @@ public class JobDetailAssembler {
     private final JobSnapshotRepository snapshotRepository;
     private final JobVerificationRepository verificationRepository;
     private final JobLifecycleEventRepository lifecycleEventRepository;
+    private final JobIntelligenceRepository intelligenceRepository;
+    private final JobIntelligenceFieldRepository intelligenceFieldRepository;
+    private final JobSkillRepository jobSkillRepository;
+    private final SkillRepository skillRepository;
+    private final JobScoreRepository scoreRepository;
+    private final CandidateProfileRepository profileRepository;
     private final SourceRepository sourceRepository;
 
     public JobDetailAssembler(JobRepository jobRepository,
@@ -38,12 +57,24 @@ public class JobDetailAssembler {
                               JobSnapshotRepository snapshotRepository,
                               JobVerificationRepository verificationRepository,
                               JobLifecycleEventRepository lifecycleEventRepository,
+                              JobIntelligenceRepository intelligenceRepository,
+                              JobIntelligenceFieldRepository intelligenceFieldRepository,
+                              JobSkillRepository jobSkillRepository,
+                              SkillRepository skillRepository,
+                              JobScoreRepository scoreRepository,
+                              CandidateProfileRepository profileRepository,
                               SourceRepository sourceRepository) {
         this.jobRepository = jobRepository;
         this.jobSourceRepository = jobSourceRepository;
         this.snapshotRepository = snapshotRepository;
         this.verificationRepository = verificationRepository;
         this.lifecycleEventRepository = lifecycleEventRepository;
+        this.intelligenceRepository = intelligenceRepository;
+        this.intelligenceFieldRepository = intelligenceFieldRepository;
+        this.jobSkillRepository = jobSkillRepository;
+        this.skillRepository = skillRepository;
+        this.scoreRepository = scoreRepository;
+        this.profileRepository = profileRepository;
         this.sourceRepository = sourceRepository;
     }
 
@@ -52,8 +83,7 @@ public class JobDetailAssembler {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResourceNotFoundException("No job with id " + jobId));
 
-        Map<Long, String> sourceCodes = new HashMap<>();
-        sourceRepository.findAll().forEach(source -> sourceCodes.put(source.getId(), source.getCode()));
+        Map<Long, String> sourceCodes = sourceCodesById();
 
         List<JobSourceResponse> sources = jobSourceRepository.findByJobId(jobId).stream()
                 .map(jobSource -> JobSourceResponse.from(jobSource,
@@ -90,17 +120,89 @@ public class JobDetailAssembler {
                                 event.getVerificationId()))
                         .toList();
 
-        return new JobDetailResponse(JobResponse.from(job), job.getDescription(), sources,
-                snapshots, verifications, lifecycle);
+        return new JobDetailResponse(JobResponse.from(job), job.getDescription(),
+                intelligenceFor(jobId), scoresFor(jobId), sources, snapshots, verifications,
+                lifecycle);
     }
 
-    @Transactional(readOnly = true)
-    public List<JobSource> sourcesFor(Long jobId) {
-        return jobSourceRepository.findByJobId(jobId);
+    private JobIntelligenceResponse intelligenceFor(Long jobId) {
+        JobIntelligence intelligence = intelligenceRepository.findByJobId(jobId).orElse(null);
+        if (intelligence == null) {
+            return null;
+        }
+        List<JobIntelligenceResponse.FieldEvidence> fields =
+                intelligenceFieldRepository.findByJobId(jobId).stream()
+                        .map(this::toFieldEvidence)
+                        .toList();
+
+        Map<String, String> skillCategories = new HashMap<>();
+        for (Skill skill : skillRepository.findAll()) {
+            skillCategories.put(skill.getSlug(), skill.getCategory().name());
+        }
+        List<JobIntelligenceResponse.SkillEvidence> skills =
+                jobSkillRepository.findByJobId(jobId).stream()
+                        .map(jobSkill -> toSkillEvidence(jobSkill, skillCategories))
+                        .toList();
+
+        return new JobIntelligenceResponse(
+                intelligence.getExtractorVersion(),
+                intelligence.getRoleFamily(),
+                intelligence.getSeniorityBucket(),
+                intelligence.getSeniorityLabel(),
+                intelligence.getYearsExperienceMin(),
+                intelligence.getYearsExperienceMax(),
+                intelligence.getDegreeRequired(),
+                intelligence.getDegreePreferred(),
+                intelligence.getEmploymentType(),
+                intelligence.getRemotePolicy(),
+                intelligence.getSalaryMin(),
+                intelligence.getSalaryMax(),
+                intelligence.getSalaryCurrency(),
+                intelligence.getSalaryPeriod(),
+                Arrays.asList(intelligence.getResponsibilities()),
+                Arrays.asList(intelligence.getRequirements()),
+                Arrays.asList(intelligence.getPreferredRequirements()),
+                intelligence.getExtractedAt(),
+                fields,
+                skills);
     }
 
-    @Transactional(readOnly = true)
-    public Map<Long, String> sourceCodesById() {
+    private List<JobScoreResponse> scoresFor(Long jobId) {
+        Map<Long, String> profileCodes = new HashMap<>();
+        for (CandidateProfile profile : profileRepository.findAll()) {
+            profileCodes.put(profile.getId(), profile.getCode());
+        }
+        return scoreRepository.findByJobId(jobId).stream()
+                .map(score -> JobScoreResponse.from(score,
+                        score.getProfileId() == null
+                                ? null
+                                : profileCodes.get(score.getProfileId())))
+                .toList();
+    }
+
+    private JobIntelligenceResponse.FieldEvidence toFieldEvidence(JobIntelligenceField field) {
+        return new JobIntelligenceResponse.FieldEvidence(
+                field.getFieldName(),
+                field.getFieldValue(),
+                field.getConfidence(),
+                field.getExtractionMethod().name(),
+                field.getEvidenceText(),
+                field.getEvidenceSnapshotId(),
+                field.getExtractedAt());
+    }
+
+    private JobIntelligenceResponse.SkillEvidence toSkillEvidence(JobSkill jobSkill,
+                                                                  Map<String, String> categories) {
+        return new JobIntelligenceResponse.SkillEvidence(
+                jobSkill.getSkillSlug(),
+                categories.getOrDefault(jobSkill.getSkillSlug(), "TOOL"),
+                jobSkill.getRequirementLevel().name(),
+                jobSkill.getConfidence(),
+                jobSkill.getEvidenceText(),
+                jobSkill.getEvidenceSnapshotId());
+    }
+
+    private Map<Long, String> sourceCodesById() {
         Map<Long, String> codes = new HashMap<>();
         for (Source source : sourceRepository.findAll()) {
             codes.put(source.getId(), source.getCode());

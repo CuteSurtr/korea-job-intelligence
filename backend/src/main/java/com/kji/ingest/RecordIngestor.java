@@ -41,6 +41,7 @@ public class RecordIngestor {
     private final SourceRepository sourceRepository;
     private final LocationNormalizer locationNormalizer;
     private final DeadlineParser deadlineParser;
+    private final JobEnrichmentService enrichmentService;
 
     public RecordIngestor(CompanyResolver companyResolver,
                           JobMatcher jobMatcher,
@@ -51,7 +52,8 @@ public class RecordIngestor {
                           TitleNormalizer titleNormalizer,
                           SourceRepository sourceRepository,
                           LocationNormalizer locationNormalizer,
-                          DeadlineParser deadlineParser) {
+                          DeadlineParser deadlineParser,
+                          JobEnrichmentService enrichmentService) {
         this.companyResolver = companyResolver;
         this.jobMatcher = jobMatcher;
         this.jobRepository = jobRepository;
@@ -62,6 +64,7 @@ public class RecordIngestor {
         this.sourceRepository = sourceRepository;
         this.locationNormalizer = locationNormalizer;
         this.deadlineParser = deadlineParser;
+        this.enrichmentService = enrichmentService;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -138,6 +141,8 @@ public class RecordIngestor {
         lifecycleService.recordObservation(job, jobSource, run.getId(), record.fetchedAt(),
                 snapshotWrite.snapshot().getId(), snapshotWrite.contentChanged());
         lifecycleService.refreshSourceCount(job);
+
+        enrichmentService.enrich(job, record, snapshotWrite.snapshot().getId(), source.getId());
 
         jobRepository.updateSearchDocument(job.getId(), job.getCanonicalTitle(),
                 job.getCompany().getCanonicalName(), job.getDescription());

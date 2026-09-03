@@ -6,6 +6,8 @@ import java.util.List;
 public record JobDetailResponse(
         JobResponse job,
         String description,
+        JobIntelligenceResponse intelligence,
+        List<JobScoreResponse> scores,
         List<JobSourceResponse> sources,
         List<SnapshotSummary> snapshots,
         List<VerificationSummary> verifications,

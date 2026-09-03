@@ -34,13 +34,24 @@ public class JobController {
             @RequestParam(required = false) String state,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String source,
-            @RequestParam(required = false, defaultValue = "true") boolean openOnly,
-            @RequestParam(required = false, defaultValue = "NEWEST") String sort,
+            @RequestParam(required = false) String roleFamily,
+            @RequestParam(required = false) String seniority,
+            @RequestParam(required = false) Integer maxYearsExperience,
+            @RequestParam(required = false) Double minCareerValue,
+            @RequestParam(required = false) Double minCandidateFit,
+            @RequestParam(required = false) String remotePolicy,
+            @RequestParam(required = false) String degreeRequired,
+            @RequestParam(required = false) String companyRisk,
+            @RequestParam(required = false) Integer postedWithinDays,
+            @RequestParam(defaultValue = "true") boolean openOnly,
+            @RequestParam(defaultValue = "BEST_MATCH") String sort,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size) {
 
         JobSearchQuery query = new JobSearchQuery(keyword, company, parseStates(state), location,
-                source, openOnly, parseSort(sort), page, size);
+                source, roleFamily, splitUpper(seniority), maxYearsExperience, minCareerValue,
+                minCandidateFit, remotePolicy, degreeRequired, companyRisk, postedWithinDays,
+                openOnly, parseSort(sort), page, size);
         return PageResponse.from(searchService.search(query), JobResponse::from);
     }
 
@@ -50,13 +61,17 @@ public class JobController {
     }
 
     private List<LifecycleState> parseStates(String state) {
-        if (state == null || state.isBlank()) {
+        return splitUpper(state).stream().map(LifecycleState::valueOf).toList();
+    }
+
+    private List<String> splitUpper(String value) {
+        if (value == null || value.isBlank()) {
             return List.of();
         }
-        return Arrays.stream(state.split(","))
+        return Arrays.stream(value.split(","))
                 .map(String::trim)
-                .filter(value -> !value.isEmpty())
-                .map(value -> LifecycleState.valueOf(value.toUpperCase(Locale.ROOT)))
+                .filter(candidate -> !candidate.isEmpty())
+                .map(candidate -> candidate.toUpperCase(Locale.ROOT))
                 .toList();
     }
 

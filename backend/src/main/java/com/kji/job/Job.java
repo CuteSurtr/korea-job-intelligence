@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -97,6 +98,39 @@ public class Job {
 
     @Column(name = "normalized_description")
     private String normalizedDescription;
+
+    @Column(name = "role_family", length = 48)
+    private String roleFamily;
+
+    @Column(name = "seniority_bucket", length = 1)
+    private String seniorityBucket;
+
+    @Column(name = "years_experience_min")
+    private Integer yearsExperienceMin;
+
+    @Column(name = "years_experience_max")
+    private Integer yearsExperienceMax;
+
+    @Column(name = "remote_policy", length = 24)
+    private String remotePolicy;
+
+    @Column(name = "employment_type", length = 32)
+    private String employmentType;
+
+    @Column(name = "degree_required", length = 48)
+    private String degreeRequired;
+
+    @Column(name = "career_value_score", precision = 6, scale = 2)
+    private BigDecimal careerValueScore;
+
+    @Column(name = "candidate_fit_score", precision = 6, scale = 2)
+    private BigDecimal candidateFitScore;
+
+    @Column(name = "application_priority_score", precision = 6, scale = 2)
+    private BigDecimal applicationPriorityScore;
+
+    @Column(name = "scored_at")
+    private Instant scoredAt;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -231,6 +265,73 @@ public class Job {
 
     public String getNormalizedDescription() {
         return normalizedDescription;
+    }
+
+    public void applyIntelligenceSummary(String roleFamily, String seniorityBucket,
+                                         Integer yearsExperienceMin, Integer yearsExperienceMax,
+                                         String remotePolicy, String employmentType,
+                                         String degreeRequired) {
+        this.roleFamily = roleFamily;
+        this.seniorityBucket = seniorityBucket;
+        this.yearsExperienceMin = yearsExperienceMin;
+        this.yearsExperienceMax = yearsExperienceMax;
+        this.remotePolicy = remotePolicy;
+        this.employmentType = employmentType;
+        this.degreeRequired = degreeRequired;
+    }
+
+    public void applyScores(BigDecimal careerValueScore,
+                            BigDecimal candidateFitScore,
+                            BigDecimal applicationPriorityScore,
+                            Instant scoredAt) {
+        this.careerValueScore = careerValueScore;
+        this.candidateFitScore = candidateFitScore;
+        this.applicationPriorityScore = applicationPriorityScore;
+        this.scoredAt = scoredAt;
+    }
+
+    public String getRoleFamily() {
+        return roleFamily;
+    }
+
+    public String getSeniorityBucket() {
+        return seniorityBucket;
+    }
+
+    public Integer getYearsExperienceMin() {
+        return yearsExperienceMin;
+    }
+
+    public Integer getYearsExperienceMax() {
+        return yearsExperienceMax;
+    }
+
+    public String getRemotePolicy() {
+        return remotePolicy;
+    }
+
+    public String getEmploymentType() {
+        return employmentType;
+    }
+
+    public String getDegreeRequired() {
+        return degreeRequired;
+    }
+
+    public BigDecimal getCareerValueScore() {
+        return careerValueScore;
+    }
+
+    public BigDecimal getCandidateFitScore() {
+        return candidateFitScore;
+    }
+
+    public BigDecimal getApplicationPriorityScore() {
+        return applicationPriorityScore;
+    }
+
+    public Instant getScoredAt() {
+        return scoredAt;
     }
 
     public Long getId() {

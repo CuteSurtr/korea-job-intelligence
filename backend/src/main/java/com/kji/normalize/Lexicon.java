@@ -17,6 +17,7 @@ public class Lexicon {
 
     private final LexiconData data;
     private final List<CompiledExperiencePattern> experiencePatterns;
+    private final List<CompiledSalaryPattern> salaryPatterns;
 
     public Lexicon(ObjectMapper objectMapper) {
         this.data = load(objectMapper);
@@ -24,6 +25,12 @@ public class Lexicon {
                 .map(raw -> new CompiledExperiencePattern(
                         Pattern.compile(raw.regex(), Pattern.CASE_INSENSITIVE),
                         ExperiencePatternKind.valueOf(raw.kind())))
+                .toList();
+        this.salaryPatterns = data.salaryPatterns().stream()
+                .map(raw -> new CompiledSalaryPattern(
+                        Pattern.compile(raw.regex(), Pattern.CASE_INSENSITIVE),
+                        raw.unit(),
+                        SalaryPatternKind.valueOf(raw.kind())))
                 .toList();
     }
 
@@ -117,6 +124,14 @@ public class Lexicon {
         return data.locationCityAliases();
     }
 
+    public List<SectionHeading> sectionHeadings() {
+        return data.sectionHeadings();
+    }
+
+    public List<CompiledSalaryPattern> salaryPatterns() {
+        return salaryPatterns;
+    }
+
     public enum ExperiencePatternKind {
         MINIMUM,
         MAXIMUM,
@@ -136,6 +151,22 @@ public class Lexicon {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record LocationAlias(List<String> terms, String city, String region) {
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record SectionHeading(String section, List<String> terms) {
+    }
+
+    public record CompiledSalaryPattern(Pattern pattern, String unit, SalaryPatternKind kind) {
+    }
+
+    public enum SalaryPatternKind {
+        EXACT,
+        RANGE
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private record RawSalaryPattern(String regex, String unit, String kind) {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -163,6 +194,8 @@ public class Lexicon {
             List<TermMapping> remotePolicies,
             List<String> seniorityExcluded,
             List<TermMapping> roleFamilies,
+            List<SectionHeading> sectionHeadings,
+            List<RawSalaryPattern> salaryPatterns,
             List<LocationAlias> locationCityAliases
     ) {
     }

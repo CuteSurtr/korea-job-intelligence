@@ -1,12 +1,16 @@
 package com.kji.search;
 
+import com.kji.company.Company;
 import com.kji.job.Job;
 import com.kji.job.JobRepository;
-import com.kji.job.JobSource;
 import com.kji.job.JobSourceRepository;
 import com.kji.job.LifecycleState;
 import com.kji.source.SourceRepository;
 import jakarta.persistence.criteria.Predicate;
+import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -23,13 +27,16 @@ public class JobSearchService {
     private final JobRepository jobRepository;
     private final JobSourceRepository jobSourceRepository;
     private final SourceRepository sourceRepository;
+    private final Clock clock;
 
     public JobSearchService(JobRepository jobRepository,
                             JobSourceRepository jobSourceRepository,
-                            SourceRepository sourceRepository) {
+                            SourceRepository sourceRepository,
+                            Clock clock) {
         this.jobRepository = jobRepository;
         this.jobSourceRepository = jobSourceRepository;
         this.sourceRepository = sourceRepository;
+        this.clock = clock;
     }
 
     @Transactional(readOnly = true)
@@ -42,14 +49,14 @@ public class JobSearchService {
         return (root, criteriaQuery, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (query.keyword() != null && !query.keyword().isBlank()) {
+            if (notBlank(query.keyword())) {
                 String pattern = "%" + query.keyword().trim().toLowerCase(Locale.ROOT) + "%";
                 predicates.add(builder.or(
                         builder.like(builder.lower(root.get("canonicalTitle")), pattern),
                         builder.like(builder.lower(root.get("normalizedTitle")), pattern),
                         builder.like(builder.lower(root.get("description")), pattern)));
             }
-            if (query.company() != null && !query.company().isBlank()) {
+            if (notBlank(query.company())) {
                 String pattern = "%" + query.company().trim().toLowerCase(Locale.ROOT) + "%";
                 predicates.add(builder.like(
                         builder.lower(root.get("company").get("canonicalName")), pattern));
@@ -59,15 +66,54 @@ public class JobSearchService {
             } else if (Boolean.TRUE.equals(query.openOnly())) {
                 predicates.add(builder.notEqual(root.get("lifecycleState"), LifecycleState.CLOSED));
             }
-            if (query.locationCity() != null && !query.locationCity().isBlank()) {
-                predicates.add(builder.equal(
-                        builder.lower(root.get("locationCity")),
+            if (notBlank(query.locationCity())) {
+                predicates.add(builder.equal(builder.lower(root.get("locationCity")),
                         query.locationCity().trim().toLowerCase(Locale.ROOT)));
             }
-            if (query.sourceCode() != null && !query.sourceCode().isBlank()) {
-                criteriaQuery.distinct(true);
-                predicates.add(root.get("id").in(
-                        jobIdsForSource(query.sourceCode())));
+            if (notBlank(query.roleFamily())) {
+                predicates.add(builder.equal(root.get("roleFamily"),
+                        query.roleFamily().trim().toUpperCase(Locale.ROOT)));
+            }
+            if (!query.seniorityBuckets().isEmpty()) {
+                predicates.add(root.get("seniorityBucket").in(query.seniorityBuckets()));
+            }
+            if (query.maxYearsExperience() != null) {
+                predicates.add(builder.or(
+                        builder.isNull(root.get("yearsExperienceMin")),
+                        builder.lessThanOrEqualTo(root.get("yearsExperienceMin"),
+                                query.maxYearsExperience())));
+            }
+            if (query.minCareerValue() != null) {
+                predicates.add(builder.greaterThanOrEqualTo(root.get("careerValueScore"),
+                        BigDecimal.valueOf(query.minCareerValue())));
+            }
+            if (query.minCandidateFit() != null) {
+                predicates.add(builder.greaterThanOrEqualTo(root.get("candidateFitScore"),
+                        BigDecimal.valueOf(query.minCandidateFit())));
+            }
+            if (notBlank(query.remotePolicy())) {
+                predicates.add(builder.equal(root.get("remotePolicy"),
+                        query.remotePolicy().trim().toUpperCase(Locale.ROOT)));
+            }
+            if (notBlank(query.degreeRequired())) {
+                predicates.add(builder.equal(root.get("degreeRequired"),
+                        query.degreeRequired().trim().toUpperCase(Locale.ROOT)));
+            }
+            if (notBlank(query.companyRiskLevel())) {
+                predicates.add(builder.equal(root.get("company").get("riskLevel"),
+                        Company.RiskLevel.valueOf(
+                                query.companyRiskLevel().trim().toUpperCase(Locale.ROOT))));
+            }
+            if (query.postedWithinDays() != null) {
+                Instant threshold = Instant.now(clock)
+                        .minus(query.postedWithinDays(), ChronoUnit.DAYS);
+                predicates.add(builder.or(
+                        builder.greaterThanOrEqualTo(root.get("postedAt"), threshold),
+                        builder.and(builder.isNull(root.get("postedAt")),
+                                builder.greaterThanOrEqualTo(root.get("firstSeenAt"), threshold))));
+            }
+            if (notBlank(query.sourceCode())) {
+                predicates.add(root.get("id").in(jobIdsForSource(query.sourceCode())));
             }
             return predicates.isEmpty() ? builder.conjunction()
                     : builder.and(predicates.toArray(new Predicate[0]));
@@ -83,16 +129,23 @@ public class JobSearchService {
 
     private Sort toSort(JobSearchQuery.SortOrder order) {
         return switch (order) {
-            case NEWEST -> Sort.by(Sort.Direction.DESC, "firstSeenAt");
-            case RECENTLY_VERIFIED -> Sort.by(Sort.Direction.DESC, "lastVerifiedAt");
-            case CLOSING_SOON -> Sort.by(Sort.Direction.ASC, "deadlineAt");
-            case MOST_SOURCES -> Sort.by(Sort.Direction.DESC, "sourceCount");
-            case COMPANY -> Sort.by(Sort.Direction.ASC, "company.canonicalName")
-                    .and(Sort.by(Sort.Direction.ASC, "canonicalTitle"));
+            case BEST_MATCH -> Sort.by(Sort.Order.desc("applicationPriorityScore").nullsLast(),
+                    Sort.Order.desc("firstSeenAt"));
+            case HIGHEST_CAREER_VALUE -> Sort.by(Sort.Order.desc("careerValueScore").nullsLast(),
+                    Sort.Order.desc("firstSeenAt"));
+            case JUNIOR_FRIENDLY -> Sort.by(Sort.Order.asc("seniorityBucket").nullsLast(),
+                    Sort.Order.desc("candidateFitScore").nullsLast());
+            case NEWEST -> Sort.by(Sort.Order.desc("firstSeenAt"));
+            case CLOSING_SOON -> Sort.by(Sort.Order.asc("deadlineAt").nullsLast());
+            case RECENTLY_VERIFIED -> Sort.by(Sort.Order.desc("lastVerifiedAt").nullsLast());
+            case MOST_SOURCES -> Sort.by(Sort.Order.desc("sourceCount"),
+                    Sort.Order.desc("firstSeenAt"));
+            case COMPANY -> Sort.by(Sort.Order.asc("company.canonicalName"),
+                    Sort.Order.asc("canonicalTitle"));
         };
     }
 
-    List<JobSource> sourcesFor(Long jobId) {
-        return jobSourceRepository.findByJobId(jobId);
+    private boolean notBlank(String value) {
+        return value != null && !value.isBlank();
     }
 }

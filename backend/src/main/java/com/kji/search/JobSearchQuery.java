@@ -2,6 +2,7 @@ package com.kji.search;
 
 import com.kji.job.LifecycleState;
 import java.util.List;
+import java.util.Locale;
 
 public record JobSearchQuery(
         String keyword,
@@ -9,6 +10,15 @@ public record JobSearchQuery(
         List<LifecycleState> lifecycleStates,
         String locationCity,
         String sourceCode,
+        String roleFamily,
+        List<String> seniorityBuckets,
+        Integer maxYearsExperience,
+        Double minCareerValue,
+        Double minCandidateFit,
+        String remotePolicy,
+        String degreeRequired,
+        String companyRiskLevel,
+        Integer postedWithinDays,
         Boolean openOnly,
         SortOrder sort,
         int page,
@@ -17,7 +27,8 @@ public record JobSearchQuery(
 
     public JobSearchQuery {
         lifecycleStates = lifecycleStates == null ? List.of() : List.copyOf(lifecycleStates);
-        sort = sort == null ? SortOrder.NEWEST : sort;
+        seniorityBuckets = seniorityBuckets == null ? List.of() : List.copyOf(seniorityBuckets);
+        sort = sort == null ? SortOrder.BEST_MATCH : sort;
         page = Math.max(0, page);
         size = Math.max(1, Math.min(200, size));
     }
@@ -26,9 +37,18 @@ public record JobSearchQuery(
         return String.join("|",
                 normalize(keyword),
                 normalize(company),
-                lifecycleStates.stream().map(Enum::name).sorted().reduce("", (a, b) -> a + "," + b),
+                joinSorted(lifecycleStates.stream().map(Enum::name).toList()),
                 normalize(locationCity),
                 normalize(sourceCode),
+                normalize(roleFamily),
+                joinSorted(seniorityBuckets),
+                String.valueOf(maxYearsExperience),
+                String.valueOf(minCareerValue),
+                String.valueOf(minCandidateFit),
+                normalize(remotePolicy),
+                normalize(degreeRequired),
+                normalize(companyRiskLevel),
+                String.valueOf(postedWithinDays),
                 String.valueOf(openOnly),
                 sort.name(),
                 String.valueOf(page),
@@ -36,13 +56,20 @@ public record JobSearchQuery(
     }
 
     private String normalize(String value) {
-        return value == null ? "" : value.trim().toLowerCase(java.util.Locale.ROOT);
+        return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String joinSorted(List<String> values) {
+        return values.stream().sorted().reduce("", (left, right) -> left + "," + right);
     }
 
     public enum SortOrder {
+        BEST_MATCH,
+        HIGHEST_CAREER_VALUE,
+        JUNIOR_FRIENDLY,
         NEWEST,
-        RECENTLY_VERIFIED,
         CLOSING_SOON,
+        RECENTLY_VERIFIED,
         MOST_SOURCES,
         COMPANY
     }

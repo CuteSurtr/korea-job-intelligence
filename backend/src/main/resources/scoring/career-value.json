@@ -1,0 +1,150 @@
+{
+  "version": "career-1",
+  "engineeringRoleFamilies": [
+    "BACKEND", "FRONTEND", "FULLSTACK", "PLATFORM", "DEVOPS",
+    "DATA_INFRASTRUCTURE", "MACHINE_LEARNING", "MOBILE", "SECURITY", "EMBEDDED"
+  ],
+  "components": [
+    {
+      "key": "production_engineering",
+      "label": "Production software engineering role",
+      "weight": 18,
+      "roleFamilies": ["BACKEND", "PLATFORM", "FULLSTACK", "DATA_INFRASTRUCTURE", "DEVOPS", "EMBEDDED"]
+    },
+    {
+      "key": "adjacent_engineering",
+      "label": "Adjacent engineering role",
+      "weight": 10,
+      "roleFamilies": ["FRONTEND", "MOBILE", "MACHINE_LEARNING", "SECURITY"]
+    },
+    {
+      "key": "jvm_stack",
+      "label": "JVM production stack",
+      "weight": 10,
+      "skills": ["java", "kotlin", "spring", "spring-boot", "jpa", "scala"]
+    },
+    {
+      "key": "databases",
+      "label": "Database work",
+      "weight": 10,
+      "skills": ["postgresql", "mysql", "oracle-db", "mongodb", "redis", "elasticsearch",
+                 "timescaledb", "influxdb", "clickhouse", "sql"]
+    },
+    {
+      "key": "distributed_systems",
+      "label": "Distributed systems",
+      "weight": 10,
+      "skills": ["distributed-systems", "microservices", "kafka", "rabbitmq", "grpc"]
+    },
+    {
+      "key": "cloud",
+      "label": "Cloud infrastructure",
+      "weight": 8,
+      "skills": ["aws", "gcp", "azure", "ncloud"]
+    },
+    {
+      "key": "containers",
+      "label": "Containers and infrastructure as code",
+      "weight": 8,
+      "skills": ["docker", "kubernetes", "argocd", "terraform"]
+    },
+    {
+      "key": "ci_cd",
+      "label": "Continuous integration and delivery",
+      "weight": 8,
+      "skills": ["ci-cd", "jenkins", "github-actions"]
+    },
+    {
+      "key": "observability",
+      "label": "Observability",
+      "weight": 7,
+      "skills": ["observability", "prometheus", "grafana"]
+    },
+    {
+      "key": "data_pipelines",
+      "label": "Data pipelines",
+      "weight": 7,
+      "skills": ["data-pipeline", "airflow", "spark"]
+    },
+    {
+      "key": "automated_testing",
+      "label": "Automated testing",
+      "weight": 7,
+      "skills": ["testing"]
+    },
+    {
+      "key": "api_design",
+      "label": "API design",
+      "weight": 7,
+      "skills": ["api-design", "graphql"]
+    },
+    {
+      "key": "engineering_collaboration",
+      "label": "Version-controlled engineering collaboration",
+      "weight": 5,
+      "skills": ["git", "linux"]
+    }
+  ],
+  "penalties": [
+    {
+      "key": "manual_labeling",
+      "label": "Manual data labeling or annotation",
+      "weight": -35,
+      "terms": ["데이터 라벨링", "데이터라벨링", "라벨링", "어노테이션", "데이터 가공",
+                "data labeling", "data labelling", "annotation work", "image tagging"]
+    },
+    {
+      "key": "content_moderation",
+      "label": "Content moderation",
+      "weight": -35,
+      "terms": ["콘텐츠 모니터링", "게시물 모니터링", "유해 콘텐츠", "content moderation", "content moderator"]
+    },
+    {
+      "key": "manual_qa",
+      "label": "Manual QA without automation",
+      "weight": -25,
+      "terms": ["수동 테스트", "수기 테스트", "manual testing", "manual qa", "test execution"],
+      "cancelledBySkills": ["testing", "ci-cd"]
+    },
+    {
+      "key": "sales",
+      "label": "Sales role",
+      "weight": -40,
+      "terms": ["영업", "세일즈", "sales specialist", "sales manager", "sales assistant",
+                "sales training", "account executive", "account manager", "business development",
+                "sales relationship", "revenue target", "quota"]
+    },
+    {
+      "key": "clerical",
+      "label": "Clerical or general administration",
+      "weight": -40,
+      "terms": ["사무보조", "총무", "경영지원", "general affairs", "office manager",
+                "administrative assistant", "executive assistant", "recruiting assistant"]
+    },
+    {
+      "key": "generic_operations",
+      "label": "Generic operations without engineering",
+      "weight": -25,
+      "terms": ["운영 보조", "cs 운영", "operations assistant", "operations specialist",
+                "customer success", "kyc operations", "aml operations"],
+      "cancelledBySkills": ["docker", "kubernetes", "aws", "gcp", "linux", "terraform"]
+    },
+    {
+      "key": "ai_evaluation_only",
+      "label": "AI evaluation with no development signal",
+      "weight": -30,
+      "terms": ["ai 평가", "모델 평가 아르바이트", "prompt evaluation", "ai trainer", "beta tester"]
+    }
+  ],
+  "noDevelopmentSignalPenalty": {
+    "key": "no_development_signal",
+    "label": "Technical-sounding title with no development signal in the body",
+    "weight": -30
+  },
+  "developmentSignalSkillCategories": ["LANGUAGE", "FRAMEWORK"],
+  "thinExtraction": {
+    "minDescriptionLength": 300,
+    "minSkillCount": 2,
+    "confidencePenalty": 0.45
+  }
+}

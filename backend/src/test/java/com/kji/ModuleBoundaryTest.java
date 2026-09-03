@@ -19,7 +19,10 @@ import org.junit.jupiter.api.Test;
 class ModuleBoundaryTest {
 
     private static final Path SOURCE_ROOT = Path.of("src", "main", "java", "com", "kji");
-    private static final Pattern IMPORT = Pattern.compile("^import\\s+com\\.kji\\.([a-z]+)\\.", Pattern.MULTILINE);
+    private static final Pattern IMPORT =
+            Pattern.compile("^import\\s+com\\.kji\\.([a-z]+)\\.", Pattern.MULTILINE);
+    private static final Pattern QUALIFIED_REFERENCE =
+            Pattern.compile("(?<!import )\\bcom\\.kji\\.([a-z]+)\\.");
 
     private static final Map<String, Set<String>> ALLOWED = Map.ofEntries(
             Map.entry("common", Set.of()),
@@ -30,11 +33,13 @@ class ModuleBoundaryTest {
             Map.entry("company", Set.of("common", "normalize")),
             Map.entry("job", Set.of("common", "config", "company")),
             Map.entry("dedupe", Set.of("common", "config", "job")),
-            Map.entry("search", Set.of("common", "job", "source")),
+            Map.entry("search", Set.of("common", "company", "job", "source")),
+            Map.entry("intelligence", Set.of("common", "normalize")),
+            Map.entry("scoring", Set.of("common", "normalize")),
             Map.entry("ingest", Set.of("common", "config", "normalize", "source", "snapshot",
-                    "company", "job", "dedupe")),
+                    "company", "job", "dedupe", "intelligence", "scoring")),
             Map.entry("web", Set.of("common", "config", "normalize", "source", "snapshot",
-                    "company", "job", "dedupe", "ingest", "search")));
+                    "company", "job", "dedupe", "ingest", "search", "intelligence", "scoring")));
 
     @Test
     @DisplayName("no module imports a module it is not allowed to depend on")
@@ -52,13 +57,15 @@ class ModuleBoundaryTest {
                     .isNotNull();
 
             String content = Files.readString(file, StandardCharsets.UTF_8);
-            Matcher matcher = IMPORT.matcher(content);
-            while (matcher.find()) {
-                String imported = matcher.group(1);
-                if (imported.equals(module) || allowed.contains(imported)) {
-                    continue;
+            for (Pattern pattern : List.of(IMPORT, QUALIFIED_REFERENCE)) {
+                Matcher matcher = pattern.matcher(content);
+                while (matcher.find()) {
+                    String referenced = matcher.group(1);
+                    if (referenced.equals(module) || allowed.contains(referenced)) {
+                        continue;
+                    }
+                    violations.add(module + " -> " + referenced + " (" + file.getFileName() + ")");
                 }
-                violations.add(module + " -> " + imported + " (" + file.getFileName() + ")");
             }
         }
 
