@@ -1,16 +1,17 @@
 # First full ingestion run, 2026-09-03
 
 A record of what actually happened when the pipeline was pointed at real Korean sources for
-the first time, including the two defects it exposed. The numbers below are from a run
+the first time, including the three defects it exposed. The numbers below are from a run
 against an empty database.
 
 ## Direct sources
 
 The backend queried nine employer ATS boards itself across three ATS platforms. The Lever
-board is filtered to Seoul, which is why one posting of eighty-nine survives the filter. Five of the eight board tokens were
-discovered by an aggregator that names the underlying ATS for each posting, which is the
-main practical argument for keeping low-trust aggregators in the registry: they lead to
-high-trust boards.
+board is filtered to Seoul, which is why one posting of eighty-nine survives the filter.
+
+Five of the nine board tokens were discovered from an aggregator that names the underlying
+ATS and external id for each posting. That is the practical argument for keeping a low-trust
+aggregator in the registry: it is a route to high-trust boards.
 
 | Board | Source | Received | New jobs | Duplicates | Failures |
 | --- | --- | ---: | ---: | ---: | ---: |
@@ -44,33 +45,33 @@ Six providers were collected out of band, mapped to NDJSON by
 | --- | ---: |
 | Canonical jobs | 971 |
 | Provider rows behind them | 1017 |
-| Companies resolved | 79 |
+| Companies resolved | 80 |
 | Raw snapshots | 1017 |
 | Skills extracted | 1443 |
-| Scores computed | 2910 |
+| Scores computed | 2913 |
 | Pairs queued for review | 120 |
 | Records discarded | 0 |
 
 Forty-five jobs are corroborated by more than one source. One is corroborated by three: a
 당근마켓 posting that appears on the employer's own Greenhouse board and on both JobKorea and
 Saramin, resolved to one job with three provider rows behind it. Nine merges came from the
-canonical URL rung and thirty-seven from company, title and location; nothing merged on
+canonical URL rung and thirty-seven from company, title and location. Nothing merged on
 description similarity, and nothing merged inside a single provider's own catalogue.
 
 ## What the system says it does not know
 
-500 of 970 jobs have no seniority bucket and 478 have no role family. Most of those are the
+500 of 971 jobs have no seniority bucket and 478 have no role family. Most of those are the
 non-engineering postings on a large employer's board, where the title carries no role signal
 and the extractor found no phrase to read. They are stored as unknown rather than guessed,
-which is why the average career-value score across all 970 jobs is 7.1: the corpus is mostly
-not software engineering, and the scorer says so.
+which is why the average career-value score across all 971 jobs is 7.1: the corpus is mostly
+not software engineering, and the scorer says so rather than flattering it.
 
 Filtering to what the system is for gives 137 open jobs in seniority buckets A and B. Sorted
 by career value, the top of that list is a 당근마켓 backend internship at 78, corroborated by
 two sources, with every extracted field traceable to snapshot 1004 and the phrase it was read
 from.
 
-## Two defects this run exposed
+## Three defects this run exposed
 
 **A complete listing for one board closed another board's jobs.** Reconciliation was scoped to
 the source rather than to the listing actually fetched, so a successful, complete run against
@@ -87,6 +88,11 @@ URL. Rungs 3 and 4 are now cross-source only; when the target job already carrie
 the same source, the pair goes to the review queue instead. That is where 120 of the 120
 pending pairs come from.
 
-A third, smaller flaw showed up in the same data: a URL whose path was empty and the same URL
-whose path was `/` produced different canonical keys, so an aggregator row that should have
-matched on rung 1 fell through to rung 3. Both now canonicalize identically.
+**A root path written two ways produced two keys.** A URL with an empty path and the same URL
+with a `/` path canonicalized differently, so an aggregator row that should have matched an
+employer posting on rung 1 fell through to rung 3 instead. Both forms now canonicalize
+identically, and the 당근마켓 internship that exposed it now matches on the URL rung.
+
+A fourth inconsistency was not a pipeline defect but a false claim: the source registry
+listed Lever as runtime-available with no adapter behind it, so `/api/sources` advertised a
+capability that did not exist. The adapter now exists and the claim is true.
