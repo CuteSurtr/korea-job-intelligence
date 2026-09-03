@@ -34,6 +34,20 @@ Nothing below 0.75 merges automatically. A candidate pair that scores between 0.
 0.75 is written to a review queue with both jobs intact, because an unreviewed duplicate is
 cheaper than an unreviewable merge.
 
+**Rungs 3 and 4 are cross-source only.** If the job a rung would merge into already carries a
+row from the same source the candidate came from, the rung does not fire, and the pair is
+written to `job_merge_candidates` with both jobs intact. A provider listing two postings is
+that provider asserting two postings; weaker title or description similarity does not
+overturn the provider's own distinction.
+
+That rule came out of a live run rather than out of theory. One employer's Greenhouse board
+returned 566 postings and rung 3 merged 98 of them, collapsing six separately numbered
+`Server Developer` openings into a single job because the company, the normalized title and
+the city all matched. Greenhouse had given each of them its own id and its own URL, which is
+the employer stating that they are different openings. Rung 3 exists to reconcile one opening
+seen through different providers; it has no business overruling a provider about its own
+catalogue.
+
 Definitions that carry the weight:
 
 - **Canonicalization** strips tracking parameters, lowercases the host, drops default

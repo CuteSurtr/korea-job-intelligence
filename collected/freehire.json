@@ -1,0 +1,1811 @@
+{
+ "provider": "freehire",
+ "fetchedAt": "2026-09-03T19:48:31.313Z",
+ "collector": "mcp-freehire-2026-09-03",
+ "records": [
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "collections": [
+    "us-h1b-sponsor"
+   ],
+   "company": "Roku",
+   "company_slug": "roku",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-27",
+   "description": "-------------------------------\nTeamwork makes the stream work.\n-------------------------------\n\n*Roku is changing how the world watches TV*\n-------------------------------------------\n\nRoku is the #1 TV streaming platform in the U.S., Canada, and Mexico, and we've set our sights on powering every television in the world. Roku pioneered streaming to the TV. Our mission is to be the TV streaming platform that connects the entire TV ecosystem. We connect consumers to the content they love, enable content publishers to build and monetize large audiences, and provide advertisers unique capabilities to engage consumers.\n\nFrom your first day at Roku, you'll make a valuable - and valued - contribution. We're a fast-growing public company where no one is a bystander. We offer you the opportunity to delight millions of TV streamers around the world while gaining meaningful experience across a variety of disciplines.\n\n*What does the team work on?*\n\nOur ACR (Automatic Content Recognition) technology",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-27",
+   "enrichment": {
+    "category": "backend",
+    "company_size": "1000+",
+    "company_type": "product",
+    "domains": [
+     "media"
+    ],
+    "experience_years_min": 5,
+    "posting_language": "en",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "5+ years of professional software engineering experience building and operating production systems at scale"
+     },
+     {
+      "priority": "required",
+      "text": "Strong proficiency in at least one systems programming language such as Python, C++, or Go"
+     },
+     {
+      "priority": "required",
+      "text": "Experience designing and implementing distributed systems with focus on scalability, reliability, and fault tolerance"
+     },
+     {
+      "priority": "required",
+      "text": "Solid understanding of data structures, algorithms, and system design principles"
+     },
+     {
+      "priority": "required",
+      "text": "Experience with cloud platforms (AWS, GCP) including compute, storage, networking, and managed services"
+     },
+     {
+      "priority": "required",
+      "text": "Hands-on experience with containerization and orchestration using Docker and Kubernetes in production"
+     },
+     {
+      "priority": "required",
+      "text": "Proficiency with version control (Git), CI/CD pipelines, and modern software development practices"
+     },
+     {
+      "priority": "required",
+      "text": "Experience integrating LLMs such as ChatGPT, Claude, or Cursor into development workflows or production systems"
+     },
+     {
+      "priority": "required",
+      "text": "Familiarity with agentic AI frameworks and agent architectures for autonomous task execution"
+     },
+     {
+      "priority": "required",
+      "text": "Experience with prompt engineering and LLM optimization including few-shot learning, chain-of-thought prompting, and RAG"
+     },
+     {
+      "priority": "required",
+      "text": "Experience with multimodal AI models capable of processing text, image, audio, and video data"
+     },
+     {
+      "priority": "required",
+      "text": "Understanding of AI safety practices including content filtering, bias detection, and responsible AI deployment"
+     },
+     {
+      "priority": "required",
+      "text": "Strong problem-solving skills with ability to debug complex distributed systems issues"
+     },
+     {
+      "priority": "required",
+      "text": "Effective communication skills with ability to articulate technical concepts to technical and non-technical stakeholders"
+     },
+     {
+      "priority": "required",
+      "text": "Bachelor's degree in Computer Science, Engineering, or related field, or equivalent practical experience"
+     }
+    ],
+    "seniority": "senior",
+    "summary": "Senior backend performance engineer designing and optimizing large-scale distributed systems for real-time multimedia content indexing (ACR) on Kubernetes, using Python/C++/Go on AWS/GCP while integrating agentic AI and LLM capabilities into production systems."
+   },
+   "enrichment_version": 2,
+   "external_id": "roku:8160902",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul, South Korea",
+   "manually_added": false,
+   "posted_at": "2026-09-03",
+   "public_slug": "senior-software-engineer-backend-performance-engineer-roku-e6nsx3h4",
+   "reality": {
+    "age_days": 7,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "agentic-ai",
+    "ai",
+    "ai-enablement",
+    "automation",
+    "aws",
+    "chatgpt",
+    "ci-cd",
+    "claude-code",
+    "cloud",
+    "containerization",
+    "cpp",
+    "distributed-systems",
+    "docker",
+    "elk",
+    "gcp",
+    "git",
+    "grafana",
+    "kubernetes",
+    "llm",
+    "machine-learning",
+    "mcp",
+    "microservices",
+    "networking",
+    "observability",
+    "prometheus",
+    "prompt-engineering",
+    "python",
+    "rag",
+    "signal-processing",
+    "version-control"
+   ],
+   "source": "greenhouse",
+   "title": "Senior Software Engineer, Backend Performance Engineer",
+   "updated_at": "2026-09-03",
+   "upvote_count": 0,
+   "url": "https://www.weareroku.com/jobs/8160902?gh_jid=8160902&utm_source=freehire.me",
+   "view_count": 5,
+   "work_mode": "hybrid"
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "Toss",
+   "company_slug": "toss",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-09-03",
+   "description": "*합류하게 될 팀에 대해 알려드려요*\n\n* Site Reliability Engineer는 Server Chapter 소속으로, SRE Team에 속해 업무해요.\n* 토스증권 SRE Team은 서비스의 높은 신뢰성과 안정성을 책임져요.\n* 대규모 트래픽 환경에서 이상 징후를 사전에 감지하고 빠르게 대응할 수 있도록 효과적인 모니터링 시스템을 설계하고 운영해요.\n* 서비스가 성장하는 과정에서 발생한 문제를 해결하고, 재발 방지를 위한 설계와 해법을 마련해요.\n\n*토스증권 서버 챕터는*\n\n* 무언가를 함께 만들어내서, 보다 나은 가치를 만들고자 하는 동료들이 정말 많아요.\n* 예를 들어, 아이디어를 냈을 때 \"이래서 안 돼!\", “이미 잘 되고 있는데 굳이 바꿔야 하는 거야?” 보다 \"이렇게 하면 그걸 해낼 수 있겠다.\"라는 마인드를 가진 분들 말이죠.\n* 자신의 의견을 서슴지 않게 이야기할 수 있고, 어떤 생각이라도 비난하거나 질책하지 않고 경청해 주고 협의해 나갈 수 있는 분위기의 챕터에요.\n* 기술 토론을 좋아하고, 스터디도 많이 하고 있어요. 오시면 그동안 학습이 부족하셨던 분들도 저절로 풍월을 읊게 되고, 평소 많이 하셨던 분들은 공부한 것을 실무에 적용할 부분을 탐구해 보는 신세계를 경험할 수 있어요.\n* 작게는 코드리뷰부터, 크게는 엔지니어링데이와 서버 챕터 위클리에 이르기까지 서버 개발자들의 강력한 횡적 협업을 지탱하는 커뮤니티가 있어요.\n\n*합류하면 함께할 업무예요*\n*☑️안정적인 서비스를 위한 장애 예방 및 대응을 담당해요.*\n\n* 장애 발생 시 누구보다 빠르게",
+   "downvote_count": 0,
+   "enriched_at": "2026-09-03",
+   "enrichment": {
+    "category": "sre",
+    "company_type": "product",
+    "domains": [
+     "fintech"
+    ],
+    "posting_language": "ko",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "Understands underlying principles beyond frameworks and views code from a performance-optimization perspective across languages"
+     },
+     {
+      "priority": "required",
+      "text": "Logical approach to problems in complex distributed environments with persistence in tracing root causes"
+     },
+     {
+      "priority": "required",
+      "text": "Solid fundamentals in Linux OS, kernel, and network protocols (TCP/IP) enabling low-level analysis"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience scaling to a scalable architecture or handling large-scale traffic reliably through structural improvements"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience building test platforms or automated testing environments for colleagues"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience recognizing repetitive inefficient tasks and systematizing solutions through code"
+     },
+     {
+      "priority": "preferred",
+      "text": "Balanced experience in application-level optimization (e.g., JVM tuning) and system-level troubleshooting (kernel/network analysis)"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience improving operational processes or preventing recurrence via post-mortems"
+     }
+    ],
+    "summary": "Site Reliability Engineer on Toss Securities' SRE team in Seoul, responsible for preventing and responding to incidents on a high-traffic service: building monitoring/alerting around SLOs, performing deep root-cause analysis (down to Linux kernel, network, and eBPF level), and automating operations with internal tooling. Stack includes Java/Kotlin, Kubernetes/Istio, Prometheus/Grafana/ELK, and Go/"
+   },
+   "enrichment_version": 2,
+   "external_id": "tosscareers:7985105003",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul",
+   "manually_added": false,
+   "posted_at": "2026-09-03",
+   "public_slug": "site-reliability-engineer-toss-y62fkneg",
+   "reality": {
+    "age_days": 0,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "argocd",
+    "bash",
+    "ci-cd",
+    "elk",
+    "github",
+    "github-actions",
+    "grafana",
+    "hibernate",
+    "istio",
+    "java",
+    "jpa",
+    "jvm",
+    "k6",
+    "kafka",
+    "kotlin",
+    "kubernetes",
+    "linux",
+    "mongodb",
+    "mysql",
+    "nginx",
+    "observability",
+    "oracle",
+    "prometheus",
+    "python",
+    "redis",
+    "spring",
+    "tcp-ip",
+    "wireshark"
+   ],
+   "source": "greenhouse",
+   "title": "Site Reliability Engineer",
+   "updated_at": "2026-09-03",
+   "upvote_count": 0,
+   "url": "https://toss.im/career/job-detail?gh_jid=7985105003&utm_source=freehire.me",
+   "view_count": 0
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "Toss",
+   "company_slug": "toss",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-09-02",
+   "description": "#LI-DNI",
+   "downvote_count": 0,
+   "enriched_at": "2026-09-02",
+   "enrichment": {
+    "category": "sre"
+   },
+   "enrichment_version": 2,
+   "external_id": "tosscareers:7984081003",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul",
+   "manually_added": false,
+   "posted_at": "2026-09-02",
+   "public_slug": "site-reliability-engineer-toss-gw5s4obq",
+   "reality": {
+    "age_days": 1,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "source": "greenhouse",
+   "title": "Site Reliability Engineer",
+   "updated_at": "2026-09-02",
+   "upvote_count": 0,
+   "url": "https://toss.im/career/job-detail?gh_jid=7984081003&utm_source=freehire.me",
+   "view_count": 1
+  },
+  {
+   "applied_count": 0,
+   "company": "Metanet",
+   "company_slug": "metanet",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-09-02",
+   "description": "*채용 유형 - 정규직*\n*직군/직무 :* ** *Application Developer*\n\n*담당 업무*\n\n- 복리후생/근태시스템 개발 및 운영관리\n- 인사/급여/회계시스템과의 연계 개발 및 운영관리\n- 복리후생/근태시스템 구축 프로젝트 수행\n\n*자격 요건*\n\n- 복리후생/근태/급여시스템 개발 경험\n- Java, Spring Boot 기반 웹 서비스 개발 경험\n- MyBatis, PostgreSQL, Oracle 등 RDB 기반 업무 시스템 개발 경험\n- 서버 간 API 연동과 운영 이슈 대응 경험\n- Gradle, Docker 기반 빌드·배포 경험\n\n*우대 조건*\n\n- Flutter 등 앱 개발 경험\n- Spring Security, SAML/OAuth SSO 인증 연동 경험\n- AI 코딩 도구 및 에이전트 기반 워크플로 활용 경험\n\n*입사 후 향후 활용 방안*\n\n- 복리후생/근태시스템 개발 및 운영관리\n- 복리후생/근태시스템 구축 프로젝트 수행\n\n*근무지* : 서울시 송파구 전기회관 5층",
+   "downvote_count": 0,
+   "enrichment": {
+    "category": "software_engineering",
+    "posting_language": "ko"
+   },
+   "enrichment_version": 0,
+   "external_id": "fa-eozb-saasfaprod1.fa.ocs.oraclecloud.com/CX_5001:1694",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Korea, Republic of",
+   "manually_added": false,
+   "posted_at": "2026-09-02",
+   "public_slug": "metanessaseu-application-developer-gyeongryeogjig-caeyong-metanet-waqvbrnq",
+   "reality": {
+    "age_days": 1,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "ai",
+    "api",
+    "docker",
+    "flutter",
+    "gradle",
+    "java",
+    "oauth",
+    "oracle",
+    "postgresql",
+    "saml",
+    "spring",
+    "sso"
+   ],
+   "source": "oracle",
+   "title": "[메타넷사스] Application Developer_경력직 채용",
+   "updated_at": "2026-09-02",
+   "upvote_count": 0,
+   "url": "https://fa-eozb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_5001/job/1694?utm_source=freehire.me",
+   "view_count": 0
+  },
+  {
+   "applied_count": 0,
+   "company": "Seoul Robotics",
+   "company_slug": "seoul-robotics",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-09-01",
+   "description": "*About Seoul Robotics*\nSeoul Robotics is an autonomous driving company with a mission to solve first and last-mile logistics challenges, backed by a team of industry experts from Google, NVIDIA, Coupang, Hyudai Motor Company and GM.\nThis position offers a great opportunity to advance your professional career in the cutting-edge autonomous robotics industry, where AI/ML is embedded at the core of the product.\nWith members from over 10 different countries, you have the chance to work in a unique international environment in the heart of Seoul, where English is our primary language.\nOur global clients provide opportunities to work overseas in various areas in Asia and the US.\n\n[Our Story and Technology]\n\n- Powering the Future of Autonomy with LV5 CTRL TWR ** (YouTube LINK)\n\n- Media (Chosun Biz LINK, PR Newswire LINK)\n\n[Our Principles]\n\n■ Add Value\n\n■ Earn Trust\n\n■ Own Your",
+   "downvote_count": 0,
+   "enrichment": {
+    "category": "software_engineering",
+    "english_level": "c1",
+    "experience_years_min": 10,
+    "posting_language": "en",
+    "seniority": "senior"
+   },
+   "enrichment_version": 0,
+   "external_id": "seoulrobotics:5411932008",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Pangyo, Korea",
+   "manually_added": false,
+   "posted_at": "2026-09-01",
+   "public_slug": "senior-automotive-system-engineer-seoul-robotics-s5iyapvy",
+   "reality": {
+    "age_days": 2,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "ai",
+    "bash",
+    "iso-26262",
+    "lidar",
+    "linux",
+    "machine-learning",
+    "python"
+   ],
+   "source": "greenhouse",
+   "title": "Senior Automotive System Engineer ",
+   "updated_at": "2026-09-03",
+   "upvote_count": 0,
+   "url": "https://job-boards.greenhouse.io/seoulrobotics/jobs/5411932008?utm_source=freehire.me",
+   "view_count": 0,
+   "work_mode": "hybrid"
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "Coupang",
+   "company_slug": "coupang",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-09-01",
+   "description": "*회사 소개*\n쿠팡은 고객 감동 실현을 위해 존재합니다. 고객들이 \"쿠팡 없이 그동안 어떻게 살았을까?\" 라고 말할 때, 비로소 우리의 미션을 실현하고 있음을 알 수 있습니다. 고객들의 쇼핑과 식사, 생활 전반을 편하게 만들겠다는 유일한 집념으로 쿠팡은 수억 달러 규모의 커머스 산업 전반의 혁신을 이끌고 있습니다. 쿠팡은 가장 빠르게 성장하는 리테일 기업 중 하나로, 국내 커머스 업계에서의 독보적인 입지와, 고객 신뢰를 구축했습니다.\n\n쿠팡은 스타트업 문화를 기반으로 한 글로벌 대형 상장사라고 자부합니다. 이것이 창립 당시의 기민함을 유지하며, 신규 서비스를 끊임없이 출시하며 비즈니스를 확장해 나가는 우리의 성장 동력입니다. 쿠팡의 모든 임직원에게는 기업가 정신을 갖추고 새로운 혁신과 이니셔티브를 추진할 수 있는 기회가 주어집니다. 주저없이 일에 뛰어들어 성과를 이루고자 하는 과감성이, 바로 쿠팡이 일하는 방식의 본질입니다. 쿠팡에서는 여러분 자신, 동료, 팀 그리고 회사 전체가 매일 성장하는 모습을 목격할 것입니다.\n\n쿠팡의 모든 직원은 커머스의 미래를 만들겠다는 쿠팡의 미션에 진심입니다. 우리는 고객의 문제를 해결해 나가고, 전통적인 관념과 통념에 맞서며 실현가능한 한계를 뛰어넘고 있습니다. 고가용성(Always-on) 과 최첨단의 앞선 기술(High-tech), 초연결사회(Hyper-connected world) 에서의 놀라운 업무 경험을 원하신다면, 지금 바로 쿠팡에 합류하세요.\n\n*직무 소개*\n\nData Platform 조직의 Orchestration Platform 팀은 전체 비즈니스 도메인에 걸쳐 Job scheduling 및 execution 서비스를 제공합니다. Orchestration Platform 팀이 관리하는 인프라는 로그 분석, 추천, 가격 비교, AB 테스트, 검색 인덱싱, 광고 및 로켓 배송을",
+   "downvote_count": 0,
+   "enrichment": {
+    "category": "backend",
+    "posting_language": "ko",
+    "seniority": "staff"
+   },
+   "enrichment_version": 0,
+   "external_id": "coupang:8168878",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul, South Korea",
+   "manually_added": false,
+   "posted_at": "2026-09-01",
+   "public_slug": "staff-backend-engineer-orchestration-platform-coupang-nre4cuby",
+   "reality": {
+    "age_days": 2,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "airflow",
+    "argocd",
+    "aws",
+    "docker",
+    "gcp",
+    "hive",
+    "java",
+    "kubernetes",
+    "python",
+    "spark",
+    "terraform"
+   ],
+   "source": "greenhouse",
+   "title": "Staff Backend Engineer (Orchestration Platform)",
+   "updated_at": "2026-09-01",
+   "upvote_count": 0,
+   "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8168878&utm_source=freehire.me",
+   "view_count": 0
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "Coupang Internal",
+   "company_slug": "coupang-internal",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-09-01",
+   "description": "본 공고는 재직 임직원을 대상으로 하는 사내 공모 전용입니다. ( 임직원 추천은 Link 로 진행 )\n\nThis posting is exclusively for internal employees. (Employee referrals are submitted via the Link)\n\n지원 시에는 반드시 첨부된 *영문* ‘사내 공모 지원서 양식’을 작성한 후, *쿠팡 이메일 계정* 으로 접수해 주시기 바랍니다.\n\nTo apply, please complete the attached ‘Internal Transfer Request Form’ and submit it via *your Coupang email address*.\n\n* 사내 공모 정책: [Link]\n* *Internal Transfer Policy: [Link]*\n\nPosition Inquiry: jaku4@coupang.com\n\n*직무 소개*\n\nData Platform 조직의 Orchestration Platform 팀은 전체 비즈니스 도메인에 걸쳐 Job scheduling 및 execution 서비스를 제공합니다. Orchestration Platform 팀이 관리하는 인프라는 로그 분석, 추천, 가격 비교, AB 테스트, 검색 인덱싱, 광고 및 로켓 배송을 포함한 다양한 쿠팡 서비스와 관련된 데이터 처리를 제공합니다. 우리는 쿠팡 고객에게 최고의 전자상거래 경험을 제공하는 데 중요한 역할을 하고 있다고",
+   "downvote_count": 0,
+   "enrichment": {
+    "category": "backend",
+    "posting_language": "ko"
+   },
+   "enrichment_version": 0,
+   "external_id": "coupanginternal:8168879",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul, South Korea",
+   "manually_added": false,
+   "posted_at": "2026-09-01",
+   "public_slug": "lv5-6-backend-engineer-orchestration-platform-coupang-internal-nhdqipqa",
+   "reality": {
+    "age_days": 2,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "airflow",
+    "argocd",
+    "aws",
+    "docker",
+    "gcp",
+    "hive",
+    "java",
+    "kubernetes",
+    "python",
+    "spark",
+    "terraform"
+   ],
+   "source": "greenhouse",
+   "title": "[Lv5~6] Backend Engineer (Orchestration Platform) ",
+   "updated_at": "2026-09-01",
+   "upvote_count": 0,
+   "url": "https://boards.greenhouse.io/coupanginternal/jobs/8168879?gh_jid=8168879&utm_source=freehire.me",
+   "view_count": 1
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "당근마켓",
+   "company_slug": "danggeunmakes",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-09-01",
+   "description": "당근 팀 합류 여정에 오르신 것을 진심으로 환영해요\n----------------------------\n\n당근은 회사의 성장에 맞춰 개인이 함께 성장할 수 있는 환경을 만들기 위해 노력을 하고 있어요.\n\n멋진 동료들과 행복한 고민을 하는 그 순간이 올 수 있도록 당근 채용팀이 도와드릴게요.\n\n나의당근 팀을 소개해요\n------------\n\n당근의 5번째 탭인 나의당근을 *당근 전체 서비스의 Engagement를 높이는 핵심 지면* 으로 만들어가는 팀이에요. 유저가 소비한 로컬 콘텐츠와 서비스 이용 활동을 연결해, 나의당근을 개인화된 허브로 만드는 것이 목표예요.\n\n당근은 중고거래, 알바, 커뮤니티 등 동네를 중심으로 한 하이퍼로컬 서비스를 만들고 있어요. 서비스마다 서로 다른 성장 단계와 전략을 가지고 있지만, 모두 '유저의 동네 생활'이라는 하나의 맥락 안에서 연결돼 있어요. 나의당근 팀은 전체 서비스의 맥락과 사용자의 활동을 연결해, 지금 유저에게 필요한 정보와 행동을 가장 적절한 순간에 보여주는 경험을 만들어가고 있어요.\n\n이런 일을 해요\n--------\n\n유저가 당근에서 해왔던 일, 하고 있는 일, 앞으로 해야 할 일과 유저가 쌓아온 정보를 한눈에 파악하고 당근의 다양한 서비스 이용으로 자연스럽게 이어지는 경험을 만들어요\n\n* *유저의 과거 활동을 연결해요.* 중고거래, 알바, 모임 등 당근 전체 서비스에서 유저가 최근 본 글, 관심을 보인 콘텐츠, 이용 내역 등을 한곳에서 다시 확인하고 쉽게 이어갈 수 있게 만들어요\n* *유저의 현재 상태를 보여줘요.* 진행 중인 거래, 지원, 예약, 주문 등 여러 서비스에 흩어진 이용 상태를 모아 유저가 지금 어떤 활동을 하고 있는지 한눈에 알 수 있게 만들어요\n* *다음 행동으로 이어지게 해요.* 다가오는 일정과 해야 할",
+   "downvote_count": 0,
+   "enrichment": {
+    "category": "backend",
+    "posting_language": "ko"
+   },
+   "enrichment_version": 0,
+   "external_id": "daangn:7771433003",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "SEOUL",
+   "manually_added": false,
+   "posted_at": "2026-09-01",
+   "public_slug": "software-engineer-backend-inteon-nayidanggeun-danggeunmakes-ev4i36rb",
+   "reality": {
+    "age_days": 2,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "ai",
+    "aws",
+    "bigquery",
+    "datadog",
+    "dynamodb",
+    "grafana",
+    "grpc",
+    "istio",
+    "kafka",
+    "kotlin",
+    "kubernetes",
+    "llm",
+    "mysql",
+    "openapi",
+    "redis",
+    "sentry",
+    "spring"
+   ],
+   "source": "greenhouse",
+   "title": "Software Engineer, Backend (인턴) - 나의당근",
+   "updated_at": "2026-09-01",
+   "upvote_count": 0,
+   "url": "https://about.daangn.com?gh_jid=7771433003&utm_source=freehire.me",
+   "view_count": 0
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "Toss",
+   "company_slug": "toss",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-31",
+   "description": "*2026 토스 커뮤니티 FE 대규모 채용*\n\n* 지원기간: 9/1 - 9/14\n* 이번 채용에서는 중복지원이 불가합니다. 단, 프로세스 진행 중 다른 계열사 진행이 적합하다고 판단되는 경우 역으로 제안드릴 수 있어요.\n\n*토스증권 프론트엔드 챕터는,*\n\n* 모던 웹 기술을 활용하여 Android, iOS 네이티브와 웹뷰가 상호작용하며 동작하는 모바일 제품을 만들고있어요.\n* 어렵고 복잡한 투자 상품을 누구나 쉽게 이용할 수 있도록 유저에게 친숙하고 슬릭한 투자 경험을 제공하는 서비스를 만들고 있어요.\n* 수 많은 실시간 데이터를 끊김없이 보여주고 거래할 수 있도록 최적화된 엔지니어링 기술을 활용하고 있어요.\n\n*합류하면 함께할 업무예요*\n\n* 400만+ DAU, 30만+ 유저 동시 접속 환경에서 최선의 유저 경험을 제공하기 위한 브라우저·CDN·네트워크 등 다방면에서의 성능 최적화를 시도해요.\n* 팀 간 독립적인 개발이 가능한 자체 MFA 개발 프레임워크를 구축해요.\n* AWS 등의 클라우드 서비스를 적극적으로 활용해 토스증권의 자체 배포 인프라를 구축하고 관리해요.\n* 토스증권 자체적으로 운영하는 클라이언트 유저 행동 로그 시스템을 구축해요.\n* 실시간 트래픽에 맞춘 모니터링 및 에러 대응 도구를 개발해요.\n* 유저가 네이티브 화면과 웹뷰 화면을 오갈 때 자연스러운 경험을 줄 수 있으면서, 네이티브와 웹뷰 플랫폼 간 호환 문제에서 자유로운 개발 환경을 구축해요.\n* 제품팀 개발자들이 성능 최적화를 쉽게 할 수 있도록 가이드와 모듈을 제공해요.\n* 안정적이고 효율적인 개발 환경을 위해 Storybook,",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-31",
+   "enrichment": {
+    "category": "devops",
+    "company_size": "1000+",
+    "company_type": "product",
+    "domains": [
+     "fintech"
+    ],
+    "posting_language": "ko",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "Deep understanding of frontend development and deployment environments with experience proactively identifying and improving issues"
+     },
+     {
+      "priority": "required",
+      "text": "Ability to analyze root causes accurately and solve problems fundamentally"
+     },
+     {
+      "priority": "preferred",
+      "text": "Understanding of web browser principles and experience improving web service performance"
+     },
+     {
+      "priority": "preferred",
+      "text": "Understanding of transpiling and bundling, with experience efficiently supporting a wide range of browsers"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience managing 10+ packages in a monorepo"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience automating and streamlining repetitive operational tasks"
+     },
+     {
+      "priority": "preferred",
+      "text": "Strong interest in frontend testing"
+     }
+    ],
+    "summary": "Build and operate the frontend platform for Toss Securities—a 4M+ DAU mobile investment app—covering MFA frameworks, CI/CD pipelines, AWS-based deployment infra, monitoring, and performance optimization using React and TypeScript."
+   },
+   "enrichment_version": 2,
+   "external_id": "tosscareers:7977718003",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul",
+   "manually_added": false,
+   "posted_at": "2026-09-01",
+   "public_slug": "fe-platform-engineer-toss-4tkwkijr",
+   "reality": {
+    "age_days": 2,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "android",
+    "aws",
+    "ci-cd",
+    "github",
+    "github-actions",
+    "grafana",
+    "ios",
+    "playwright",
+    "react",
+    "sentry",
+    "storybook",
+    "terraform",
+    "typescript",
+    "vite",
+    "webpack",
+    "websockets"
+   ],
+   "source": "greenhouse",
+   "title": "FE Platform Engineer",
+   "updated_at": "2026-09-01",
+   "upvote_count": 0,
+   "url": "https://toss.im/career/job-detail?gh_jid=7977718003&utm_source=freehire.me",
+   "view_count": 0
+  },
+  {
+   "applied_count": 0,
+   "company": "ASML",
+   "company_slug": "asml",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-09-01",
+   "description": "*Job Description(external)*\n\n*Introduction to the Job*\n\nASML is a global leader in advanced technology systems used to manufacture computer chips. In this role, you will work as a Software Engineer for Field Operations, based in our Hwaseong office in South Korea. You’ll be part of a local team that works closely with one of our key customers, Samsung.\n\nYour main responsibility is to support and improve the software used in ASML machines that are already installed at customer sites. You’ll help solve urgent software issues, prevent future problems, and share insights with our global development teams to improve future products.\n\nThis is a great opportunity for someone who enjoys solving real-world technical problems, working directly with customers, and making a visible impact.\n\n*Job Mission*\n\nTo quickly resolve software-related issues at customer sites, improve the reliability of ASML systems, and contribute to long-term product",
+   "downvote_count": 0,
+   "enrichment": {
+    "category": "software_engineering",
+    "education_level": "phd",
+    "english_level": "c1",
+    "experience_years_min": 5,
+    "posting_language": "en"
+   },
+   "enrichment_version": 0,
+   "external_id": "asml.wd3.myworkdayjobs.com/asmlext1:/job/Hwasung-Korea/D-E-R-D--Embeded-Software-Engineer---Metrology--Scanner-SW_J-00347049-1",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Hwasung, Korea",
+   "manually_added": false,
+   "posted_at": "2026-09-01",
+   "public_slug": "d-e-r-d-embeded-software-engineer-metrology-scanner-sw-asml-xecyjyjc",
+   "reality": {
+    "age_days": 1,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "agile",
+    "ansible",
+    "artifactory",
+    "bash",
+    "ci-cd",
+    "cpp",
+    "embedded-systems",
+    "git",
+    "jenkins",
+    "jira",
+    "linux",
+    "python",
+    "scrum",
+    "version-control"
+   ],
+   "source": "workday",
+   "title": "D&E(R&D) Embeded Software Engineer - Metrology, Scanner SW",
+   "updated_at": "2026-09-01",
+   "upvote_count": 0,
+   "url": "https://asml.wd3.myworkdayjobs.com/ASMLEXT1/job/Hwasung-Korea/D-E-R-D--Embeded-Software-Engineer---Metrology--Scanner-SW_J-00347049-1?utm_source=freehire.me",
+   "view_count": 0
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "Toss",
+   "company_slug": "toss",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-31",
+   "description": "#LI-DNI",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-31",
+   "enrichment": {
+    "category": "devops",
+    "company_size": "1000+",
+    "company_type": "product",
+    "domains": [
+     "fintech"
+    ],
+    "summary": "The FE Platform Engineer at Toss works on developing and maintaining frontend infrastructure and tooling to support the company's financial services platform."
+   },
+   "enrichment_version": 2,
+   "external_id": "tosscareers:7971212003",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul",
+   "manually_added": false,
+   "posted_at": "2026-08-31",
+   "public_slug": "fe-platform-engineer-toss-sfloy4wy",
+   "reality": {
+    "age_days": 2,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 2,
+    "repost_count": 2
+   },
+   "regions": [
+    "apac"
+   ],
+   "source": "greenhouse",
+   "title": "FE Platform Engineer",
+   "updated_at": "2026-08-31",
+   "upvote_count": 0,
+   "url": "https://toss.im/career/job-detail?gh_jid=7971212003&utm_source=freehire.me",
+   "view_count": 0
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "collections": [
+    "unicorn"
+   ],
+   "company": "Toss",
+   "company_slug": "toss",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-25",
+   "description": "*합류하게 될 팀에 대해 알려드려요*\n\n* “프론트엔드 개발자의 생산성을 10X로 만든다”라는 미션을 가지고 일하고 있어요.\n* 개발자가 더 빠르게 일을 할 수 있도록 돕는 ‘부스터’를 만들어요. 기술적으로 자동화, 툴링, 테스팅, 라이브러리 개발, 디버깅 환경 의문제를 해결해요. 동료들이 서로를 더 잘 도울 수 있는 문화를 만들어서 모두의 생산성을 높여요.\n* 어떻게 개발자의 생산성을 높일 수 있을까요? 저희는 이런 상상을 하면서 일을 하고 있어요.\n‘매번 수동으로 진행하던 테스트를 자동화해서 테스트에 걸리는 시간이 1/10로 단축된다면?’\n‘디버깅 역량이 뛰어난 동료의 노하우를 잘 전파해서 모두가 디버깅을 그 동료처럼 할 수 있다면?’\n‘문제가 발생했을 때 시스템이 잘 갖춰져 있어서 원인을 찾기까지의 시간이 10분도 안 걸린다면?’\n‘까다로운 코딩 상황들이 모두 유틸리티로 만들어져 있어서 코딩을 2배 더 빨리 할 수 있다면?’\n‘팀 전체가 시스템적으로 변경하기 쉬운 코드를 빠르고 쉽게 작성할 수 있다면?’\n* *토스뱅크 프론트엔드 챕터에 대해 더 알아보고 싶다면?*\n→ 우리는 웹으로 은행을 만들어요 ()\n* *합류 후 어떤 성장을 할 수 있을지 궁금하다면?*\n→ 토스뱅크 프론트엔드 개발자의 일주일 (\n\n*합류하면 함께 할 업무예요*\n\n* “이것보다 더 잘할 수는 없을까?“라는 질문을 계속 던져보면서, 개발자의 생산성을 높이기 위한 아이디어를 발굴해요.\n* 서로가 긍정적인 영향을 주고 받는 문화를 만들고 활성화해요. 생산성이 높은 동료의 노하우가 모든 개발자에게 전파되도록 해요.\n* 빌드/배포에 걸리는 시간을",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-25",
+   "enrichment": {
+    "category": "devops",
+    "company_size": "1000+",
+    "company_type": "product",
+    "domains": [
+     "fintech"
+    ],
+    "posting_language": "ko",
+    "requirements": [
+     {
+      "priority": "preferred",
+      "text": "Experience with IaC tools like Terraform for infrastructure management"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with infrastructure configuration for internationalization"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience improving development environments through automation, tooling, or testing"
+     },
+     {
+      "priority": "preferred",
+      "text": "Proven track record of optimizing workflows and processes"
+     }
+    ],
+    "summary": "The FE Platform Engineer at Toss Bank focuses on improving developer productivity by building internal tools, automating testing and CI/CD pipelines, and optimizing build environments. The role involves working with a modern stack including React, TypeScript, and Next.js to enhance the developer experience for the frontend team."
+   },
+   "enrichment_version": 2,
+   "external_id": "tosscareers:5622017003",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul",
+   "manually_added": false,
+   "posted_at": "2026-08-31",
+   "public_slug": "fe-platform-engineer-toss-tj4rqunm",
+   "reality": {
+    "age_days": 9,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "api",
+    "ci-cd",
+    "css",
+    "github",
+    "github-actions",
+    "infrastructure-as-code",
+    "nextjs",
+    "react",
+    "terraform",
+    "typescript",
+    "webpack",
+    "zustand"
+   ],
+   "source": "greenhouse",
+   "title": "FE Platform Engineer",
+   "updated_at": "2026-08-31",
+   "upvote_count": 0,
+   "url": "https://toss.im/career/job-detail?gh_jid=5622017003&utm_source=freehire.me",
+   "view_count": 3
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "collections": [
+    "techstars",
+    "us-h1b-sponsor"
+   ],
+   "company": "twelve-labs",
+   "company_slug": "twelve-labs",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-24",
+   "description": "------------\n*Who we are*\n------------\n\n영상은 전 세계 데이터의 90%를 차지하지만, 그 대부분은 아직 기계가 이해할 수 없는 영역에 머물러 있습니다.\n\n트웰브랩스(TwelveLabs)는 이 문제를 해결하기 위해 기계가 영상을 이해할 수 있도록 하는 AI 인프라를 구축합니다. 사람보다 더 정교하고 깊이 있게 영상을 이해하는 AI 모델을 통해 영상 속 시·청각 정보를 종합 분석하여 미디어·엔터테인먼트, 스포츠, 보안, 공공 분야 전반의 워크플로우에 적용하고 있습니다.\n\nNEA, Radical Ventures, Amazon, NVIDIA, Snowflake, Databricks, Index Ventures, 네이버벤처스, 한국투자파트너스, Quadrille Capital, Red Bull Ventures 등 글로벌 투자자들로부터 누적 3천억원 이상의 투자를 유치했습니다. 또한 Fei-Fei Li, Silvio Savarese, Alexandr Wang 등 세계적인 AI 리더들이 자문진으로 함께하고 있습니다.\n\n트웰브랩스는 샌프란시스코, 서울, 뉴욕, 런던 네 개의 오피스를 거점으로 운영되는 글로벌 기업입니다. 핵심 연구개발은 서울에서 이루어지며, 전 세계 오피스의 구성원들이 이를 기반으로 다양한 산업과 시장에 영상 이해 기술을 적용해가고 있습니다. 세상의 복잡함을 이해하는 기술을 만드는 만큼, 서로 다른 배경과 관점을 가진 사람들이 모일 때 더 나은 제품을 만들 수 있다고 믿습니다.\n\n아직 세상에 없는 답을 정의해보고 싶으신 분, 내 손으로 직접 변화를 만들어내고 싶어하시는 분을 찾고 있습니다. 트웰브랩스에서 세상을 이해하는 기술을 함께 만들어가세요.\n\n----------------\n*About the Role*\n----------------\n\nTwelveLabs의 AI 플랫폼을 뒷받침하는 시스템을 구축하고 운영할 *Senior Platform*",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-24",
+   "enrichment": {
+    "category": "devops",
+    "company_size": "51-200",
+    "company_type": "product",
+    "domains": [
+     "ai"
+    ],
+    "employment_type": "full_time",
+    "posting_language": "ko",
+    "relocation": "not_supported",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "AWS, GCP, or Azure production experience"
+     },
+     {
+      "priority": "required",
+      "text": "Linux, networking, containers, Kubernetes"
+     },
+     {
+      "priority": "required",
+      "text": "Terraform or Ansible for Infrastructure as Code"
+     },
+     {
+      "priority": "required",
+      "text": "CI/CD and deployment system design/operation"
+     },
+     {
+      "priority": "required",
+      "text": "Observability, monitoring, logging, alerting, incident response"
+     },
+     {
+      "priority": "required",
+      "text": "Python, Go, TypeScript, or backend-oriented language"
+     },
+     {
+      "priority": "required",
+      "text": "Debugging complex issues across multiple system layers"
+     },
+     {
+      "priority": "required",
+      "text": "Distributed systems and cloud architecture understanding"
+     },
+     {
+      "priority": "required",
+      "text": "Root cause analysis mindset"
+     },
+     {
+      "priority": "preferred",
+      "text": "7+ years in infrastructure/platform/SRE/DevOps roles"
+     },
+     {
+      "priority": "preferred",
+      "text": "Built developer or infrastructure platforms for multiple teams"
+     },
+     {
+      "priority": "preferred",
+      "text": "High-availability B2B SaaS operations at scale"
+     },
+     {
+      "priority": "preferred",
+      "text": "Security and compliance-aware system design"
+     },
+     {
+      "priority": "preferred",
+      "text": "Backend service development and distributed systems experience"
+     },
+     {
+      "priority": "preferred",
+      "text": "Trade-off decisions between performance, reliability, and cost"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience in fast-growing startups or high-ownership environments"
+     },
+     {
+      "priority": "preferred",
+      "text": "Fluent English communication"
+     }
+    ],
+    "seniority": "senior",
+    "summary": "Build and run the scalable infrastructure and internal platforms that power TwelveLabs’ AI video-understanding models, focusing on reliability, observability, and performance across production systems."
+   },
+   "enrichment_version": 2,
+   "external_id": "twelve-labs:75b92173-c0ca-4a91-84e5-c56515dbb813",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul, South Korea",
+   "manually_added": false,
+   "posted_at": "2026-08-31",
+   "public_slug": "senior-platform-engineer-twelve-labs-axxi4uot",
+   "reality": {
+    "age_days": 10,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "ai",
+    "ansible",
+    "automation",
+    "aws",
+    "azure",
+    "ci-cd",
+    "cloud",
+    "databricks",
+    "devops",
+    "distributed-systems",
+    "gcp",
+    "infrastructure-as-code",
+    "linux",
+    "llm",
+    "machine-learning",
+    "networking",
+    "observability",
+    "python",
+    "saas",
+    "snowflake",
+    "terraform",
+    "test-automation",
+    "typescript"
+   ],
+   "source": "ashby",
+   "title": "Senior Platform Engineer",
+   "updated_at": "2026-09-03",
+   "upvote_count": 0,
+   "url": "https://jobs.ashbyhq.com/twelve-labs/75b92173-c0ca-4a91-84e5-c56515dbb813?utm_source=freehire.me",
+   "view_count": 5,
+   "work_mode": "hybrid"
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "FuriosaAI",
+   "company_slug": "furiosa-ai",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-19",
+   "description": "---------------\nAbout FuriosaAI\n---------------\n\nFuriosaAI builds high-performance, high-efficiency AI compute for the Inference Era. Founded in 2017 by veteran semiconductor and AI algorithm engineers, Furiosa operates globally with offices in Korea and Silicon Valley, along with a compiler-focused R&D lab in Lisbon.\n\nOur vision is to make AI computing sustainable, enabling access to powerful AI for everyone on Earth. We solve the AI hardware energy and operational cost crisis at the architectural level, rather than through brute force, building the world's first truly AI-native compute platform to unlock the full potential of artificial intelligence for every enterprise.\n\n--------------\nAbout the Role\n--------------\n\nAs a Site Reliability Engineer, you will apply software engineering to improve the reliability, scalability, security, and operability of FuriosaAI’s production infrastructure and customer-facing services. You will work across baremetal Kubernetes clusters, cloud control",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-20",
+   "enrichment": {
+    "category": "sre",
+    "company_size": "11-50",
+    "company_type": "startup",
+    "domains": [
+     "ai"
+    ],
+    "posting_language": "en",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "Bachelor’s degree in Computer Science, Engineering, or related field, or equivalent practical experience"
+     },
+     {
+      "priority": "required",
+      "text": "Strong programming skills in Rust, Python, or Go"
+     },
+     {
+      "priority": "required",
+      "text": "Solid understanding of operating systems, computer networks, and cloud-native/container-based environments"
+     },
+     {
+      "priority": "required",
+      "text": "Ability to analyze technical problems and communicate clearly with engineering teams"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience improving reliability of production systems using SLOs, observability, incident analysis, rollout safety, and error-budget-driven decision making"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience designing or operating distributed systems where failures, overload, latency, and capacity limits must be explicitly managed"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience building automation, internal tooling, or self-service workflows to reduce operational toil"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience working across software, infrastructure, networking, and security boundaries to diagnose problems and drive architectural improvements"
+     }
+    ],
+    "summary": "Builds and maintains AI-native compute infrastructure for FuriosaAI’s NPU-based systems, focusing on reliability, observability, and automation to ensure scalable, secure, and efficient production services."
+   },
+   "enrichment_version": 2,
+   "external_id": "furiosaai:4005786201",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul, South Korea",
+   "manually_added": false,
+   "posted_at": "2026-08-30",
+   "public_slug": "software-engineer-site-reliability-engineer-furiosaai-qyt4enip",
+   "reality": {
+    "age_days": 14,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "ai",
+    "api",
+    "automation",
+    "cloud",
+    "cloud-native",
+    "distributed-systems",
+    "kubernetes",
+    "networking",
+    "observability",
+    "python",
+    "rust"
+   ],
+   "source": "greenhouse",
+   "title": "Software Engineer, Site Reliability Engineer",
+   "updated_at": "2026-08-30",
+   "upvote_count": 0,
+   "url": "https://furiosa.ai/careers?gh_jid=4005786201&utm_source=freehire.me",
+   "view_count": 1
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Hong Kong",
+    "Seoul",
+    "Singapore",
+    "Sydney"
+   ],
+   "company": "bjakcareer",
+   "company_slug": "bjakcareer",
+   "countries": [
+    "at",
+    "au",
+    "de",
+    "es",
+    "hk",
+    "id",
+    "ie",
+    "kr",
+    "nl",
+    "ph",
+    "pl",
+    "pt",
+    "se",
+    "sg",
+    "th",
+    "us",
+    "vn"
+   ],
+   "created_at": "2026-08-29",
+   "description": "*About KIRA*\n\nOur mission is to make money smart, reliable and within reach for everyone.\n\nIn 2019, we built the first mobile-first, insurance platform, enabling insurance to be accessible online by millions in the region. Today, it's the leading insurance platform in Southeast Asia.\n\nToday, we are expanding ways to help people in Asia and it includes spending, saving, investing, exchanging, travelling, and more. Our objective is to build tools that will help people get more from their money and at ease and self reliance, become an expert. We believe AI will help us achieve this in our generation.\n\nWe are looking for the most talented and driven people we can find. We are looking for people who work for their passion, not counting hours. Who loves building great next-generation products, not status quo. Who cares about redefining how everyone around us can get the best financial applications, not for an exclusive",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-29",
+   "enrichment": {
+    "category": "software_engineering",
+    "company_type": "product",
+    "domains": [
+     "fintech"
+    ],
+    "experience_years_min": 7,
+    "posting_language": "en",
+    "relocation": "not_supported",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "7+ years of software engineering experience building and shipping production systems"
+     },
+     {
+      "priority": "required",
+      "text": "Deep expertise in backend, frontend, distributed systems, APIs, databases or cloud infrastructure"
+     },
+     {
+      "priority": "required",
+      "text": "Strong system design and architecture skills for complex or high-scale systems"
+     },
+     {
+      "priority": "required",
+      "text": "Strong coding ability and willingness to remain hands-on"
+     },
+     {
+      "priority": "required",
+      "text": "Track record of technically leading major engineering projects from design through production"
+     },
+     {
+      "priority": "required",
+      "text": "Ability to make sound technical trade-offs, influence engineers and solve complex production problems"
+     },
+     {
+      "priority": "required",
+      "text": "Strong English communication"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience scaling engineering teams, systems or development practices through significant growth"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience operating across multiple products, markets or countries"
+     }
+    ],
+    "seniority": "principal",
+    "summary": "Hands-on Principal Engineer owning technical direction and execution for major products and systems (backend, frontend, APIs, databases, infrastructure) at KIRA, a Southeast Asian insurance and financial platform used by millions.",
+    "timezone_note": "We hire globally and work across multiple countries and time zones."
+   },
+   "enrichment_version": 2,
+   "external_id": "bjakcareer:80c2bfbf-b378-4d78-a8a6-14c3ee9399e2",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Sydney, Australia",
+   "manually_added": false,
+   "posted_at": "2026-08-29",
+   "public_slug": "principal-software-engineer-bjakcareer-352e3lu7",
+   "reality": {
+    "age_days": 4,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 17,
+    "repost_count": 17
+   },
+   "regions": [
+    "apac",
+    "eu",
+    "north_america"
+   ],
+   "skills": [
+    "ai",
+    "api",
+    "cloud",
+    "distributed-systems",
+    "observability",
+    "prototyping"
+   ],
+   "source": "ashby",
+   "title": "Principal Software Engineer",
+   "updated_at": "2026-08-29",
+   "upvote_count": 0,
+   "url": "https://jobs.ashbyhq.com/bjakcareer/80c2bfbf-b378-4d78-a8a6-14c3ee9399e2?utm_source=freehire.me",
+   "view_count": 9,
+   "work_mode": "remote"
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Hong Kong",
+    "Seoul",
+    "Singapore",
+    "Sydney"
+   ],
+   "company": "bjakcareer",
+   "company_slug": "bjakcareer",
+   "countries": [
+    "at",
+    "au",
+    "de",
+    "es",
+    "hk",
+    "id",
+    "ie",
+    "kr",
+    "nl",
+    "ph",
+    "pl",
+    "pt",
+    "se",
+    "sg",
+    "th",
+    "us",
+    "vn"
+   ],
+   "created_at": "2026-08-29",
+   "description": "*About KIRA*\n\nOur mission is to make money smart, reliable and within reach for everyone.\n\nIn 2019, we built the first mobile-first, insurance platform, enabling insurance to be accessible online by millions in the region. Today, it's the leading insurance platform in Southeast Asia.\n\nToday, we are expanding ways to help people in Asia and it includes spending, saving, investing, exchanging, travelling, and more. Our objective is to build tools that will help people get more from their money and at ease and self reliance, become an expert. We believe AI will help us achieve this in our generation.\n\nWe are looking for the most talented and driven people we can find. We are looking for people who work for their passion, not counting hours. Who loves building great next-generation products, not status quo. Who cares about redefining how everyone around us can get the best financial applications, not for an exclusive",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-29",
+   "enrichment": {
+    "category": "software_engineering",
+    "company_type": "product",
+    "domains": [
+     "fintech",
+     "ai"
+    ],
+    "experience_years_min": 7,
+    "posting_language": "en",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "7+ years of software engineering experience building and shipping production systems"
+     },
+     {
+      "priority": "required",
+      "text": "Deep expertise in backend, frontend, distributed systems, APIs, databases or cloud infrastructure"
+     },
+     {
+      "priority": "required",
+      "text": "Strong system design and architecture skills for complex or high-scale systems"
+     },
+     {
+      "priority": "required",
+      "text": "Strong coding ability and willingness to remain hands-on"
+     },
+     {
+      "priority": "required",
+      "text": "Track record of technically leading major engineering projects from design through production"
+     },
+     {
+      "priority": "required",
+      "text": "Ability to make sound technical trade-offs, influence engineers and solve complex production problems"
+     },
+     {
+      "priority": "required",
+      "text": "Strong English communication skills"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience scaling engineering teams, systems or development practices through significant growth"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience operating across multiple products, markets or countries"
+     }
+    ],
+    "seniority": "lead",
+    "summary": "The Lead Software Engineer will own the technical direction and execution for major financial products, designing scalable systems and writing code while mentoring the engineering team. This hands-on role requires deep expertise in full-stack development and distributed systems to help build next-generation financial applications.",
+    "timezone_note": "Remote role working across multiple countries and time zones."
+   },
+   "enrichment_version": 2,
+   "external_id": "bjakcareer:2854afcf-04d9-4603-ae45-56316380f50f",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Sydney, Australia",
+   "manually_added": false,
+   "posted_at": "2026-08-29",
+   "public_slug": "lead-software-engineer-bjakcareer-wfetjetr",
+   "reality": {
+    "age_days": 4,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 17,
+    "repost_count": 17
+   },
+   "regions": [
+    "apac",
+    "eu",
+    "north_america"
+   ],
+   "skills": [
+    "ai",
+    "api",
+    "cloud",
+    "distributed-systems",
+    "observability",
+    "prototyping"
+   ],
+   "source": "ashby",
+   "title": "Lead Software Engineer",
+   "updated_at": "2026-08-29",
+   "upvote_count": 0,
+   "url": "https://jobs.ashbyhq.com/bjakcareer/2854afcf-04d9-4603-ae45-56316380f50f?utm_source=freehire.me",
+   "view_count": 6,
+   "work_mode": "remote"
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Hong Kong",
+    "Seoul",
+    "Singapore",
+    "Sydney"
+   ],
+   "company": "bjakcareer",
+   "company_slug": "bjakcareer",
+   "countries": [
+    "at",
+    "au",
+    "de",
+    "es",
+    "hk",
+    "id",
+    "ie",
+    "kr",
+    "nl",
+    "ph",
+    "pl",
+    "pt",
+    "se",
+    "sg",
+    "th",
+    "us",
+    "vn"
+   ],
+   "created_at": "2026-08-29",
+   "description": "*About KIRA*\n\nOur mission is to make money smart, reliable and within reach for everyone.\n\nIn 2019, we built the first mobile-first, insurance platform, enabling insurance to be accessible online by millions in the region. Today, it's the leading insurance platform in Southeast Asia.\n\nToday, we are expanding ways to help people in Asia and it includes spending, saving, investing, exchanging, travelling, and more. Our objective is to build tools that will help people get more from their money and at ease and self reliance, become an expert. We believe AI will help us achieve this in our generation.\n\nWe are looking for the most talented and driven people we can find. We are looking for people who work for their passion, not counting hours. Who loves building great next-generation products, not status quo. Who cares about redefining how everyone around us can get the best financial applications, not for an exclusive",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-29",
+   "enrichment": {
+    "category": "software_engineering",
+    "company_type": "product",
+    "domains": [
+     "fintech"
+    ],
+    "experience_years_min": 7,
+    "posting_language": "en",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "7+ years of software engineering experience building and shipping production systems"
+     },
+     {
+      "priority": "required",
+      "text": "Deep expertise in backend, frontend, distributed systems, APIs, databases or cloud infrastructure"
+     },
+     {
+      "priority": "required",
+      "text": "Strong system design and architecture skills for complex or high-scale systems"
+     },
+     {
+      "priority": "required",
+      "text": "Strong coding ability and willingness to remain hands-on"
+     },
+     {
+      "priority": "required",
+      "text": "Track record of technically leading major engineering projects from design through production"
+     },
+     {
+      "priority": "required",
+      "text": "Ability to make sound technical trade-offs, influence engineers and solve complex production problems"
+     },
+     {
+      "priority": "required",
+      "text": "Strong English communication"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience scaling engineering teams, systems or development practices through significant growth"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience operating across multiple products, markets or countries"
+     }
+    ],
+    "seniority": "staff",
+    "summary": "Hands-on Staff Software Engineer owning technical direction and execution for major products at KIRA, a mobile-first insurance/fintech platform. Responsibilities span system design, coding, and architecture across backend, frontend, APIs, databases, and infrastructure at scale."
+   },
+   "enrichment_version": 2,
+   "external_id": "bjakcareer:887b5903-330c-4d30-a661-4a6aa0c0cdab",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Sydney, Australia",
+   "manually_added": false,
+   "posted_at": "2026-08-29",
+   "public_slug": "staff-software-engineer-bjakcareer-xjix3qso",
+   "reality": {
+    "age_days": 4,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 17,
+    "repost_count": 17
+   },
+   "regions": [
+    "apac",
+    "eu",
+    "north_america"
+   ],
+   "skills": [
+    "ai",
+    "api",
+    "cloud",
+    "distributed-systems",
+    "observability",
+    "prototyping"
+   ],
+   "source": "ashby",
+   "title": "Staff Software Engineer",
+   "updated_at": "2026-08-29",
+   "upvote_count": 0,
+   "url": "https://jobs.ashbyhq.com/bjakcareer/887b5903-330c-4d30-a661-4a6aa0c0cdab?utm_source=freehire.me",
+   "view_count": 5,
+   "work_mode": "remote"
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "SmartDev",
+   "company_slug": "smartdev",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-28",
+   "description": "We are seeking a highly skilled *Senior DevOps Engineer (Azure)* with strong expertise in *Azure Logic Apps (Standard)* , cloud integration, and *GitHub‑based CI/CD pipelines*. This role plays a critical part in designing, deploying, operating, and scaling integration workflows and cloud solutions in an enterprise environment.\n\nYou will work closely with development, architecture, and delivery teams to ensure reliable, secure, and automated cloud deployments while driving DevOps best practices across projects.\n\n*What you'll get to do...*\n\n* Design, develop, and deploy *Azure Logic Apps*\n* Build both *stateful and stateless workflows* aligned with business and integration requirements.\n* Develop and manage *custom connectors* and configure built‑in connectors.\n* Implement *data transformation* using: Liquid templates; Inline",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-28",
+   "enrichment": {
+    "category": "devops",
+    "company_type": "outstaff",
+    "domains": [
+     "other"
+    ],
+    "english_level": "c1",
+    "experience_years_min": 7,
+    "posting_language": "en",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "7+ years of experience in a Platform, SRE, or DevOps role"
+     },
+     {
+      "priority": "required",
+      "text": "Fluent in English for technical documentation and communication"
+     },
+     {
+      "priority": "required",
+      "text": "Strong hands-on experience with Azure Logic Apps (Standard)"
+     },
+     {
+      "priority": "required",
+      "text": "Experience integrating Logic Apps with Azure Service Bus, Storage, Key Vault"
+     },
+     {
+      "priority": "required",
+      "text": "Solid experience with GitHub and CI/CD using GitHub Actions"
+     },
+     {
+      "priority": "required",
+      "text": "Strong understanding of cloud security and operational best practices"
+     },
+     {
+      "priority": "required",
+      "text": "Ability to work independently and collaborate in cross-functional teams"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with Infrastructure as Code (Terraform)"
+     },
+     {
+      "priority": "preferred",
+      "text": "Familiarity with Azure API Management (APIM)"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with Application Insights and Azure Monitor"
+     },
+     {
+      "priority": "preferred",
+      "text": "Hands-on experience with Azure DevOps"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience in enterprise or large-scale integration projects"
+     },
+     {
+      "priority": "preferred",
+      "text": "Understanding of event-driven and integration architecture patterns"
+     }
+    ],
+    "seniority": "senior",
+    "summary": "Senior DevOps Engineer designing, deploying, and scaling Azure Logic Apps (Standard) integration workflows and managing GitHub-based CI/CD pipelines in an enterprise environment."
+   },
+   "enrichment_version": 2,
+   "external_id": "smartdev1:744000146138730",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Seoul, kr",
+   "manually_added": false,
+   "posted_at": "2026-08-28",
+   "public_slug": "senior-devops-engineer-azure-smartdev-ze4ocm3u",
+   "reality": {
+    "age_days": 6,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "api",
+    "azure",
+    "azure-devops",
+    "ci-cd",
+    "cloud",
+    "cloud-security",
+    "csharp",
+    "devops",
+    "github",
+    "github-actions",
+    "infrastructure-as-code",
+    "javascript",
+    "terraform",
+    "vault"
+   ],
+   "source": "smartrecruiters",
+   "title": "Senior DevOps Engineer (Azure)",
+   "updated_at": "2026-08-28",
+   "upvote_count": 0,
+   "url": "https://jobs.smartrecruiters.com/SmartDev1/744000146138730-senior-devops-engineer-azure-?utm_source=freehire.me",
+   "view_count": 4,
+   "work_mode": "remote"
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Seoul"
+   ],
+   "company": "Blendbee Executive Search & Talent Development",
+   "company_slug": "blendbee-executive-search-talent-development",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-28",
+   "description": "*Background*\n당사의 고객사는 서울에 본사를 둔 글로벌 애드테크 기업으로, 애드블록으로 인해 매년 2,000억 달러 이상 사라지는 퍼블리셔 광고 수익을 복구하는 차세대 기술을 개발하고 있습니다. 본격적인 글로벌 진출 1년 만에 50배 이상의 매출 성장을 기록하며 미국의 대형 미디어 및 퍼블리셔 기업들을 고객사로 확보했고, 30명 미만의 소수 정예 조직으로 인당 수백만 달러의 매출을 창출하는 고효율 구조를 갖추고 있습니다. 현재 8자리(달러 기준) 매출 규모를 9자리로 확장해 나가는 성장 단계에 있으며, 본 포지션은 회사 제품의 핵심인 안티 애드블록 시스템을 담당합니다. 기술 리서치와 프로덕션 엔지니어링이 결합된 업무로, 런타임, 스크립트 딜리버리, 탐지, 엣지 시스템 전반을 다루며 적대적 환경(adversarial systems) 엔지니어링 분야의 깊은 전문성을 쌓을 수 있는 기회입니다. 안티 애드블록 관련 사전 경험은 요구되지 않습니다.\n\n*Key Responsibilities*\n\n* 브라우저 확장 프로그램, 필터 룰, 스크립틀릿, 브라우저 API, 네트워크 레벨 도구 전반에 걸친 신규 광고 차단 동작 분석 및 리서치\n* 제품의 핵심인 런타임, 스크립트 딜리버리, 탐지, 폴백, 엣지 시스템 구축 및 개선\n* 문제 재현과 근본 원인 분석부터 구현, 배포, 검증까지 엔드투엔드 문제 해결 주도\n* 반복 발생 이슈를 재사용 가능한 방어 체계, 회귀 테스트, 모니터링, 안전한 배포 프로세스로 체계화\n* 커버리지, 오탐률, 페이지 무결성, 탐지 및 복구 소요 시간 등 신뢰성 지표 정의 및 관리\n\n*Key Qualifications*\n\n* 탄탄한 소프트웨어 엔지니어링 기본기와 낯선 코드베이스에서도 독립적으로 업무를 수행할 수 있는",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-28",
+   "enrichment": {
+    "category": "software_engineering",
+    "company_size": "11-50",
+    "company_type": "product",
+    "domains": [
+     "adtech"
+    ],
+    "posting_language": "ko",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "Strong software engineering fundamentals and ability to work independently"
+     },
+     {
+      "priority": "required",
+      "text": "Proficiency in JavaScript or TypeScript"
+     },
+     {
+      "priority": "required",
+      "text": "Understanding of browser, DOM, HTTP, networking, caching, and CDN"
+     },
+     {
+      "priority": "required",
+      "text": "Debugging and research skills for hypothesis verification"
+     },
+     {
+      "priority": "required",
+      "text": "System thinking regarding observability, failure modes, and deployment stability"
+     },
+     {
+      "priority": "required",
+      "text": "End-to-end ownership from design to monitoring"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with browser internals, extensions, CSP, Service Worker, and content filtering"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with reverse engineering, security research, or anti-tampering"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with Cloudflare Workers, CDN, edge computing, or large-scale web infrastructure"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with browser automation, E2E testing, and incident response"
+     },
+     {
+      "priority": "preferred",
+      "text": "Understanding of publisher monetization ecosystems like GAM, Prebid, and header bidding"
+     }
+    ],
+    "summary": "This role involves developing and maintaining anti-adblock systems for a global adtech company, focusing on runtime, script delivery, and edge infrastructure. The engineer will conduct technical research and production engineering to recover publisher ad revenue in an adversarial environment."
+   },
+   "enrichment_version": 2,
+   "external_id": "blendbee:3W839YYV",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "manually_added": false,
+   "posted_at": "2026-08-28",
+   "public_slug": "software-engineer-ad-tech-blendbee-executive-search-talent-development-gt7slnw6",
+   "reality": {
+    "age_days": 6,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "api",
+    "javascript",
+    "observability",
+    "typescript"
+   ],
+   "source": "manatal",
+   "title": "Software Engineer (Ad Tech)",
+   "updated_at": "2026-08-28",
+   "upvote_count": 0,
+   "url": "https://www.careers-page.com/blendbee/job/3W839YYV?utm_source=freehire.me",
+   "view_count": 2
+  },
+  {
+   "applied_count": 0,
+   "cities": [
+    "Pangyo"
+   ],
+   "company": "Seoul Robotics",
+   "company_slug": "seoul-robotics",
+   "countries": [
+    "kr"
+   ],
+   "created_at": "2026-08-28",
+   "description": "*About Seoul Robotics*\nSeoul Robotics is an autonomous driving company with a mission to solve first and last-mile logistics challenges, backed by a team of industry experts from Google, NVIDIA, Coupang, Hyudai Motor Company and GM.\nThis position offers a great opportunity to advance your professional career in the cutting-edge autonomous robotics industry, where AI/ML is embedded at the core of the product.\nWith members from over 10 different countries, you have the chance to work in a unique international environment in the heart of Seoul, where English is our primary language.\nOur global clients provide opportunities to work overseas in various areas in Asia and the US.\n\n[Our Story and Technology]\n\n- Powering the Future of Autonomy with LV5 CTRL TWR ** (YouTube LINK)\n\n- Media (Chosun Biz LINK, PR Newswire LINK)\n\n[Our Principles]\n\n■ Add Value\n\n■ Earn Trust\n\n■ Own Your",
+   "downvote_count": 0,
+   "enriched_at": "2026-08-28",
+   "enrichment": {
+    "category": "software_engineering",
+    "company_type": "product",
+    "domains": [
+     "ai",
+     "mobility"
+    ],
+    "posting_language": "en",
+    "requirements": [
+     {
+      "priority": "required",
+      "text": "Strong software engineering fundamentals and hands-on C++ development experience"
+     },
+     {
+      "priority": "required",
+      "text": "Solid grasp of linear algebra, calculus, and geometry"
+     },
+     {
+      "priority": "required",
+      "text": "Experience developing non-trivial software systems"
+     },
+     {
+      "priority": "required",
+      "text": "Strong problem-solving and debugging skills"
+     },
+     {
+      "priority": "required",
+      "text": "Experience writing clean, testable, maintainable code"
+     },
+     {
+      "priority": "required",
+      "text": "Effective collaboration and communication skills"
+     },
+     {
+      "priority": "required",
+      "text": "Willingness to take responsibility for assigned problems"
+     },
+     {
+      "priority": "preferred",
+      "text": "Robotics, autonomous driving, or other real-time/safety-critical system experience"
+     },
+     {
+      "priority": "preferred",
+      "text": "Practical understanding of planning, control, and/or state estimation systems"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with simulation-based development and validation"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience with Linux-based development and CI/CD workflows"
+     },
+     {
+      "priority": "preferred",
+      "text": "Experience owning a software feature or component from implementation through testing and integration"
+     }
+    ],
+    "seniority": "middle",
+    "summary": "Seoul Robotics is seeking an Autonomy Software Engineer to develop and maintain core planning, control, and estimation pipelines for autonomous driving systems. The role involves writing robust C++ and Python code to improve system reliability and performance in a collaborative, international environment."
+   },
+   "enrichment_version": 2,
+   "external_id": "seoulrobotics:5409079008",
+   "is_tech": "tech",
+   "last_seen_at": "2026-09-03",
+   "location": "Pangyo, Korea",
+   "manually_added": false,
+   "posted_at": "2026-08-28",
+   "public_slug": "software-engineer-autonomy-seoul-robotics-z37lalba",
+   "reality": {
+    "age_days": 6,
+    "class": "fresh",
+    "fake_freshness": false,
+    "mass_posting_count": 1,
+    "repost_count": 1
+   },
+   "regions": [
+    "apac"
+   ],
+   "skills": [
+    "ai",
+    "ci-cd",
+    "cpp",
+    "linux",
+    "machine-learning",
+    "python"
+   ],
+   "source": "greenhouse",
+   "title": "Software Engineer- Autonomy",
+   "updated_at": "2026-08-28",
+   "upvote_count": 0,
+   "url": "https://job-boards.greenhouse.io/seoulrobotics/jobs/5409079008?utm_source=freehire.me",
+   "view_count": 1,
+   "work_mode": "hybrid"
+  }
+ ]
+}

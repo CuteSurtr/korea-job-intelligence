@@ -57,7 +57,7 @@ public final class UrlCanonicalizer {
         }
 
         String path = uri.getPath() == null ? "" : uri.getPath();
-        while (path.endsWith("/") && path.length() > 1) {
+        while (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
         builder.append(path);

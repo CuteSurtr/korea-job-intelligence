@@ -118,8 +118,9 @@ public class IngestionPipeline {
 
             int closed = 0;
             if (fetch.listingComplete() && isFullListing(query)) {
-                closed = lifecycleService.reconcileCompleteListing(
-                        source.getId(), run.getId(), Instant.now(clock), summary.observedKeys());
+                closed = lifecycleService.reconcileCompleteListing(source.getId(),
+                        fetch.listingScope(), run.getId(), Instant.now(clock),
+                        summary.observedKeys());
                 run.addJobsClosed(closed);
             }
 

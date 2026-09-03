@@ -68,8 +68,8 @@ public class GreenhouseSourceAdapter implements SourceAdapter {
                 : matching.subList(0, query.maxRecords());
 
         return bounded.size() == matching.size()
-                ? SourceFetchResult.complete(bounded, response.latencyMillis())
-                : SourceFetchResult.partial(bounded, 0, response.latencyMillis());
+                ? SourceFetchResult.complete(bounded, board, response.latencyMillis())
+                : SourceFetchResult.partial(bounded, board, 0, response.latencyMillis());
     }
 
     @Override

@@ -293,6 +293,7 @@ export interface Dashboard {
   sourceCount: number;
   healthySources: number;
   openCircuits: number;
+  pendingMergeReviews: number;
   profileCode: string | null;
   applicationsByStatus: Record<string, number>;
   recentRuns: {

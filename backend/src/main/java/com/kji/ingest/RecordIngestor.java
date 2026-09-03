@@ -5,6 +5,8 @@ import com.kji.company.CompanyResolver;
 import com.kji.dedupe.JobMatch;
 import com.kji.dedupe.JobMatchCandidate;
 import com.kji.dedupe.JobMatcher;
+import com.kji.dedupe.JobMergeCandidate;
+import com.kji.dedupe.JobMergeCandidateRepository;
 import com.kji.job.Job;
 import com.kji.job.JobLifecycleService;
 import com.kji.job.JobRepository;
@@ -23,6 +25,7 @@ import com.kji.source.Source;
 import com.kji.source.SourceRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -33,6 +36,7 @@ public class RecordIngestor {
 
     private final CompanyResolver companyResolver;
     private final JobMatcher jobMatcher;
+    private final JobMergeCandidateRepository mergeCandidateRepository;
     private final JobRepository jobRepository;
     private final JobSourceRepository jobSourceRepository;
     private final JobSnapshotRepository snapshotRepository;
@@ -45,6 +49,7 @@ public class RecordIngestor {
 
     public RecordIngestor(CompanyResolver companyResolver,
                           JobMatcher jobMatcher,
+                          JobMergeCandidateRepository mergeCandidateRepository,
                           JobRepository jobRepository,
                           JobSourceRepository jobSourceRepository,
                           JobSnapshotRepository snapshotRepository,
@@ -56,6 +61,7 @@ public class RecordIngestor {
                           JobEnrichmentService enrichmentService) {
         this.companyResolver = companyResolver;
         this.jobMatcher = jobMatcher;
+        this.mergeCandidateRepository = mergeCandidateRepository;
         this.jobRepository = jobRepository;
         this.jobSourceRepository = jobSourceRepository;
         this.snapshotRepository = snapshotRepository;
@@ -117,6 +123,7 @@ public class RecordIngestor {
                 job = jobRepository.save(new Job(company.company(), canonicalTitle, normalizedTitle,
                         canonicalUrl, canonicalUrlKey, record.fetchedAt(), source.getId()));
                 outcome = RecordIngestionResult.Outcome.JOB_CREATED;
+                queueForReview(match.reviewCandidate(), job.getId(), record.fetchedAt());
             }
 
             jobSource = jobSourceRepository.save(new JobSource(
@@ -148,6 +155,20 @@ public class RecordIngestor {
                 job.getCompany().getCanonicalName(), job.getDescription());
 
         return new RecordIngestionResult(outcome, job.getId(), externalKey);
+    }
+
+    private void queueForReview(JobMatch.ReviewCandidate review, Long newJobId, Instant detectedAt) {
+        if (review == null || review.jobId() == null || review.jobId().equals(newJobId)) {
+            return;
+        }
+        Long left = Math.min(review.jobId(), newJobId);
+        Long right = Math.max(review.jobId(), newJobId);
+        if (mergeCandidateRepository.findByLeftJobIdAndRightJobId(left, right).isPresent()) {
+            return;
+        }
+        mergeCandidateRepository.save(JobMergeCandidate.between(left, right,
+                review.method().name(), confidence(review.confidence()), review.evidence(),
+                detectedAt));
     }
 
     private SnapshotWrite writeSnapshot(Source source, SearchRun run, RawJobRecord record, String externalKey) {

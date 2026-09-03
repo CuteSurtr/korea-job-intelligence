@@ -2,6 +2,7 @@ package com.kji.job;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -220,6 +221,29 @@ class JobLifecycleIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @DisplayName("a complete listing for one board never closes another board's postings")
+    void listingScopeIsPerBoardNotPerSource() throws IOException {
+        given(httpClient.getJson(argThat(uri -> uri != null && uri.toString().contains("coupang"))))
+                .willReturn(new HttpJsonClient.JsonResponse(200, fullBoard(), 12L));
+        given(httpClient.getJson(argThat(uri -> uri != null && uri.toString().contains("otherboard"))))
+                .willReturn(new HttpJsonClient.JsonResponse(200, emptyBoard(), 12L));
+
+        pipeline.runDirect("greenhouse", FULL_BOARD, SearchRun.TriggerKind.MANUAL);
+        int coupangJobs = jobRepository.findAll().size();
+        assertThat(coupangJobs).isGreaterThan(0);
+
+        IngestionOutcome otherBoard = pipeline.runDirect("greenhouse",
+                new SourceQuery(null, Map.of("board", "otherboard"), 200),
+                SearchRun.TriggerKind.MANUAL);
+
+        assertThat(otherBoard.status()).isEqualTo(SearchRun.Status.SUCCEEDED);
+        assertThat(otherBoard.jobsClosed()).isZero();
+        assertThat(jobRepository.findAll())
+                .hasSize(coupangJobs)
+                .allSatisfy(job -> assertThat(job.getLifecycleState()).isEqualTo(LifecycleState.ACTIVE));
+    }
+
+    @Test
     @DisplayName("an import-only source cannot be run directly")
     void importOnlySourceIsNotRunnable() {
         assertThat(sourceRepository.findByCode("jobkorea").orElseThrow().isRuntimeAvailable())
@@ -253,6 +277,12 @@ class JobLifecycleIntegrationTest extends AbstractIntegrationTest {
                 .getResourceAsStream("fixtures/greenhouse/coupang-board.json")) {
             return MAPPER.readTree(new String(stream.readAllBytes(), StandardCharsets.UTF_8));
         }
+    }
+
+    private JsonNode emptyBoard() {
+        ObjectNode board = MAPPER.createObjectNode();
+        board.set("jobs", MAPPER.createArrayNode());
+        return board;
     }
 
     private JsonNode boardWithout(String externalKey) throws IOException {

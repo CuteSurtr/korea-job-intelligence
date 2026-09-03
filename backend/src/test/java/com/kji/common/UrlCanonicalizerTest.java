@@ -48,6 +48,14 @@ class UrlCanonicalizerTest {
     }
 
     @Test
+    @DisplayName("a root path written as an empty string or a slash is the same resource")
+    void treatsEmptyAndSlashRootAsOne() {
+        assertThat(UrlCanonicalizer.canonicalize("https://about.daangn.com?gh_jid=7771433003"))
+                .isEqualTo(UrlCanonicalizer.canonicalize("https://about.daangn.com/?gh_jid=7771433003"))
+                .hasValue("https://about.daangn.com?gh_jid=7771433003");
+    }
+
+    @Test
     @DisplayName("query parameter order does not change the canonical form")
     void sortsQueryParameters() {
         assertThat(UrlCanonicalizer.canonicalize("https://example.com/j?b=2&a=1"))

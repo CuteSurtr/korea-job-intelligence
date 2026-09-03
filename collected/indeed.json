@@ -1,0 +1,89 @@
+{
+  "provider": "indeed",
+  "fetchedAt": "2026-09-03T18:30:00Z",
+  "collector": "mcp-indeed-2026-09-03",
+  "queries": [
+    { "search": "backend developer", "location": "Seoul", "country_code": "KR" }
+  ],
+  "note": "The provider's job ids are numbered per response rather than being durable, so no external id is emitted and the registry marks this source stable_external_id = false.",
+  "records": [
+    {
+      "title": "Software Engineer",
+      "company": "HOPAE",
+      "location": "서울 강남구",
+      "postedOn": "2026-08-18",
+      "jobType": "Full-time",
+      "url": "https://to.indeed.com/aa9nzkkclblr"
+    },
+    {
+      "title": "IPECS - Backend Developer",
+      "company": "Ericsson",
+      "location": "서울",
+      "postedOn": "2026-06-16",
+      "url": "https://to.indeed.com/aa9xtswj2b8q"
+    },
+    {
+      "title": "Backend Developer (C#)",
+      "company": "CLO Virtual Fashion",
+      "location": "서울",
+      "postedOn": "2026-02-26",
+      "jobType": "Full-time",
+      "url": "https://to.indeed.com/aajpvfjtjqq2"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "HOPAE",
+      "location": "서울 강남구",
+      "postedOn": "2026-08-18",
+      "jobType": "Full-time",
+      "url": "https://to.indeed.com/aahh8zw28nyd"
+    },
+    {
+      "title": "AI Agent Engineer, Intern",
+      "company": "SendBird",
+      "location": "서울",
+      "postedOn": "2026-08-25",
+      "jobType": "Internship",
+      "url": "https://to.indeed.com/aabmgkskzxhm"
+    },
+    {
+      "title": "Cloud Platform Engineer",
+      "company": "Rebellions",
+      "location": "성남 분당구",
+      "postedOn": "2026-07-10",
+      "url": "https://to.indeed.com/aawvs77q7nkp"
+    },
+    {
+      "title": "Omnichannel Operations Manager",
+      "company": "Mars",
+      "location": "서울",
+      "postedOn": "2026-09-03",
+      "jobType": "Full-time",
+      "url": "https://to.indeed.com/aa2gfnzjz22y"
+    },
+    {
+      "title": "Customer Success Engineer (contract based)",
+      "company": "FriendliAI",
+      "location": "서울",
+      "postedOn": "2026-04-17",
+      "jobType": "Full-time",
+      "url": "https://to.indeed.com/aa4bhyky49s6"
+    },
+    {
+      "title": "Engineering Lead, GTPN Platform (Seoul)",
+      "company": "Airwallex",
+      "location": "서울",
+      "postedOn": "2026-07-09",
+      "jobType": "Full-time",
+      "url": "https://to.indeed.com/aa7bg6bl4wh9"
+    },
+    {
+      "title": "Developer Evangelist - Integrations (APAC)",
+      "company": "Xsolla",
+      "location": "서울",
+      "postedOn": "2026-02-28",
+      "jobType": "Full-time",
+      "url": "https://to.indeed.com/aalysf6ctzm2"
+    }
+  ]
+}

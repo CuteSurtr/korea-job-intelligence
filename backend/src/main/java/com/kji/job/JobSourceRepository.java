@@ -23,6 +23,8 @@ public interface JobSourceRepository extends JpaRepository<JobSource, Long> {
 
     long countByJobId(Long jobId);
 
+    boolean existsByJobIdAndSourceId(Long jobId, Long sourceId);
+
     @Query("select js.job.id from JobSource js where js.sourceId = :sourceId")
     List<Long> findJobIdsBySourceId(@Param("sourceId") Long sourceId);
 }

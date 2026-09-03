@@ -32,6 +32,7 @@ public class JobEnrichmentService {
     private final SkillRepository skillRepository;
     private final JobRepository jobRepository;
     private final Clock clock;
+    private volatile Map<String, String> skillCategories;
 
     public JobEnrichmentService(IntelligenceExtractor intelligenceExtractor,
                                 ScoringService scoringService,
@@ -99,6 +100,19 @@ public class JobEnrichmentService {
         jobRepository.save(job);
     }
 
+    private Map<String, String> skillCategories() {
+        Map<String, String> cached = skillCategories;
+        if (cached != null) {
+            return cached;
+        }
+        Map<String, String> built = new HashMap<>();
+        for (Skill skill : skillRepository.findAll()) {
+            built.put(skill.getSlug(), skill.getCategory().name());
+        }
+        skillCategories = Map.copyOf(built);
+        return skillCategories;
+    }
+
     private BigDecimal round(ScoreResult result) {
         return result == null
                 ? null
@@ -110,10 +124,7 @@ public class JobEnrichmentService {
         if (jobSkills.isEmpty()) {
             return List.of();
         }
-        Map<String, String> categories = new HashMap<>();
-        for (Skill skill : skillRepository.findAll()) {
-            categories.put(skill.getSlug(), skill.getCategory().name());
-        }
+        Map<String, String> categories = skillCategories();
         return jobSkills.stream()
                 .map(jobSkill -> new ScoringInput.SkillSignal(
                         jobSkill.getSkillSlug(),

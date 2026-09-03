@@ -1,6 +1,8 @@
 package com.kji.web;
 
 import com.kji.crm.ApplicationRepository;
+import com.kji.dedupe.JobMergeCandidate;
+import com.kji.dedupe.JobMergeCandidateRepository;
 import com.kji.crm.ApplicationStatus;
 import com.kji.ingest.SearchRunRepository;
 import com.kji.job.Job;
@@ -38,6 +40,7 @@ public class DashboardController {
     private final SourceHealthService healthService;
     private final SearchRunRepository searchRunRepository;
     private final ApplicationRepository applicationRepository;
+    private final JobMergeCandidateRepository mergeCandidateRepository;
     private final CandidateProfileRepository profileRepository;
     private final Clock clock;
 
@@ -46,6 +49,7 @@ public class DashboardController {
                                SourceHealthService healthService,
                                SearchRunRepository searchRunRepository,
                                ApplicationRepository applicationRepository,
+                               JobMergeCandidateRepository mergeCandidateRepository,
                                CandidateProfileRepository profileRepository,
                                Clock clock) {
         this.jobRepository = jobRepository;
@@ -53,6 +57,7 @@ public class DashboardController {
         this.healthService = healthService;
         this.searchRunRepository = searchRunRepository;
         this.applicationRepository = applicationRepository;
+        this.mergeCandidateRepository = mergeCandidateRepository;
         this.profileRepository = profileRepository;
         this.clock = clock;
     }
@@ -133,6 +138,7 @@ public class DashboardController {
                 sourceRepository.count(),
                 healthySources,
                 openCircuits,
+                mergeCandidateRepository.countByStatus(JobMergeCandidate.Status.PENDING),
                 candidateProfile == null ? null : candidateProfile.getCode(),
                 applicationCounts,
                 recentRuns);
@@ -146,6 +152,7 @@ public class DashboardController {
             long sourceCount,
             long healthySources,
             long openCircuits,
+            long pendingMergeReviews,
             String profileCode,
             Map<String, Long> applicationsByStatus,
             List<RecentRun> recentRuns

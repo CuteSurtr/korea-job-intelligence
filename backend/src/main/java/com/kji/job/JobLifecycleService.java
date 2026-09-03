@@ -73,14 +73,20 @@ public class JobLifecycleService {
     }
 
     @Transactional
-    public int reconcileCompleteListing(Long sourceId, Long searchRunId, Instant at,
-                                        Set<String> observedExternalKeys) {
+    public int reconcileCompleteListing(Long sourceId, String listingScope, Long searchRunId,
+                                        Instant at, Set<String> observedExternalKeys) {
         Set<String> observed = observedExternalKeys == null ? Set.of() : new HashSet<>(observedExternalKeys);
         List<JobSource> active = jobSourceRepository.findBySourceIdAndActiveTrue(sourceId);
+        String scopePrefix = listingScope == null || listingScope.isBlank()
+                ? null
+                : listingScope + ":";
         int closed = 0;
 
         for (JobSource jobSource : active) {
             if (observed.contains(jobSource.getExternalKey())) {
+                continue;
+            }
+            if (scopePrefix != null && !jobSource.getExternalKey().startsWith(scopePrefix)) {
                 continue;
             }
             JobVerification verification = verificationRepository.save(new JobVerification(

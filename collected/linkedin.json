@@ -1,0 +1,100 @@
+{
+  "provider": "linkedin",
+  "fetchedAt": "2026-09-03T18:30:00Z",
+  "collector": "mcp-linkedin-2026-09-03",
+  "queries": [
+    { "keyword": "backend engineer", "location": "South Korea", "posted_within": "Past month" }
+  ],
+  "records": [
+    {
+      "id": "4443495721",
+      "title": "Senior Software Engineer, Backend - Seoul Studios (Tinder Seoul)",
+      "company": "Tinder",
+      "company_url": "https://www.linkedin.com/company/tinder-incorporated",
+      "location": "Seoul, Seoul, South Korea",
+      "posted_date": "2026-08-31",
+      "url": "https://www.linkedin.com/jobs/view/4443495721"
+    },
+    {
+      "id": "4450441937",
+      "title": "Software Engineer, Backend",
+      "company": "당근페이 (KarrotPay)",
+      "company_url": "https://kr.linkedin.com/company/karrotpay",
+      "location": "Seoul, South Korea",
+      "posted_date": "2026-08-13",
+      "url": "https://www.linkedin.com/jobs/view/4450441937"
+    },
+    {
+      "id": "4401176971",
+      "title": "Software Engineer - Senior Backend",
+      "company": "FriendliAI",
+      "company_url": "https://www.linkedin.com/company/friendliai",
+      "location": "Seoul, Seoul, South Korea",
+      "posted_date": "2026-08-23",
+      "url": "https://www.linkedin.com/jobs/view/4401176971"
+    },
+    {
+      "id": "4426596895",
+      "title": "코어플랫폼유닛 Back-end 개발채용",
+      "company": "CJ OLIVE YOUNG",
+      "company_url": "https://kr.linkedin.com/company/cjoliveyoung",
+      "location": "Seoul, Seoul, South Korea",
+      "posted_date": "2026-08-14",
+      "url": "https://www.linkedin.com/jobs/view/4426596895"
+    },
+    {
+      "id": "4448924316",
+      "title": "Senior Backend Engineer (Eats Merchant)",
+      "company": "Coupang",
+      "company_url": "https://www.linkedin.com/company/coupang",
+      "location": "Seoul, South Korea",
+      "posted_date": "2026-08-28",
+      "url": "https://www.linkedin.com/jobs/view/4448924316"
+    },
+    {
+      "id": "4452526603",
+      "title": "Software Engineer, Backend - 광고",
+      "company": "Karrot",
+      "company_url": "https://kr.linkedin.com/company/daangn",
+      "location": "Seoul, South Korea",
+      "posted_date": "2026-08-18",
+      "url": "https://www.linkedin.com/jobs/view/4452526603"
+    },
+    {
+      "id": "4426030727",
+      "title": "[SDx] Backend Developer - Robot/Smart Factory",
+      "company": "Hyundai AutoEver",
+      "company_url": "https://kr.linkedin.com/company/hyundai-autoever",
+      "location": "Seoul, Seoul, South Korea",
+      "posted_date": "2026-08-15",
+      "url": "https://www.linkedin.com/jobs/view/4426030727"
+    },
+    {
+      "id": "4429349073",
+      "title": "Server Developer (Market Platform)",
+      "company": "Toss Securities",
+      "company_url": "https://kr.linkedin.com/company/toss-securities",
+      "location": "Seoul, Seoul, South Korea",
+      "posted_date": "2026-08-22",
+      "url": "https://www.linkedin.com/jobs/view/4429349073"
+    },
+    {
+      "id": "4418586168",
+      "title": "Back End Developer",
+      "company": "카카오페이 (kakaopay)",
+      "company_url": "https://kr.linkedin.com/company/kakaopay",
+      "location": "Seongnam, Gyeonggi, South Korea",
+      "posted_date": "2026-09-01",
+      "url": "https://www.linkedin.com/jobs/view/4418586168"
+    },
+    {
+      "id": "4405230061",
+      "title": "커머스플랫폼유닛 Back-end 개발채용",
+      "company": "CJ OLIVE YOUNG",
+      "company_url": "https://kr.linkedin.com/company/cjoliveyoung",
+      "location": "Seoul, Seoul, South Korea",
+      "posted_date": "2026-08-28",
+      "url": "https://www.linkedin.com/jobs/view/4405230061"
+    }
+  ]
+}

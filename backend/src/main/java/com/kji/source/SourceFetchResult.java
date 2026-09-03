@@ -5,6 +5,7 @@ import java.util.List;
 public record SourceFetchResult(
         List<RawJobRecord> records,
         boolean listingComplete,
+        String listingScope,
         int rateLimitEvents,
         long latencyMillis
 ) {
@@ -14,11 +15,13 @@ public record SourceFetchResult(
         rateLimitEvents = Math.max(0, rateLimitEvents);
     }
 
-    public static SourceFetchResult complete(List<RawJobRecord> records, long latencyMillis) {
-        return new SourceFetchResult(records, true, 0, latencyMillis);
+    public static SourceFetchResult complete(List<RawJobRecord> records, String listingScope,
+                                             long latencyMillis) {
+        return new SourceFetchResult(records, true, listingScope, 0, latencyMillis);
     }
 
-    public static SourceFetchResult partial(List<RawJobRecord> records, int rateLimitEvents, long latencyMillis) {
-        return new SourceFetchResult(records, false, rateLimitEvents, latencyMillis);
+    public static SourceFetchResult partial(List<RawJobRecord> records, String listingScope,
+                                            int rateLimitEvents, long latencyMillis) {
+        return new SourceFetchResult(records, false, listingScope, rateLimitEvents, latencyMillis);
     }
 }

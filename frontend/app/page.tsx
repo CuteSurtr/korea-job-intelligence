@@ -58,6 +58,11 @@ export default async function DashboardPage() {
           value={activeApplications}
           sub="interested through interview"
         />
+        <Stat
+          label="Pairs awaiting review"
+          value={dashboard.pendingMergeReviews}
+          sub="too similar to ignore, too weak to merge"
+        />
       </div>
 
       <h2>Lifecycle</h2>

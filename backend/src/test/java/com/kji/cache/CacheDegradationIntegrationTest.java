@@ -15,6 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc
@@ -25,6 +27,13 @@ class CacheDegradationIntegrationTest extends AbstractIntegrationTest {
             "sourceUrl":"https://jobs.ashbyhq.com/vessl-ai/cache-test",\
             "fetchedAt":"2026-09-03T00:00:00Z","rawTitle":"Backend Engineer (Junior)",\
             "rawCompany":"VESSL AI","rawLocation":"Seoul","rawPayload":{}}""";
+
+    @DynamicPropertySource
+    static void unreachableCache(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.redis.host", () -> "127.0.0.1");
+        registry.add("spring.data.redis.port", () -> 6399);
+        registry.add("spring.data.redis.timeout", () -> "200ms");
+    }
 
     @Autowired
     private MockMvc mockMvc;

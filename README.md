@@ -153,4 +153,6 @@ tools/       Offline collectors that emit NDJSON for the import boundary
 - [ADR 0006 - Deduplication evidence ladder](docs/adr/0006-deduplication-ladder.md)
 - [ADR 0007 - Scoring separation and explainability](docs/adr/0007-scoring-separation.md)
 - [Source coverage record](docs/source-coverage.md)
+- [First full ingestion run, with the defects it exposed](docs/ingestion-run-2026-09-03.md)
 - [Database schema](docs/schema.md)
+- [Out-of-band collectors and the import boundary](tools/mcp-export/README.md)

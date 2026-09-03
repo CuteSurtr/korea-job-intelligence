@@ -62,6 +62,30 @@ is load-bearing for rung 1 of the deduplication ladder.
 redirects. That provider is registered with `stable_external_id = false` and is skipped at
 rung 2 of the ladder.
 
+## Full-run coverage, 2026-09-03
+
+Every source in the table below was invoked and its records were carried through the whole
+pipeline into the database. The counts and the two defects the run exposed are recorded in
+[the run log](ingestion-run-2026-09-03.md).
+
+| Source | Pathway | Provider rows ingested |
+| --- | --- | ---: |
+| `greenhouse` | direct, 6 boards | 711 |
+| `saramin` | import | 137 |
+| `jobkorea` | import | 64 |
+| `ashby` | direct, 2 boards | 34 |
+| `pathsdog` | import | 30 |
+| `freehire` | import | 20 |
+| `indeed` | import | 10 |
+| `linkedin` | import | 10 |
+| `lever` | registered, no Korean board found to query | 0 |
+| `jobdatalake` | not invoked, authentication not completed | 0 |
+
+Five of the eight employer board tokens queried directly (`tosscareers`, `daangn`,
+`furiosaai`, `seoulrobotics`, `get-delight`) were discovered from freehire rows that name the
+underlying ATS and its external id. That is the practical case for keeping a tier-2 aggregator
+in the registry: it is a route to tier-1 boards.
+
 ## Registry consequences
 
 | Source | Adapter kind | Runtime available | Trust tier | Stable external id | Full description |

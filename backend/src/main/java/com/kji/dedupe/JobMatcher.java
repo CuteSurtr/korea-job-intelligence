@@ -41,12 +41,20 @@ public class JobMatcher {
         if (byExternalId.isPresent()) {
             return byExternalId.get();
         }
-        Optional<JobMatch> byTitle = matchByCompanyTitleLocation(candidate);
-        if (byTitle.isPresent()) {
-            return byTitle.get();
+
+        Outcome byTitle = matchByCompanyTitleLocation(candidate);
+        if (byTitle.match() != null) {
+            return byTitle.match();
         }
-        Optional<JobMatch> byDescription = matchByDescriptionSimilarity(candidate);
-        return byDescription.orElseGet(JobMatch::none);
+        Outcome byDescription = matchByDescriptionSimilarity(candidate);
+        if (byDescription.match() != null) {
+            return byDescription.match();
+        }
+
+        JobMatch.ReviewCandidate review = byTitle.review() != null
+                ? byTitle.review()
+                : byDescription.review();
+        return review == null ? JobMatch.none() : JobMatch.none(review);
     }
 
     private Optional<JobMatch> matchByCanonicalUrl(JobMatchCandidate candidate) {
@@ -55,11 +63,12 @@ public class JobMatcher {
         }
         Optional<Job> byJob = jobRepository.findByCanonicalUrlKey(candidate.canonicalUrlKey());
         if (byJob.isPresent()) {
-            return Optional.of(new JobMatch(byJob.get().getId(), JobSource.MatchMethod.CANONICAL_URL,
-                    CANONICAL_URL_CONFIDENCE, evidence("canonical_url", candidate.canonicalUrlKey())));
+            return Optional.of(JobMatch.matched(byJob.get().getId(),
+                    JobSource.MatchMethod.CANONICAL_URL, CANONICAL_URL_CONFIDENCE,
+                    evidence("canonical_url", candidate.canonicalUrlKey())));
         }
         return jobSourceRepository.findFirstByCanonicalUrlKey(candidate.canonicalUrlKey())
-                .map(jobSource -> new JobMatch(jobSource.getJob().getId(),
+                .map(jobSource -> JobMatch.matched(jobSource.getJob().getId(),
                         JobSource.MatchMethod.CANONICAL_URL, CANONICAL_URL_CONFIDENCE,
                         evidence("canonical_url", candidate.canonicalUrlKey())));
     }
@@ -69,46 +78,65 @@ public class JobMatcher {
             return Optional.empty();
         }
         return jobSourceRepository.findFirstByExternalKey(candidate.externalKey())
-                .map(jobSource -> new JobMatch(jobSource.getJob().getId(),
+                .map(jobSource -> JobMatch.matched(jobSource.getJob().getId(),
                         JobSource.MatchMethod.ATS_EXTERNAL_ID, EXTERNAL_ID_CONFIDENCE,
                         evidence("external_key", candidate.externalKey())));
     }
 
-    private Optional<JobMatch> matchByCompanyTitleLocation(JobMatchCandidate candidate) {
+    private Outcome matchByCompanyTitleLocation(JobMatchCandidate candidate) {
         if (candidate.companyId() == null || candidate.normalizedTitle() == null) {
-            return Optional.empty();
+            return Outcome.nothing();
         }
+        JobMatch.ReviewCandidate review = null;
+
         List<Job> exact = jobRepository.findByCompanyIdAndNormalizedTitle(
                 candidate.companyId(), candidate.normalizedTitle());
         for (Job job : exact) {
-            if (locationCompatible(job.getLocationCity(), candidate.locationCity())) {
-                return Optional.of(new JobMatch(job.getId(),
-                        JobSource.MatchMethod.COMPANY_TITLE_LOCATION,
-                        COMPANY_TITLE_LOCATION_CONFIDENCE,
-                        evidence("normalized_title", candidate.normalizedTitle())));
+            if (!locationCompatible(job.getLocationCity(), candidate.locationCity())) {
+                continue;
             }
+            String evidence = evidence("normalized_title", candidate.normalizedTitle());
+            if (alreadyClaimedBySameSource(candidate, job.getId())) {
+                review = review != null ? review : new JobMatch.ReviewCandidate(job.getId(),
+                        JobSource.MatchMethod.COMPANY_TITLE_LOCATION,
+                        COMPANY_TITLE_LOCATION_CONFIDENCE, evidence);
+                continue;
+            }
+            return Outcome.matched(JobMatch.matched(job.getId(),
+                    JobSource.MatchMethod.COMPANY_TITLE_LOCATION,
+                    COMPANY_TITLE_LOCATION_CONFIDENCE, evidence));
         }
 
         List<Long> nearIdentical = jobRepository.findSimilarTitleJobIds(
                 candidate.companyId(), candidate.normalizedTitle(), TITLE_TRIGRAM_THRESHOLD, null, 5);
         for (Long jobId : nearIdentical) {
             Optional<Job> job = jobRepository.findById(jobId);
-            if (job.isPresent() && locationCompatible(job.get().getLocationCity(), candidate.locationCity())) {
-                return Optional.of(new JobMatch(jobId, JobSource.MatchMethod.COMPANY_TITLE_LOCATION,
-                        COMPANY_TITLE_LOCATION_CONFIDENCE,
-                        evidence("normalized_title_trigram", candidate.normalizedTitle())));
+            if (job.isEmpty() || !locationCompatible(job.get().getLocationCity(), candidate.locationCity())) {
+                continue;
             }
+            String evidence = evidence("normalized_title_trigram", candidate.normalizedTitle());
+            if (alreadyClaimedBySameSource(candidate, jobId)) {
+                review = review != null ? review : new JobMatch.ReviewCandidate(jobId,
+                        JobSource.MatchMethod.COMPANY_TITLE_LOCATION,
+                        COMPANY_TITLE_LOCATION_CONFIDENCE, evidence);
+                continue;
+            }
+            return Outcome.matched(JobMatch.matched(jobId,
+                    JobSource.MatchMethod.COMPANY_TITLE_LOCATION,
+                    COMPANY_TITLE_LOCATION_CONFIDENCE, evidence));
         }
-        return Optional.empty();
+        return Outcome.reviewOnly(review);
     }
 
-    private Optional<JobMatch> matchByDescriptionSimilarity(JobMatchCandidate candidate) {
+    private Outcome matchByDescriptionSimilarity(JobMatchCandidate candidate) {
         String description = candidate.normalizedDescription();
         if (candidate.companyId() == null
                 || description == null
                 || description.length() < properties.minDescriptionLength()) {
-            return Optional.empty();
+            return Outcome.nothing();
         }
+        JobMatch.ReviewCandidate review = null;
+
         List<Object[]> rows = jobRepository.findSimilarDescriptionJobs(
                 candidate.companyId(), description, properties.minDescriptionLength(),
                 properties.descriptionSimilarityThreshold(), 3);
@@ -120,10 +148,21 @@ public class JobMatcher {
                 continue;
             }
             double confidence = Math.min(0.90d, Math.max(properties.autoMergeThreshold(), score));
-            return Optional.of(new JobMatch(jobId, JobSource.MatchMethod.DESCRIPTION_SIMILARITY,
-                    confidence, evidence("description_similarity", String.format(Locale.ROOT, "%.3f", score))));
+            String evidence = evidence("description_similarity",
+                    String.format(Locale.ROOT, "%.3f", score));
+            if (alreadyClaimedBySameSource(candidate, jobId)) {
+                review = review != null ? review : new JobMatch.ReviewCandidate(jobId,
+                        JobSource.MatchMethod.DESCRIPTION_SIMILARITY, confidence, evidence);
+                continue;
+            }
+            return Outcome.matched(JobMatch.matched(jobId,
+                    JobSource.MatchMethod.DESCRIPTION_SIMILARITY, confidence, evidence));
         }
-        return Optional.empty();
+        return Outcome.reviewOnly(review);
+    }
+
+    private boolean alreadyClaimedBySameSource(JobMatchCandidate candidate, Long jobId) {
+        return jobSourceRepository.existsByJobIdAndSourceId(jobId, candidate.sourceId());
     }
 
     private boolean locationCompatible(String existingCity, String candidateCity) {
@@ -136,5 +175,20 @@ public class JobMatcher {
     private String evidence(String rung, String value) {
         String escaped = value == null ? "" : value.replace("\\", "\\\\").replace("\"", "\\\"");
         return "{\"rung\":\"" + rung + "\",\"value\":\"" + escaped + "\"}";
+    }
+
+    private record Outcome(JobMatch match, JobMatch.ReviewCandidate review) {
+
+        static Outcome nothing() {
+            return new Outcome(null, null);
+        }
+
+        static Outcome matched(JobMatch match) {
+            return new Outcome(match, null);
+        }
+
+        static Outcome reviewOnly(JobMatch.ReviewCandidate review) {
+            return new Outcome(null, review);
+        }
     }
 }
