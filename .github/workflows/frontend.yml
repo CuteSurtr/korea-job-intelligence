@@ -35,7 +35,20 @@ jobs:
         run: npm ci
 
       - name: Audit production dependencies
-        run: npm audit --omit=dev --audit-level=high
+        run: |
+          set +e
+          output=$(npm audit --omit=dev --audit-level=high 2>&1)
+          status=$?
+          set -e
+          echo "$output"
+          if [ $status -eq 0 ]; then
+            exit 0
+          fi
+          if echo "$output" | grep -qiE "service unavailable|audit endpoint returned an error|ENOTFOUND|ECONNRESET|EAI_AGAIN|ETIMEDOUT"; then
+            echo "::warning::The npm audit service was unreachable. Not treating that as a vulnerability."
+            exit 0
+          fi
+          exit $status
 
       - name: Typecheck
         run: npx tsc --noEmit
