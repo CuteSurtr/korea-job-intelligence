@@ -1,0 +1,31 @@
+<configuration>
+    <springProperty scope="context" name="applicationName" source="spring.application.name"
+                    defaultValue="korea-job-intelligence"/>
+
+    <appender name="TEXT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{ingestionRunId:-}] [%X{sourceCode:-}] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>ingestionRunId</includeMdcKeyName>
+            <includeMdcKeyName>sourceCode</includeMdcKeyName>
+            <customFields>{"application":"${applicationName}"}</customFields>
+        </encoder>
+    </appender>
+
+    <springProfile name="json-logs">
+        <root level="INFO">
+            <appender-ref ref="JSON"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!json-logs">
+        <root level="INFO">
+            <appender-ref ref="TEXT"/>
+        </root>
+    </springProfile>
+</configuration>

@@ -38,10 +38,18 @@ management:
         include: health,info,metrics,prometheus
   endpoint:
     health:
-      show-details: when-authorized
+      show-details: always
+  health:
+    redis:
+      enabled: false
   metrics:
     tags:
       application: korea-job-intelligence
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+        kji.source.request.latency: true
+        kji.ingestion.run.duration: true
 
 kji:
   internal:
@@ -52,10 +60,22 @@ kji:
   ingestion:
     scheduler-enabled: ${INGESTION_SCHEDULER_ENABLED:false}
     fixed-delay: ${INGESTION_FIXED_DELAY:PT6H}
+    maintenance-delay: ${INGESTION_MAINTENANCE_DELAY:PT12H}
     source-concurrency: ${INGESTION_SOURCE_CONCURRENCY:4}
     import-max-lines: ${INGESTION_IMPORT_MAX_LINES:20000}
     stale-after: ${INGESTION_STALE_AFTER:P14D}
     unverified-after: ${INGESTION_UNVERIFIED_AFTER:P3D}
+    targets:
+      - source: greenhouse
+        board: coupang
+        company: Coupang
+        location: Seoul
+        max-records: 300
+      - source: ashby
+        board: vessl-ai
+        company: VESSL AI
+        location: Seoul
+        max-records: 100
   source:
     request-timeout: ${SOURCE_REQUEST_TIMEOUT:PT10S}
     max-retries: ${SOURCE_MAX_RETRIES:2}

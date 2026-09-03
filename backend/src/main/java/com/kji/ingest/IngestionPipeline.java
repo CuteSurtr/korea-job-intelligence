@@ -2,6 +2,7 @@ package com.kji.ingest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kji.cache.SearchResultCache;
 import com.kji.job.JobLifecycleService;
 import com.kji.source.RawJobRecord;
 import com.kji.source.Source;
@@ -39,6 +40,7 @@ public class IngestionPipeline {
     private final IngestionFailureWriter failureWriter;
     private final JobLifecycleService lifecycleService;
     private final IngestionMetrics metrics;
+    private final SearchResultCache cache;
     private final ObjectMapper objectMapper;
     private final Clock clock;
 
@@ -50,6 +52,7 @@ public class IngestionPipeline {
                              IngestionFailureWriter failureWriter,
                              JobLifecycleService lifecycleService,
                              IngestionMetrics metrics,
+                             SearchResultCache cache,
                              ObjectMapper objectMapper,
                              Clock clock) {
         this.sourceRepository = sourceRepository;
@@ -60,6 +63,7 @@ public class IngestionPipeline {
         this.failureWriter = failureWriter;
         this.lifecycleService = lifecycleService;
         this.metrics = metrics;
+        this.cache = cache;
         this.objectMapper = objectMapper;
         this.clock = clock;
     }
@@ -234,6 +238,11 @@ public class IngestionPipeline {
                 saved.getDurationMs());
 
         metrics.recordRunDuration(sourceCode, saved.getDurationMs() == null ? 0L : saved.getDurationMs());
+
+        if (saved.getNewJobs() > 0 || saved.getUpdatedJobs() > 0 || saved.getJobsClosed() > 0
+                || saved.getDuplicates() > 0) {
+            cache.evictAll();
+        }
 
         return new IngestionOutcome(saved.getId(), saved.getRunUuid().toString(), sourceCode,
                 saved.getRecordsReceived(), saved.getRecordsNormalized(), saved.getNewJobs(),

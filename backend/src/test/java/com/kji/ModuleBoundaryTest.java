@@ -36,11 +36,13 @@ class ModuleBoundaryTest {
             Map.entry("search", Set.of("common", "company", "job", "source")),
             Map.entry("intelligence", Set.of("common", "normalize")),
             Map.entry("crm", Set.of("common")),
+            Map.entry("cache", Set.of("common", "config")),
             Map.entry("scoring", Set.of("common", "normalize")),
             Map.entry("ingest", Set.of("common", "config", "normalize", "source", "snapshot",
-                    "company", "job", "dedupe", "intelligence", "scoring")),
+                    "company", "job", "dedupe", "intelligence", "scoring", "cache")),
             Map.entry("web", Set.of("common", "config", "normalize", "source", "snapshot",
-                    "company", "job", "dedupe", "ingest", "search", "intelligence", "scoring", "crm")));
+                    "company", "job", "dedupe", "ingest", "search", "intelligence", "scoring", "crm",
+                    "cache")));
 
     @Test
     @DisplayName("no module imports a module it is not allowed to depend on")
