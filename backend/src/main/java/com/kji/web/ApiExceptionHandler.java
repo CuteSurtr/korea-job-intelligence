@@ -1,6 +1,7 @@
 package com.kji.web;
 
 import com.kji.company.CompanyResolutionException;
+import com.kji.crm.ApplicationService;
 import com.kji.ingest.ImportService;
 import com.kji.source.SourceException;
 import java.time.Instant;
@@ -31,6 +32,12 @@ public class ApiExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleImportTooLarge(
             ImportService.ImportTooLargeException exception) {
         return body(HttpStatus.PAYLOAD_TOO_LARGE, "import_too_large", exception.getMessage());
+    }
+
+    @ExceptionHandler(ApplicationService.ApplicationNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleApplicationNotFound(
+            ApplicationService.ApplicationNotFoundException exception) {
+        return body(HttpStatus.NOT_FOUND, "not_found", exception.getMessage());
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

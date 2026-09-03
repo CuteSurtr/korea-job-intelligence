@@ -27,7 +27,7 @@ spring:
       port: ${REDIS_PORT:6379}
       timeout: ${REDIS_TIMEOUT:1s}
   jackson:
-    default-property-inclusion: non_null
+    default-property-inclusion: always
     deserialization:
       fail-on-unknown-properties: false
 

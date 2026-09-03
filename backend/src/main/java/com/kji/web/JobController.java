@@ -2,7 +2,6 @@ package com.kji.web;
 
 import com.kji.job.LifecycleState;
 import com.kji.search.JobSearchQuery;
-import com.kji.search.JobSearchService;
 import com.kji.web.dto.JobDetailResponse;
 import com.kji.web.dto.JobResponse;
 import com.kji.web.dto.PageResponse;
@@ -19,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class JobController {
 
-    private final JobSearchService searchService;
+    private final JobQueryService queryService;
     private final JobDetailAssembler detailAssembler;
 
-    public JobController(JobSearchService searchService, JobDetailAssembler detailAssembler) {
-        this.searchService = searchService;
+    public JobController(JobQueryService queryService, JobDetailAssembler detailAssembler) {
+        this.queryService = queryService;
         this.detailAssembler = detailAssembler;
     }
 
@@ -52,7 +51,7 @@ public class JobController {
                 source, roleFamily, splitUpper(seniority), maxYearsExperience, minCareerValue,
                 minCandidateFit, remotePolicy, degreeRequired, companyRisk, postedWithinDays,
                 openOnly, parseSort(sort), page, size);
-        return PageResponse.from(searchService.search(query), JobResponse::from);
+        return queryService.list(query);
     }
 
     @GetMapping("/jobs/{id}")
