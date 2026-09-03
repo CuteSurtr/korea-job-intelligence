@@ -1,5 +1,5 @@
 INSERT INTO sources (code, display_name, adapter_kind, runtime_available, trust_tier,
-                     stable_external_id, provides_full_description, enabled, base_url)
+                     stable_external_id, provides_full_description, base_url)
 VALUES
     ('greenhouse',  'Greenhouse Job Board API', 'ATS',    true,  1, true,  true,  'https://boards-api.greenhouse.io'),
     ('ashby',       'Ashby Job Board API',      'ATS',    true,  1, true,  true,  'https://api.ashbyhq.com'),

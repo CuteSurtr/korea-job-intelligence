@@ -1,0 +1,190 @@
+{
+  "jobs": [
+    {
+      "absolute_url": "https://www.coupang.jobs/en/jobs/?gh_jid=8168878",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 1911800,
+      "location": {
+        "name": "Seoul, South Korea"
+      },
+      "metadata": [
+        {
+          "id": 59150451,
+          "name": "Job Priority",
+          "value": null,
+          "value_type": "single_select"
+        },
+        {
+          "id": 121690,
+          "name": "Job Level (All Offices)",
+          "value": "Lv. 6-I",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8168878,
+      "updated_at": "2026-09-01T02:27:16-04:00",
+      "requisition_id": "7717",
+      "title": "Staff Backend Engineer (Orchestration Platform)",
+      "company_name": "Coupang",
+      "first_published": "2026-09-01T02:27:16-04:00",
+      "language": "ko",
+      "application_deadline": null,
+      "content": "&lt;p class=&quot;p1&quot;&gt;&lt;strong&gt;회사 소개&lt;/strong&gt;&lt;br&gt;쿠팡은 고객 감동 실현을 위해 존재합니다. 고객들이 &quot;쿠팡 없이 그동안 어떻게 살았을까?&quot; 라고 말할 때, 비로소 우리의 미션을 실현하고 있음을 알 수 있습니다. 고객들의 쇼핑과 식사, 생활 전반을 편하게 만들겠다는 유일한 집념으로 쿠팡은 수억 달러 규모의 커머스 산업 전반의 혁신을 이끌고 있습니다. 쿠팡은 가장 빠르게 성장하는 리테일 기업 중 하나로, 국내 커머스 업계에서의 독보적인 입지와, 고객 신뢰를 구축했습니다.&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;쿠팡은 스타트업 문화를 기반으로 한 글로벌 대형 상장사라고 자부합니다. 이것이 창립 당시의 기민함을 유지하며, 신규 서비스를 끊임없이 출시하며 비즈니스를 확장해 나가는 우리의 성장 동력입니다. 쿠팡의 모든 임직원에게는 기업가 정신을 갖추고 새로운 혁신과 이니셔티브를 추진할 수 있는 기회가 주어집니다. 주저없이 일에 뛰어들어 성과를 이루고자 하는 과감성이, 바로 쿠팡이 일하는 방식의 본질입니다. 쿠팡에서는 여러분 자신, 동료, 팀 그리고 회사 전체가 매일 성장하는 모습을 목격할 것입니다.&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;쿠팡의 모든 직원은 커머스의 미래를 만들겠다는 쿠팡의 미션에 진심입니다. 우리는 고객의 문제를 해결해 나가고, 전통적인 관념과 통념에 맞서며 실현가능한 한계를 뛰어넘고 있습니다. 고가용성(Always-on) 과 최첨단의 앞선 기술(High-tech), 초연결사회(Hyper-connected world) 에서의 놀라운 업무 경험을 원하신다면, 지금 바로 쿠팡에 합류하세요.&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;&lt;strong&gt;직무 소개&lt;/strong&gt;&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;Data Platform 조직의 Orchestration Platform 팀은 전체 비즈니스 도메인에 걸쳐 Job scheduling 및 execution 서비스를 제공합니다. Orchestration Platform 팀이 관리하는 인프라는 로그 분석, 추천, 가격 비교, AB 테스트, 검색 인덱싱, 광고 및 로켓 배송을 포함한 다양한 쿠팡 서비스와 관련된 데이터 처리를 제공합니다. 우리는 쿠팡 고객에게 최고의 전자상거래 경험을 제공하는 데 중요한 역할을 하고 있다고 확신합니다.&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;Orchestration Platform 팀은 클라우드 환경에서 매일 수십만 개의 Hive/Spark 작업을 처리하고 여러 클러스터에 걸쳐 수만 개의 Airflow DAG를 운영합니다. 이를 위해 Apache Airflow, Netflix Genie, Docker, Kubernetes, ArgoCD, Terraform과 같은 오픈 소스 기술과 Java 및 Python과 같은 개발 언어를 사용합니다.&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;우리의 비전은 엔지니어링 생산성을 향상시키기 위해 현대적인 셀프 서비스 도구를 제공하고, 누구나 쉽게 데이터를 활용할 수 있도록 하며, 일관되게 확장 가능하고 신뢰할 수 있는 플랫폼을 구축하는 것입니다. 우리는 한국을 넘어 글로벌 수준에서 가장 견고한 플랫폼 서비스를 만들 소프트웨어 엔지니어를 찾고 있습니다!&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;&lt;strong&gt;업무 내용&lt;/strong&gt;&lt;/p&gt;\n&lt;ul class=&quot;ul1&quot;&gt;\n&lt;li class=&quot;li1&quot;&gt;이해관계자 및 리드 엔지니어와 협력하여 주요 미션 크리티컬 프로젝트 수행&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;Job scheduling 및 execution 플랫폼의 설계 및 배포 주도&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;클러스터 운영 효율성과 사용자 경험을 개선하기 위한 셀프 서비스 도구 개발&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;Data Platform 관점에서 비즈니스 및 기술 개선 프로젝트에 참여&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;최신 데이터 엔지니어링 기술 연구 및 개발&lt;/li&gt;\n&lt;/ul&gt;\n&lt;p class=&quot;p1&quot;&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;&lt;strong&gt;자격 요건&lt;/strong&gt;&lt;/p&gt;\n&lt;ul class=&quot;ul1&quot;&gt;\n&lt;li class=&quot;li1&quot;&gt;Java 또는 Python과 같은 프로그래밍 언어에 능숙&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;대규모 소프트웨어 인프라 설계, 개발 및 유지 관리 경험 10년 이상&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;Kubernetes, Airflow 및 Genie와 같은 분산 시스템에 대한 전문 지식&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;뛰어난 의사소통 능력과 동료와 경험과 지식을 공유하는 열정&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;수동 또는 반복 작업을 자동화하려는 적극적인 접근 방식&lt;/li&gt;\n&lt;li class=&quot;li1&quot;&gt;AWS 및 GCP와 같은 클라우드 환경에서 웹 서비스 설계 및 개발 경험&lt;/li&gt;\n&lt;/ul&gt;\n&lt;p class=&quot;p1&quot;&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;&lt;strong&gt;전형절차&lt;/strong&gt;&lt;br&gt;• 서류전형 - 1차 면접 - 2차 면접 - 최종 합격&lt;br&gt;• 전형절차는 직무별로 다르게 운영될 수 있으며, 일정 및 상황에 따라 변동될 수 있습니다.&lt;br&gt;• 전형 일정 및 결과는 지원서에 등록하신 이메일로 개별 안내 드립니다.&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;참고사항&lt;br&gt;• 본 공고는 모집 완료 시 조기 마감될 수 있습니다.&lt;br&gt;• 지원서 내용 중 허위사실이 있는 경우에는 합격이 취소될 수 있습니다.&lt;br&gt;• 취업 보호 대상자(보훈대상자, 장애인 등)는 관련 법률에 따라 채용우대를 받을 수 있습니다.&lt;br&gt;• 직급과 담당 업무 범위는 후보자의 전반적인 경력과 경험 등 제반사정을 고려하여 변경될 수 있습니다. 이러한 변경이 필요할 경우, 최종 합격 통지 전 적절한 시기에 후보자와 커뮤니케이션 될 예정입니다.&lt;br&gt;• 채용 및 업무 수행과 관련하여 요구되는 법령상 자격이 갖추어지지 않은 경우 채용이 제한될 수 있습니다.&lt;br&gt;• 고용형태는 정규직으로 수습기간 12주를 포함합니다. 단, 업무상 필요한 경우에는 상기 수습기간을 적용하지 않거나 단축 또는 연장할 수 있습니다.&lt;/p&gt;\n&lt;p class=&quot;p1&quot;&gt;개인정보 처리방침&lt;br&gt;• 쿠팡 그룹은 입사지원자 개인정보 처리방침(아래 링크)에 따라 귀하의 개인정보를 수집하여 처리합니다.&lt;br&gt;https://www.coupang.jobs/kr/privacy-policy&lt;/p&gt;\n&lt;p class=&quot;p2&quot;&gt;서",
+      "departments": [
+        {
+          "id": 82960,
+          "name": "zz-Evergreen Requisition",
+          "child_ids": [
+            79221,
+            349141
+          ],
+          "parent_id": null
+        }
+      ],
+      "offices": [
+        {
+          "id": 6062,
+          "name": "Seoul",
+          "location": "Seoul, South Korea",
+          "child_ids": [],
+          "parent_id": 60354
+        }
+      ],
+      "ai_disclaimer": null,
+      "include_ai_disclaimer": null,
+      "ai_opt_out_request_url": null
+    },
+    {
+      "absolute_url": "https://www.coupang.jobs/en/jobs/?gh_jid=8093930",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 3500941,
+      "location": {
+        "name": "Seoul, South Korea"
+      },
+      "metadata": [
+        {
+          "id": 59150451,
+          "name": "Job Priority",
+          "value": null,
+          "value_type": "single_select"
+        },
+        {
+          "id": 121690,
+          "name": "Job Level (All Offices)",
+          "value": "Lv. 6-II",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8093930,
+      "updated_at": "2026-09-02T22:13:29-04:00",
+      "requisition_id": "R0076775",
+      "title": "Manager, Backend Engineering (New Fintech Product)",
+      "company_name": "Coupang",
+      "first_published": "2026-07-29T05:22:55-04:00",
+      "language": "ko",
+      "application_deadline": null,
+      "content": "&lt;p&gt;&lt;strong&gt;회사 소개&lt;/strong&gt;&lt;/p&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;쿠팡페이의 핀테크 사업은 금융 서비스의 재정의를 통해 쿠팡 고객과 판매자들이 동일한 비용으로 더 많은 가치를 누리도록 지원합니다.&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;&amp;nbsp;&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;쿠팡페이는 쿠팡 앱 및 홈페이지에서 상품을 구매하는 소비자와 쿠팡 마켓플레이스에서 사업을 영위하는 판매자, 쿠팡이츠에 입점한 음식점주 등에게 혁신적인 결제 및 금융 솔루션을 제공하는 데 최선을 다합니다. 쿠팡페이의 최신 핀테크 혁신 기술은 원터치 결제 서비스가 탑재된 자체 결제 시스템 쿠페이를 기반으로 한국과 대만 소비자들의 니즈에 부응하고 있습니다.&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;&amp;nbsp;&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;대표적으로 쿠팡페이는 고객 가치 지향 차원에서 업계 최고 수준의 리워드를 제공하는 쿠팡와우카드(쿠팡 전용 제휴 카드)를 빠르게 확장시키고 있습니다. 또 마켓플레이스 판매자들을 위해 BaaS (Banking as a Service) 모델을 접목하고 다양한 유동성 강화 솔루션을 제공함으로써 소상공인들의 사업 성장을 적극 지원합니다.&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;&amp;nbsp;&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;보유하고 계신 다양한 경험을 핀테크 분야에서 최대한 살리고 싶다면 쿠팡페이와 함께 하세요. 쿠팡페이는 고객들의 결제 시간을 최대한 아껴주고 좋아하는 것을 마음껏 쇼핑할 시간을 벌어드립니다.&lt;/div&gt;\n&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;&amp;nbsp;&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;&amp;nbsp;&lt;/div&gt;\n&lt;div class=&quot;ewa-rteLine&quot;&gt;&lt;strong&gt;업무 내용&lt;/strong&gt;&lt;/div&gt;\n&lt;p&gt;• 신규 결제 서비스 개발 조직 리딩 및 기술 전략, 로드맵 수립&lt;br&gt;• 온라인 및 오프라인 결제를 지원하는 차세대 결제 플랫폼 설계 및 개발 주도&lt;br&gt;• Product, Business 및 다양한 Stakeholder와 협업하여 신규 결제 서비스 및 기능 출시 지원&lt;br&gt;• 대규모 결제 트래픽 환경에서 안정적이고 확장 가능한 시스템 아키텍처 설계 및 고도화&lt;br&gt;• 결제 인증, 정산, 가맹점 연동 등 핵심 결제 인프라 개발 및 운영&lt;br&gt;• 서비스 안정성, 성능, 보안 강화를 위한 기술적 의사결정 및 운영 체계 구축&lt;br&gt;• 백엔드 엔지니어 및 엔지니어링 리더 육성을 통한 고성과 개발 조직 구축&lt;/p&gt;\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p&gt;&lt;strong&gt;자격&lt;/strong&gt; &lt;strong&gt;요건&lt;/strong&gt;&lt;/p&gt;\n&lt;p&gt;• 소프트웨어 개발 경험 10년 이상으로 매니저 관리를 포함한 관리 경험 2년 이상 (멘토, 테크 리드 경험 포함)을 보유하신 분&lt;br&gt;• Product 또는 Program Management 조직과 협업한 경험을 보유하신 분&lt;br&gt;• Agile 환경에서 다수의 프로그램, 프로젝트 및 개발 조직을 동시에 관리한 경험을 보유하신 분&lt;br&gt;• 다양한 엔지니어링 조직과 협업하여 확장 가능한 플랫폼을 구축한 경험을 보유하신 분&lt;br&gt;• 소프트웨어 엔지니어링 및 테스트에 대한 탄탄한 기본기와 아키텍처 설계 Best Practice&lt;br&gt;• 크리티컬한 시스템 이슈를 분석하고 처리한 경험을 보유하신 분&lt;br&gt;• JPA, MSA에 대한 이해도가 높으신 분&lt;br&gt;• Java / Spring / Kotlin 환경에서의 업무 경험을 보유하신 분&lt;/p&gt;\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p&gt;&lt;strong&gt;우대&lt;/strong&gt; &lt;strong&gt;사항&lt;/strong&gt;&lt;/p&gt;\n&lt;p&gt;• 컴퓨터공학 또는 관련 전공 학사/석사 학위 소지자 또는 이에 준하는 경력을 보유하신 분&lt;br&gt;• Payment 또는 Fintech 도메인 경험을 보유하신 분&lt;br&gt;• 대규모 글로벌 시스템 아키텍처 설계 및 개발 경험을 보유하신 분&lt;br&gt;• 기술 비전 및 로드맵 수립 경험을 보유하신 분&lt;br&gt;• AWS, Kubernetes 환경에서의 개발 및 운영 경험을 보유하신 분&lt;br&gt;• Spark, Hadoop, Cassandra, Kafka, Airflow 등 데이터 플랫폼 관련 경험을 보유하신 분&lt;br&gt;• 애자일 소프트웨어 개발 방법론에 익숙하신 분&lt;br&gt;• 대용량 데이터 처리 및 운영 경험을 보유하신 분&lt;/p&gt;\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p&gt;&lt;strong&gt;전형 절차 및&lt;/strong&gt;&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;&lt;strong&gt;안내&lt;/strong&gt;&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;&lt;strong&gt;사항&lt;/strong&gt;&lt;/p&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;strong&gt;전형&lt;/strong&gt;&lt;strong&gt;절차&lt;/strong&gt;\n&lt;ul&gt;\n&lt;li&gt;서류전형 - 1차 면접 - 2차 면접 - 최종 합격&lt;/li&gt;\n&lt;li&gt;전형절차는 직무별로 다르게 운영될 수 있으며, 일정 및 상황에 따라 변동될 수 있습니다.&lt;/li&gt;\n&lt;li&gt;전형 일정 및 결과는 지원서에 등록하신 이메일로 개별 안내 드립니다.&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;&lt;strong&gt;참고&lt;/strong&gt;&lt;strong&gt;사항&lt;/strong&gt;\n&lt;ul&gt;\n&lt;li&gt;본 공고는 모집 완료 시 조기 마감될 수 있습니다.&lt;/li&gt;\n&lt;li&gt;지원서 내용 중 허위사실이 있는 경우에는 합격이 취소될 수 있습니다.&lt;/li&gt;\n&lt;li&gt;취업 보호 대상자(보훈대상자, 장애인 등)는 관련 법률에 따라 채용우대를 받을 수 있습니다.&lt;/li&gt;\n&lt;li&gt;직급과 담당 업무 범위는 후보자의 전반적인 경력과 경험 등 제반사정을 고려하여 변경될 수 있습니다. 이러한 변경이 필요할 경우, 최종 합격 통지 전 적절한 시기에 후보자와 커뮤니케이션 될 예정입니다.&lt;/li&gt;\n&lt;li&gt;채용 및 업무 수행과 관련하여 요구되는 법령상 자격이 갖추어지지 않은 경우 채용이 제한될 수 있습니다.&lt;/li&gt;\n&lt;li&gt;&lt;span class=&quot;TextRun SCXW87384452 BCX0&quot; lang=&quot;KO-KR&quot; data-contrast=&quot;none&quot;&gt;&lt;span class=&quot;NormalTextRun CommentHighlightHovered SCXW87384452 BCX0&quot;&gt;고용형태",
+      "departments": [
+        {
+          "id": 52128,
+          "name": "Coupang Pay Tech",
+          "child_ids": [],
+          "parent_id": null
+        }
+      ],
+      "offices": [
+        {
+          "id": 6062,
+          "name": "Seoul",
+          "location": "Seoul, South Korea",
+          "child_ids": [],
+          "parent_id": 60354
+        }
+      ],
+      "ai_disclaimer": null,
+      "include_ai_disclaimer": null,
+      "ai_opt_out_request_url": null
+    },
+    {
+      "absolute_url": "https://www.coupang.jobs/en/jobs/?gh_jid=7956945",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 3454677,
+      "location": {
+        "name": "Seoul, South Korea"
+      },
+      "metadata": [
+        {
+          "id": 59150451,
+          "name": "Job Priority",
+          "value": null,
+          "value_type": "single_select"
+        },
+        {
+          "id": 121690,
+          "name": "Job Level (All Offices)",
+          "value": "Lv. 6-II",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 7956945,
+      "updated_at": "2026-08-24T21:05:54-04:00",
+      "requisition_id": "R0073940",
+      "title": "Staff, Security Software Engineer - Coupang Play",
+      "company_name": "Coupang",
+      "first_published": "2026-05-28T02:08:36-04:00",
+      "language": "en",
+      "application_deadline": null,
+      "content": "&lt;p&gt;&lt;strong&gt;&lt;span data-contrast=&quot;none&quot;&gt;쿠팡플레이&amp;nbsp;소개&lt;/span&gt;&lt;/strong&gt;&lt;span data-ccp-props=&quot;{&amp;quot;134233117&amp;quot;:false,&amp;quot;134233118&amp;quot;:false,&amp;quot;134245417&amp;quot;:false,&amp;quot;335559738&amp;quot;:240,&amp;quot;335559739&amp;quot;:240}&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/p&gt;\n&lt;p&gt;&lt;span data-contrast=&quot;none&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span data-ccp-props=&quot;{&amp;quot;134233117&amp;quot;:false,&amp;quot;134233118&amp;quot;:false,&amp;quot;134245417&amp;quot;:false,&amp;quot;335559738&amp;quot;:240,&amp;quot;335559739&amp;quot;:240}&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/p&gt;\n&lt;p&gt;&lt;span data-contrast=&quot;none&quot;&gt;쿠팡플레이는&amp;nbsp;쿠팡&amp;nbsp;와우회원뿐&amp;nbsp;아니라, 누구나 다양한 콘텐츠를 즐길 수 있는&amp;nbsp;쿠팡의&amp;nbsp;OTT(over-the-top) 서비스입니다. 오리지널 콘텐츠, TV 시리즈, 최신 영화, 스포츠,&amp;nbsp;키즈&amp;nbsp;&amp;amp; 패밀리, 뉴스 등 대한민국에서 가장 포괄적인 콘텐츠 라인업을 자랑합니다. 또한 &amp;lt;쿠팡플레이&amp;nbsp;시리즈&amp;gt;를&amp;nbsp;비롯한 다양한 스포츠 이벤트와 최정상 아티스트들의 콘서트 등, 차별화된 오프라인 이벤트를&amp;nbsp;기획·운영하며, 끊임없이 새로운 화제를 만들어가고 있습니다.&lt;/span&gt;&lt;span data-ccp-props=&quot;{&amp;quot;134233117&amp;quot;:false,&amp;quot;134233118&amp;quot;:false,&amp;quot;134245417&amp;quot;:false,&amp;quot;335559738&amp;quot;:240,&amp;quot;335559739&amp;quot;:240}&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/p&gt;\n&lt;p&gt;&lt;span data-contrast=&quot;none&quot;&gt;쿠팡플레이는&amp;nbsp;언제 어디서나 최적의 시청 경험을 제공합니다. 대한민국에서 공식 판매되는 모든 모바일 기기, 태블릿, 스마트 TV, PC, 애플 TV, 안드로이드 TV 등 다양한 디바이스에서 이용할 수 있습니다. 서울, 싱가포르, 미국 캘리포니아 등에 분포된 글로벌&amp;nbsp;테크&amp;nbsp;전담 조직은 고객이 콘텐츠를 더 쉽게 발견하고 더 쾌적하게 시청할 수 있도록 지속적으로 경험을 개선해 가고 있습니다.&lt;/span&gt;&lt;span data-ccp-props=&quot;{&amp;quot;134233117&amp;quot;:false,&amp;quot;134233118&amp;quot;:false,&amp;quot;134245417&amp;quot;:false,&amp;quot;335559738&amp;quot;:240,&amp;quot;335559739&amp;quot;:240}&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/p&gt;\n&lt;p&gt;&lt;span data-contrast=&quot;none&quot;&gt;세계 최고의 동료들과 함께 가장 도전적인 문제를 해결하며 새로운 가치를 만들어 가고 싶은 분, 젊고 발 빠르게 움직이는 조직에서 자신의 역량을 급격하게 성장시키고자 하는 분들의 많은 지원을 바랍니다.&lt;/span&gt;&lt;span data-ccp-props=&quot;{&amp;quot;134233117&amp;quot;:false,&amp;quot;134233118&amp;quot;:false,&amp;quot;134245417&amp;quot;:false,&amp;quot;335559738&amp;quot;:240,&amp;quot;335559739&amp;quot;:240}&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/p&gt;\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p&gt;&lt;strong&gt;&lt;span data-contrast=&quot;auto&quot;&gt;직무 소개&lt;/span&gt;&lt;/strong&gt;&lt;span data-ccp-props=&quot;{&amp;quot;134233279&amp;quot;:true,&amp;quot;134245417&amp;quot;:false,&amp;quot;335559738&amp;quot;:240,&amp;quot;335559739&amp;quot;:240}&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/p&gt;\n&lt;div&gt;\n&lt;p&gt;서비스 보호및 환경 내 보안 취약점 탐지를 선제적으로 수행할 수 있는, 경험 많고 기술 중심적인 &lt;strong&gt;Staff Security Software Engineer&lt;/strong&gt;를 찾고 있습니다.&amp;nbsp;해당 역할은 매일 수백만 명의 고객에게 서비스를 제공하는 우리의 스트리밍 비즈니스에서 보안 분야의 도메인 전문가로 활동하게 됩니다.&amp;nbsp;보안 도메인 전문가로서의 역할뿐만 아니라, 안전한 소프트웨어 솔루션을 설계 및 구현하고, 프로덕션 수준의 코드를 작성하며, 서비스와 플랫폼에 보안 제어를 직접 통합하게 됩니다.&lt;br&gt;이 역할은 실무 중심의 엔지니어링과 전략적 리더십을 결합하여 조직 전반에 보안 모범 사례를 내재화하는 것을 목표로 합니다.&lt;/p&gt;\n&lt;/div&gt;\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;\n&lt;p&gt;&lt;strong&gt;&lt;span data-contrast=&quot;auto&quot;&gt;업무 내용&lt;/span&gt;&lt;/strong&gt;&lt;span data-ccp-props=&quot;{&amp;quot;134233279&amp;quot;:true,&amp;quot;134245417&amp;quot;:false,&amp;quot;335559738&amp;quot;:240,&amp;quot;335559739&amp;quot;:240}&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;/p&gt;\n&lt;ul&gt;\n&lt;li data-leveltext=&quot;&quot; data-font=&quot;Symbol&quot; data-listid=&quot;1&quot; data-list-defn-props=&quot;{&amp;quot;335552541&amp;quot;:1,&amp;quot;335559685&amp;quot;:720,&amp;quot;335559991&amp;quot;:360,&amp;quot;469769226&amp;quot;:&amp;quot;Symbol&amp;quot;,&amp;quot;469769242&amp;quot;:[8226],&amp;quot;469777803&amp;quot;:&amp;quot;left&amp;quot;,&amp;quot;469777804&amp;quot;:&amp;quot;&amp;quot;,&amp;quot;469777815&amp;quot;:&amp;quot;hybridMultilevel&amp;quot;}&quot; data-aria-posinset=&qu",
+      "departments": [
+        {
+          "id": 71453,
+          "name": "Coupang Play Tech",
+          "child_ids": [],
+          "parent_id": 71433
+        }
+      ],
+      "offices": [
+        {
+          "id": 6062,
+          "name": "Seoul",
+          "location": "Seoul, South Korea",
+          "child_ids": [],
+          "parent_id": 60354
+        }
+      ],
+      "ai_disclaimer": null,
+      "include_ai_disclaimer": null,
+      "ai_opt_out_request_url": null
+    }
+  ],
+  "meta": {
+    "total": 3
+  }
+}

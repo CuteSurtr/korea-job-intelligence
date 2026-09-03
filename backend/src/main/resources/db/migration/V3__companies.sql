@@ -5,7 +5,7 @@ CREATE TABLE companies (
     name_ko             VARCHAR(320),
     name_en             VARCHAR(320),
     website_domain      VARCHAR(255),
-    country_code        CHAR(2),
+    country_code        VARCHAR(2),
     industry            VARCHAR(160),
     company_type        VARCHAR(48),
     founded_on          DATE,

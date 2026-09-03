@@ -42,11 +42,20 @@ persisted in `job_verifications` and referenced from `jobs.closed_evidence_id`:
    longer accepts applications.
 
 Explicitly not evidence of closure: a timeout, a connection failure, a 5xx, a 429, an empty
-response, a parse failure, or an open circuit breaker. Each records a
-`JobVerification` with outcome `ERROR` or `INCONCLUSIVE`, advances nothing, and leaves the
-job where it was. A source that fails to respond moves its jobs toward `UNVERIFIED` and
-then `STALE`, which is a statement about the system's knowledge rather than about the
-employer.
+response, a parse failure, or an open circuit breaker. None of these advances anything, and
+each leaves every affected job exactly where it was.
+
+Rung 1 additionally requires the listing to be **complete**. An adapter reports
+`listingComplete = false` when it truncated at a record cap or gave up on a page, and a
+partial listing reconciles nothing: absence from half a listing is not absence.
+
+Where the failure is recorded depends on its scope. A failure to fetch a whole listing is
+recorded once, on `source_health` and on the run's counters, because the run obtained no
+evidence about any individual posting. A failure while verifying one specific posting is
+recorded as a `JobVerification` with outcome `ERROR` against that job, because it is
+evidence that the check was attempted and did not conclude. A source that fails to respond
+moves its jobs toward `UNVERIFIED` and then `STALE`, which is a statement about the
+system's knowledge rather than about the employer.
 
 `first_seen_at` is set once at insert and never written again. `last_seen_at` advances only
 on a successful observation. `last_verified_at` advances only on a verification whose

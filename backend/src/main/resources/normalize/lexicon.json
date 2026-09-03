@@ -1,0 +1,205 @@
+{
+  "companyLegalForms": [
+    "주식회사",
+    "(주)",
+    "㈜",
+    "유한회사",
+    "(유)",
+    "유한책임회사",
+    "합자회사",
+    "합명회사",
+    "재단법인",
+    "사단법인",
+    "co., ltd.",
+    "co.,ltd.",
+    "co., ltd",
+    "co.,ltd",
+    "co ltd",
+    "company limited",
+    "corporation",
+    "incorporated",
+    "holdings",
+    "corp.",
+    "corp",
+    "inc.",
+    "inc",
+    "ltd.",
+    "ltd",
+    "llc",
+    "l.l.c.",
+    "plc",
+    "gmbh",
+    "ag",
+    "sa",
+    "bv",
+    "pte. ltd.",
+    "pte ltd"
+  ],
+  "titleBracketPrefixes": [
+    "\\[[^\\]]{1,40}\\]",
+    "\\([^)]{1,20}\\s*(채용|공고|모집)\\)"
+  ],
+  "openEndedDeadlineTerms": [
+    "상시채용",
+    "상시모집",
+    "채용시",
+    "채용시까지",
+    "수시채용",
+    "충원시",
+    "충원시까지",
+    "영입시",
+    "포지션 마감시",
+    "until filled",
+    "ongoing",
+    "rolling"
+  ],
+  "deadlineSentinelDates": [
+    "2069-12-31",
+    "9999-12-31",
+    "2999-12-31"
+  ],
+  "deadlineTodayTerms": [
+    "오늘마감",
+    "오늘 마감",
+    "closes today"
+  ],
+  "deadlineTomorrowTerms": [
+    "내일마감",
+    "내일 마감",
+    "closes tomorrow"
+  ],
+  "experienceAny": [
+    "경력무관",
+    "경력 무관",
+    "학력경력무관",
+    "any experience"
+  ],
+  "experienceNewGraduate": [
+    "신입",
+    "신입채용",
+    "신규채용",
+    "new graduate",
+    "new grad",
+    "entry level",
+    "entry-level",
+    "junior level"
+  ],
+  "experienceIntern": [
+    "인턴",
+    "인턴십",
+    "체험형 인턴",
+    "전환형 인턴",
+    "internship",
+    "intern"
+  ],
+  "experienceEitherNewGradOrExperienced": [
+    "신입/경력",
+    "신입 / 경력",
+    "신입·경력",
+    "경력/신입"
+  ],
+  "experiencePatterns": [
+    {
+      "regex": "경력\\s*(\\d{1,2})\\s*[~-]\\s*(\\d{1,2})\\s*년",
+      "kind": "RANGE"
+    },
+    {
+      "regex": "경력\\s*(\\d{1,2})\\s*년\\s*(?:이상|↑|＋|\\+)",
+      "kind": "MINIMUM"
+    },
+    {
+      "regex": "경력\\s*(\\d{1,2})\\s*년\\s*(?:이하|↓)",
+      "kind": "MAXIMUM"
+    },
+    {
+      "regex": "(\\d{1,2})\\s*년\\s*이상\\s*(?:의\\s*)?(?:경력|경험)",
+      "kind": "MINIMUM"
+    },
+    {
+      "regex": "(\\d{1,2})\\s*[~-]\\s*(\\d{1,2})\\s*years",
+      "kind": "RANGE"
+    },
+    {
+      "regex": "(\\d{1,2})\\s*\\+?\\s*years?\\s+(?:of\\s+)?experience",
+      "kind": "MINIMUM"
+    },
+    {
+      "regex": "at\\s+least\\s+(\\d{1,2})\\s*years?",
+      "kind": "MINIMUM"
+    }
+  ],
+  "experienceImplausibleYears": 40,
+  "educationAny": [
+    "학력무관",
+    "학력 무관"
+  ],
+  "educationLevels": [
+    { "terms": ["고졸", "high school"], "level": "HIGH_SCHOOL" },
+    { "terms": ["초대졸", "전문학사", "associate"], "level": "ASSOCIATE" },
+    { "terms": ["대졸", "학사", "학사학위", "bachelor", "bachelors", "b.s.", "bs degree"], "level": "BACHELOR" },
+    { "terms": ["석사", "석사학위", "master", "masters", "m.s."], "level": "MASTER" },
+    { "terms": ["박사", "박사학위", "ph.d", "phd", "doctorate"], "level": "DOCTORATE" }
+  ],
+  "educationPreferredMarkers": [
+    "우대",
+    "선호",
+    "preferred",
+    "a plus",
+    "nice to have"
+  ],
+  "employmentTypes": [
+    { "terms": ["정규직", "full-time", "full time", "fulltime", "permanent"], "value": "FULL_TIME" },
+    { "terms": ["계약직", "contract", "contractor", "fixed-term"], "value": "CONTRACT" },
+    { "terms": ["인턴", "internship", "intern"], "value": "INTERNSHIP" },
+    { "terms": ["파트타임", "아르바이트", "part-time", "part time"], "value": "PART_TIME" },
+    { "terms": ["프리랜서", "freelance"], "value": "FREELANCE" },
+    { "terms": ["병역특례", "전문연구요원", "산업기능요원"], "value": "MILITARY_SERVICE" }
+  ],
+  "remotePolicies": [
+    { "terms": ["재택근무", "원격근무", "fully remote", "remote"], "value": "REMOTE" },
+    { "terms": ["하이브리드", "hybrid"], "value": "HYBRID" },
+    { "terms": ["오피스", "출근", "on-site", "onsite", "in office"], "value": "ONSITE" }
+  ],
+  "seniorityExcluded": [
+    "시니어",
+    "리드",
+    "팀장",
+    "매니저",
+    "책임",
+    "수석",
+    "senior",
+    "staff",
+    "principal",
+    "lead",
+    "head of",
+    "manager",
+    "director",
+    "architect"
+  ],
+  "roleFamilies": [
+    { "terms": ["백엔드", "서버 개발", "서버개발", "backend", "back-end", "back end", "server engineer", "server developer"], "value": "BACKEND" },
+    { "terms": ["프론트엔드", "frontend", "front-end", "front end"], "value": "FRONTEND" },
+    { "terms": ["풀스택", "fullstack", "full-stack", "full stack"], "value": "FULLSTACK" },
+    { "terms": ["플랫폼", "platform engineer", "infrastructure engineer", "sre", "site reliability"], "value": "PLATFORM" },
+    { "terms": ["데브옵스", "devops", "cloud engineer"], "value": "DEVOPS" },
+    { "terms": ["데이터 엔지니어", "데이터엔지니어", "data engineer", "data platform"], "value": "DATA_INFRASTRUCTURE" },
+    { "terms": ["머신러닝", "ml engineer", "machine learning engineer", "mlops"], "value": "MACHINE_LEARNING" },
+    { "terms": ["안드로이드", "android", "ios", "모바일", "mobile engineer"], "value": "MOBILE" },
+    { "terms": ["보안", "security engineer", "정보보안"], "value": "SECURITY" },
+    { "terms": ["qa", "품질", "test engineer"], "value": "QA" },
+    { "terms": ["임베디드", "embedded", "펌웨어", "firmware"], "value": "EMBEDDED" }
+  ],
+  "locationCityAliases": [
+    { "terms": ["서울", "seoul"], "city": "Seoul", "region": "Seoul" },
+    { "terms": ["성남", "판교", "seongnam", "pangyo"], "city": "Seongnam", "region": "Gyeonggi" },
+    { "terms": ["경기", "gyeonggi"], "city": null, "region": "Gyeonggi" },
+    { "terms": ["부산", "busan"], "city": "Busan", "region": "Busan" },
+    { "terms": ["대전", "daejeon"], "city": "Daejeon", "region": "Daejeon" },
+    { "terms": ["대구", "daegu"], "city": "Daegu", "region": "Daegu" },
+    { "terms": ["인천", "incheon"], "city": "Incheon", "region": "Incheon" },
+    { "terms": ["광주", "gwangju"], "city": "Gwangju", "region": "Gwangju" },
+    { "terms": ["울산", "ulsan"], "city": "Ulsan", "region": "Ulsan" },
+    { "terms": ["세종", "sejong"], "city": "Sejong", "region": "Sejong" },
+    { "terms": ["제주", "jeju"], "city": "Jeju", "region": "Jeju" }
+  ]
+}

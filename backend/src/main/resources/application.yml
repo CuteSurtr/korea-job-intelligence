@@ -1,0 +1,76 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: korea-job-intelligence
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/kji}
+    username: ${DATABASE_USERNAME:kji}
+    password: ${DATABASE_PASSWORD:kji}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+  flyway:
+    enabled: true
+    encoding: UTF-8
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.jdbc.batch_size: 50
+      hibernate.order_inserts: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: ${REDIS_TIMEOUT:1s}
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    tags:
+      application: korea-job-intelligence
+
+kji:
+  internal:
+    api-token: ${INTERNAL_API_TOKEN:}
+  cache:
+    enabled: ${CACHE_ENABLED:true}
+    ttl: ${JOBS_CACHE_TTL:PT10M}
+  ingestion:
+    scheduler-enabled: ${INGESTION_SCHEDULER_ENABLED:false}
+    fixed-delay: ${INGESTION_FIXED_DELAY:PT6H}
+    source-concurrency: ${INGESTION_SOURCE_CONCURRENCY:4}
+    import-max-lines: ${INGESTION_IMPORT_MAX_LINES:20000}
+    stale-after: ${INGESTION_STALE_AFTER:P14D}
+    unverified-after: ${INGESTION_UNVERIFIED_AFTER:P3D}
+  source:
+    request-timeout: ${SOURCE_REQUEST_TIMEOUT:PT10S}
+    max-retries: ${SOURCE_MAX_RETRIES:2}
+    initial-backoff: ${SOURCE_INITIAL_BACKOFF:400ms}
+    max-backoff: ${SOURCE_MAX_BACKOFF:8s}
+    circuit-failure-threshold: ${SOURCE_CIRCUIT_FAILURE_THRESHOLD:5}
+    circuit-open-duration: ${SOURCE_CIRCUIT_OPEN_DURATION:PT15M}
+    user-agent: ${SOURCE_USER_AGENT:korea-job-intelligence/0.1 (+https://github.com/CuteSurtr/korea-job-intelligence)}
+  dedupe:
+    auto-merge-threshold: 0.75
+    review-threshold: 0.60
+    description-similarity-threshold: 0.82
+    min-description-length: 400
+
+logging:
+  level:
+    root: INFO
+    com.kji: ${LOG_LEVEL:INFO}
