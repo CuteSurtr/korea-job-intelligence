@@ -1,6 +1,9 @@
+name: korea-job-intelligence
+
 services:
   postgres:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-kji}
       POSTGRES_USER: ${POSTGRES_USER:-kji}
@@ -17,6 +20,7 @@ services:
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
     ports:
       - "${REDIS_HOST_PORT:-6379}:6379"
     healthcheck:
@@ -27,6 +31,7 @@ services:
 
   backend:
     build: ./backend
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -37,23 +42,38 @@ services:
       DATABASE_USERNAME: ${POSTGRES_USER:-kji}
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-kji}
       REDIS_HOST: redis
-      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-change-me-local-only}
-      INGESTION_SCHEDULER_ENABLED: "false"
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-}
+      INGESTION_SCHEDULER_ENABLED: ${INGESTION_SCHEDULER_ENABLED:-false}
     ports:
       - "${BACKEND_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   frontend:
     build: ./frontend
+    restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     environment:
       BACKEND_URL: http://backend:8080
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   prometheus:
     image: prom/prometheus:v2.54.1
     profiles: ["observability"]
+    restart: unless-stopped
     depends_on:
       - backend
     volumes:
@@ -64,6 +84,7 @@ services:
   grafana:
     image: grafana/grafana:11.2.0
     profiles: ["observability"]
+    restart: unless-stopped
     depends_on:
       - prometheus
     environment:

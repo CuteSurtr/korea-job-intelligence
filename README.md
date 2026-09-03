@@ -303,15 +303,30 @@ keys. All three are fixed with regression tests and written up in
 
 ## Running it
 
-Everything in containers:
+No configuration file is required. Every setting has a working default, so the whole stack
+comes up with one command:
 
 ```bash
-cp .env.example .env
 docker compose up -d --build
 ```
 
-The console is on `http://localhost:3000` and the API on `http://localhost:8080`. Add the
-observability stack when you want it:
+The console is on `http://localhost:3000` and the API on `http://localhost:8080`. Every
+service declares a healthcheck and `restart: unless-stopped`, and the project is named, so it
+appears as a single **korea-job-intelligence** group in Docker Desktop that you can start and
+stop from the UI and that comes back after a reboot.
+
+The one thing worth setting is the internal API token. Ingestion endpoints stay disabled and
+answer `401` until you provide one, which is deliberate: the system ships with no usable
+credential rather than a predictable default. Create a local `.env` next to the compose file,
+which is gitignored and never committed:
+
+```bash
+printf 'INTERNAL_API_TOKEN=%s
+' "$(openssl rand -hex 32)" > .env
+docker compose up -d
+```
+
+Add the observability stack when you want it:
 
 ```bash
 docker compose --profile observability up -d
@@ -349,16 +364,27 @@ curl -X POST "http://localhost:8080/api/internal/ingestion/import?source=pathsdo
 
 ## Configuration
 
-All settings have working defaults; `.env.example` lists every one. The ones worth knowing:
+This table is the reference; there is no committed env file to copy. Anything you override
+goes in a local `.env`, which is gitignored. Values in angle brackets are placeholders, not
+credentials.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `INTERNAL_API_TOKEN` | none | Required by every `/api/internal/**` endpoint. Generate your own |
+| `INTERNAL_API_TOKEN` | empty | Required by every `/api/internal/**` endpoint. Empty means those endpoints are disabled and answer `401`. Set it to `<64-hex-chars-from-openssl-rand-hex-32>` to enable ingestion |
+| `POSTGRES_DB`, `POSTGRES_USER` | `kji`, `kji` | Local database name and user |
+| `POSTGRES_PASSWORD` | `kji` | Local-only database password. Replace with `<local-postgres-password>` for anything beyond your own machine |
 | `CACHE_ENABLED` | `true` | Redis is an accelerator; the system serves correctly without it |
-| `INGESTION_SCHEDULER_ENABLED` | `false` | Scheduled direct runs against configured targets |
+| `INGESTION_SCHEDULER_ENABLED` | `false` | Scheduled direct runs against the targets in `application.yml` |
 | `INGESTION_STALE_AFTER` | `P14D` | Staleness horizon for unverified jobs |
 | `SOURCE_CIRCUIT_FAILURE_THRESHOLD` | `5` | Consecutive failures before a source's circuit opens |
-| `FRONTEND_PORT`, `BACKEND_PORT` | `3000`, `8080` | Published host ports, so the stack fits around what you already run |
+| `FRONTEND_PORT`, `BACKEND_PORT` | `3000`, `8080` | Published host ports, so the stack fits around whatever you already run |
+| `POSTGRES_PORT`, `REDIS_HOST_PORT` | `5432`, `6379` | Published dependency ports |
+| `PROMETHEUS_PORT`, `GRAFANA_PORT` | `9090`, `3001` | Published observability ports |
+| `GRAFANA_USER`, `GRAFANA_PASSWORD` | `admin`, `admin` | Local Grafana login. Change before exposing it anywhere |
+
+The compose defaults are development conveniences for a stack bound to your own machine. The
+read API has no authentication and the database password is a placeholder, so treat this as a
+local tool until both are addressed.
 
 Scheduled ingestion targets are declared in `application.yml` under `kji.ingestion.targets`,
 so adding a board is configuration rather than code.
