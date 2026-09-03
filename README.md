@@ -17,6 +17,7 @@ evidence, and ranks them for a specific candidate.
 - [Provenance rules](#provenance-rules)
 - [Results from a real run](#results-from-a-real-run)
 - [Running it](#running-it)
+- [Deploying the console to Vercel](#deploying-the-console-to-vercel)
 - [Configuration](#configuration)
 - [API](#api)
 - [Testing and CI](#testing-and-ci)
@@ -342,6 +343,41 @@ docker compose up -d postgres redis
 cd backend && ./gradlew bootRun
 cd frontend && npm install && npm run dev
 ```
+
+The Compose project is named, so two checkouts of this repository would fight over the same
+Docker Desktop group. If you keep a second copy, give it its own project and ports:
+
+```bash
+docker compose -p kji-second up -d
+```
+
+## Deploying the console to Vercel
+
+Vercel hosts the Next.js console. It cannot host the Spring Boot API or PostgreSQL, so the
+console needs a backend deployed somewhere that speaks HTTP, such as Fly.io, Railway or
+Render with a managed PostgreSQL. Without one, the console still builds and serves, and every
+page renders a panel saying which URL it tried and what to set. That is by design; it does not
+crash.
+
+Project settings:
+
+| Setting | Value |
+| --- | --- |
+| Root Directory | `frontend` |
+| Framework Preset | Next.js, detected automatically |
+| Build and Install commands | defaults |
+| Environment variable | `BACKEND_URL` = the origin of your deployed API |
+
+`BACKEND_URL` is read at request time by server components, not inlined at build time, so
+changing it takes effect on redeploy without a code change. The `output: "standalone"` setting
+is applied only when `DOCKER_BUILD=1`, which the Dockerfile sets, so a Vercel build produces a
+normal Next.js output.
+
+Before pointing a public console at a real backend, note that the read API has no
+authentication. `/api/jobs` and `/api/companies` are a searchable mirror of job-board content,
+and `/api/applications` and `/api/dashboard` expose the candidate profile, application
+statuses, notes and contacts. Deploy it behind access control, or restrict the deployed API to
+the job and company endpoints, before it is reachable from the open internet.
 
 Trigger a direct ingestion run against an employer board:
 
