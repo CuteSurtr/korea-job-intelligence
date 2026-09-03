@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-kji}
+      POSTGRES_USER: ${POSTGRES_USER:-kji}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kji}
+    ports:
+      - "5432:5432"
+    volumes:
+      - kji-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kji} -d ${POSTGRES_DB:-kji}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-kji}
+      DATABASE_USERNAME: ${POSTGRES_USER:-kji}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-kji}
+      REDIS_HOST: redis
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-change-me-local-only}
+      INGESTION_SCHEDULER_ENABLED: "false"
+    ports:
+      - "8080:8080"
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    profiles: ["observability"]
+    depends_on:
+      - backend
+    volumes:
+      - ./ops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    profiles: ["observability"]
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./ops/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./ops/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - kji-grafana:/var/lib/grafana
+    ports:
+      - "3001:3000"
+
+volumes:
+  kji-postgres:
+  kji-grafana:
