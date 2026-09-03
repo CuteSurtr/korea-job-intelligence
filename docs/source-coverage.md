@@ -78,7 +78,7 @@ pipeline into the database. The counts and the two defects the run exposed are r
 | `freehire` | import | 20 |
 | `indeed` | import | 10 |
 | `linkedin` | import | 10 |
-| `lever` | registered, no Korean board found to query | 0 |
+| `lever` | direct, 1 board (`aleph`, filtered to Seoul) | 1 |
 | `jobdatalake` | not invoked, authentication not completed | 0 |
 
 Five of the eight employer board tokens queried directly (`tosscareers`, `daangn`,

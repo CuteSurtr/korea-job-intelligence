@@ -6,7 +6,8 @@ against an empty database.
 
 ## Direct sources
 
-The backend queried eight employer ATS boards itself. Five of the eight board tokens were
+The backend queried nine employer ATS boards itself across three ATS platforms. The Lever
+board is filtered to Seoul, which is why one posting of eighty-nine survives the filter. Five of the eight board tokens were
 discovered by an aggregator that names the underlying ATS for each posting, which is the
 main practical argument for keeping low-trust aggregators in the registry: they lead to
 high-trust boards.
@@ -21,6 +22,7 @@ high-trust boards.
 | `get-delight` | greenhouse | 4 | 4 | 0 | 0 |
 | `vessl-ai` | ashby | 17 | 17 | 0 | 0 |
 | `twelve-labs` | ashby | 17 | 17 | 0 | 0 |
+| `aleph` | lever | 1 | 1 | 0 | 0 |
 
 ## Import boundary
 
@@ -40,10 +42,10 @@ Six providers were collected out of band, mapped to NDJSON by
 
 | | |
 | --- | ---: |
-| Canonical jobs | 970 |
-| Provider rows behind them | 1016 |
+| Canonical jobs | 971 |
+| Provider rows behind them | 1017 |
 | Companies resolved | 79 |
-| Raw snapshots | 1016 |
+| Raw snapshots | 1017 |
 | Skills extracted | 1443 |
 | Scores computed | 2910 |
 | Pairs queued for review | 120 |

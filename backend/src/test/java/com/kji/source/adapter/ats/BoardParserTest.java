@@ -104,12 +104,32 @@ class BoardParserTest {
     }
 
     @Test
+    @DisplayName("Lever postings keep the plain-text body and the hosted URL")
+    void parsesLeverBoard() throws IOException {
+        List<RawJobRecord> records = new LeverBoardParser()
+                .parse(fixture("fixtures/lever/aleph-board.json"), "aleph", "Aleph", FETCHED_AT);
+
+        assertThat(records).isNotEmpty();
+        RawJobRecord record = records.get(0);
+
+        assertThat(record.sourceCode()).isEqualTo("lever");
+        assertThat(record.externalId()).startsWith("aleph:");
+        assertThat(record.rawCompany()).isEqualTo("Aleph");
+        assertThat(record.rawLocation()).contains("Seoul");
+        assertThat(record.rawEmploymentType()).isNotBlank();
+        assertThat(record.sourceUrl()).startsWith("https://jobs.lever.co/aleph/");
+        assertThat(record.rawDescription()).isNotBlank().doesNotContain("<div");
+        assertThat(record.postedAt()).isNotNull();
+    }
+
+    @Test
     @DisplayName("an empty payload yields no records rather than throwing")
     void toleratesEmptyPayload() throws IOException {
         JsonNode empty = MAPPER.readTree("{}");
 
         assertThat(new GreenhouseBoardParser().parse(empty, "coupang", FETCHED_AT)).isEmpty();
         assertThat(new AshbyBoardParser().parse(empty, "vessl-ai", null, FETCHED_AT)).isEmpty();
+        assertThat(new LeverBoardParser().parse(empty, "aleph", null, FETCHED_AT)).isEmpty();
     }
 
     private JsonNode fixture(String path) throws IOException {
