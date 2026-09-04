@@ -491,3 +491,15 @@ pre {
   padding: 4px 6px;
   font-size: 12px;
 }
+.flash-warn {
+  border-color: rgba(224, 180, 74, 0.4);
+  background: rgba(224, 180, 74, 0.08);
+}
+
+.record-form button:disabled,
+.track-form button:disabled,
+.inline-form button:disabled {
+  background: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}

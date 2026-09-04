@@ -11,7 +11,27 @@
  *   node tools/smoke.mjs
  *   node tools/smoke.mjs --frontend http://localhost:3000 --backend http://localhost:8080
  */
+import { readFileSync } from "node:fs";
 import { argv, env, exit } from "node:process";
+
+/** Reads INTERNAL_API_TOKEN from the environment, falling back to a local .env. */
+function readToken() {
+  if (env.INTERNAL_API_TOKEN) {
+    return env.INTERNAL_API_TOKEN.trim();
+  }
+  const envFile = new URL("../.env", import.meta.url);
+  try {
+    for (const line of readFileSync(envFile, "utf8").split("\n")) {
+      const match = /^\s*(?:export\s+)?INTERNAL_API_TOKEN\s*=\s*(.*)$/.exec(line);
+      if (match) {
+        return match[1].trim().replace(/^["']|["']$/g, "");
+      }
+    }
+  } catch {
+    // no .env; the write checks will say so
+  }
+  return null;
+}
 
 function parseArgs() {
   const options = {
@@ -200,20 +220,37 @@ async function main() {
     assert(html.includes('name="status"'), "no status control on the applications page");
   });
 
-  await check("the CRM write path round-trips through the API", async () => {
-    const created = await fetch(`${options.backend}/api/applications`, {
+  await check("an unauthenticated write to the CRM is refused", async () => {
+    const response = await fetch(`${options.backend}/api/applications`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jobId, status: "INTERESTED", note: "smoke test" }),
+      body: JSON.stringify({ jobId, status: "INTERESTED" }),
     });
+    assert(response.status === 401, `expected 401, got ${response.status}`);
+  });
+
+  await check("reading the CRM stays open", async () => {
+    const listed = await json("/api/applications");
+    assert(Array.isArray(listed.content), "the application list did not come back");
+  });
+
+  await check("the CRM write path round-trips through the API", async () => {
+    const token = readToken();
+    assert(token, "INTERNAL_API_TOKEN is not set, and the API requires it to write");
+    const write = (path, method, payload) =>
+      fetch(`${options.backend}${path}`, {
+        method,
+        headers: { "Content-Type": "application/json", "X-Internal-Token": token },
+        body: JSON.stringify(payload),
+      });
+
+    const created = await write("/api/applications", "POST",
+      { jobId, status: "INTERESTED", note: "smoke test" });
     assert(created.ok, `creating an application answered ${created.status}`);
     const application = await created.json();
 
-    const moved = await fetch(`${options.backend}/api/applications/${application.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "APPLIED", note: "smoke test" }),
-    });
+    const moved = await write(`/api/applications/${application.id}`, "PATCH",
+      { status: "APPLIED", note: "smoke test" });
     assert(moved.ok, `moving an application answered ${moved.status}`);
     const after = await moved.json();
     assert(after.status === "APPLIED", `status stayed ${after.status}`);

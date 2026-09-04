@@ -187,6 +187,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
         Long jobId = jobRepository.findAll().get(0).getId();
 
         String created = mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"jobId":%d,"status":"INTERESTED","note":"Looks like a fit"}
@@ -199,6 +200,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
         long applicationId = objectMapper.readTree(created).get("id").asLong();
 
         mockMvc.perform(patch("/api/applications/{id}", applicationId)
+                        .header("X-Internal-Token", "test-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"jobId":%d,"status":"APPLIED","resumeVersion":"v3",
@@ -229,6 +231,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.totalElements").value(0));
 
         mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"jobId":%d,"status":"INTERESTED"}
@@ -263,12 +266,14 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
                 """;
 
         String first = mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body.formatted(jobId, "INTERESTED")))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
         String second = mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body.formatted(jobId, "READY_TO_APPLY")))
                 .andExpect(status().isOk())
@@ -289,6 +294,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
         Long jobId = jobRepository.findAll().get(0).getId();
 
         mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"jobId":%d,"status":"MAYBE_LATER"}
@@ -298,6 +304,59 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.allOf(
                         org.hamcrest.Matchers.containsString("MAYBE_LATER"),
                         org.hamcrest.Matchers.containsString("READY_TO_APPLY"))));
+    }
+
+    @Test
+    @DisplayName("reading applications is open, but changing one needs the shared token")
+    void applicationWritesRequireTheToken() throws Exception {
+        Long jobId = jobRepository.findAll().get(0).getId();
+        String body = """
+                {"jobId":%d,"status":"INTERESTED"}
+                """.formatted(jobId);
+
+        // The read API is a mirror of job-board content and the console fetches it on every
+        // page, so listing and detail stay open.
+        mockMvc.perform(get("/api/applications"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/api/applications").param("jobId", String.valueOf(jobId)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/applications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("unauthorized"));
+
+        mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "the-wrong-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isUnauthorized());
+
+        // nothing was recorded by either refused write
+        mockMvc.perform(get("/api/applications"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(0));
+
+        String created = mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        long applicationId = objectMapper.readTree(created).get("id").asLong();
+
+        mockMvc.perform(patch("/api/applications/{id}", applicationId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"status":"REJECTED"}
+                                """))
+                .andExpect(status().isUnauthorized());
+
+        // the refused patch left the status where it was
+        mockMvc.perform(get("/api/applications/{id}", applicationId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("INTERESTED"));
     }
 
     @Test

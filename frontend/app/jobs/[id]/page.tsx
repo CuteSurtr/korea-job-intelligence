@@ -9,10 +9,10 @@ import {
   StatusBadge,
   Unknown,
 } from "../../components/Badges";
-import { Flash, param } from "../../components/Flash";
+import { Flash, WriteDisabled, param } from "../../components/Flash";
 import { trackJob } from "../../lib/actions";
 import { APPLICATION_STATUSES, statusLabel } from "../../lib/applications";
-import { fetchJson, isNotFound } from "../../lib/api";
+import { canWrite, fetchJson, isNotFound } from "../../lib/api";
 import {
   formatDate,
   formatDateTime,
@@ -81,6 +81,7 @@ export default async function JobDetailPage({
       </p>
 
       <Flash saved={param(query, "saved")} error={param(query, "error")} />
+      <WriteDisabled />
 
       <form action={trackJob} className="track-form">
         <input type="hidden" name="jobId" value={job.id} />
@@ -100,7 +101,7 @@ export default async function JobDetailPage({
               ))}
             </select>
             <input name="note" placeholder="why it moved" />
-            <button type="submit">Move</button>
+            <button type="submit" disabled={!canWrite()}>Move</button>
             <Link className="badge reset" href={`/applications/${tracked.id}`}>
               Open the application
             </Link>
@@ -119,7 +120,7 @@ export default async function JobDetailPage({
               ))}
             </select>
             <input name="note" placeholder="why it is worth tracking" />
-            <button type="submit">Track</button>
+            <button type="submit" disabled={!canWrite()}>Track</button>
           </>
         )}
       </form>

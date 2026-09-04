@@ -59,6 +59,22 @@ export async function fetchJson<T>(
 }
 
 /**
+ * The shared secret the API requires on writes.
+ *
+ * This is only ever read on the server: `sendJson` runs inside a server action, so the value
+ * never reaches a browser and is never part of the client bundle.
+ */
+function internalToken(): string | null {
+  const token = process.env.INTERNAL_API_TOKEN;
+  return token && token.trim() !== "" ? token.trim() : null;
+}
+
+/** True when this console has been given the token it needs in order to write. */
+export function canWrite(): boolean {
+  return internalToken() !== null;
+}
+
+/**
  * Sends a body to the API and returns the parsed answer.
  *
  * Writes are never cached and never retried: a retry on a status change would record a second
@@ -70,12 +86,18 @@ export async function sendJson<T>(
   body: unknown,
 ): Promise<T> {
   const url = new URL(path, BACKEND_URL);
+  const token = internalToken();
+
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) {
+    headers["X-Internal-Token"] = token;
+  }
 
   let response: Response;
   try {
     response = await fetch(url, {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(body),
       cache: "no-store",
     });
@@ -96,6 +118,13 @@ export async function sendJson<T>(
  * failure is never reported as an empty banner.
  */
 export function apiMessage(error: unknown): string {
+  if (error instanceof BackendRequestError && error.status === 401) {
+    return canWrite()
+      ? "The API rejected this console's internal token. Both sides must be set to the same "
+        + "INTERNAL_API_TOKEN."
+      : "This console has no INTERNAL_API_TOKEN, which the API requires in order to write. "
+        + "Set it on the console with the same value the API uses, then restart it.";
+  }
   if (error instanceof BackendRequestError) {
     try {
       const parsed = JSON.parse(error.body) as { message?: string; error?: string };

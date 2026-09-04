@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackendError } from "../../components/BackendError";
-import { Flash, param } from "../../components/Flash";
+import { Flash, WriteDisabled, param } from "../../components/Flash";
 import { OrUnknown, StatusBadge } from "../../components/Badges";
 import { saveApplication } from "../../lib/actions";
 import { APPLICATION_STATUSES, statusLabel } from "../../lib/applications";
-import { fetchJson, isNotFound } from "../../lib/api";
+import { canWrite, fetchJson, isNotFound } from "../../lib/api";
 import { formatDate, formatDateTime } from "../../lib/format";
 import type { Application } from "../../lib/types";
 
@@ -57,6 +57,7 @@ export default async function ApplicationDetailPage({
       </p>
 
       <Flash saved={param(query, "saved")} error={param(query, "error")} />
+      <WriteDisabled />
 
       <form action={saveApplication} className="record-form">
         <input type="hidden" name="id" value={application.id} />
@@ -164,7 +165,7 @@ export default async function ApplicationDetailPage({
         </fieldset>
 
         <div className="form-actions">
-          <button type="submit">Save</button>
+          <button type="submit" disabled={!canWrite()}>Save</button>
           <Link className="badge reset" href={`/applications/${application.id}`}>
             Discard
           </Link>

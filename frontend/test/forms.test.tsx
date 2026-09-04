@@ -102,6 +102,45 @@ describe("tracking a job from its posting", () => {
   });
 });
 
+describe("a console with no token", () => {
+  it("says it cannot write and disables the control, rather than failing on submit", async () => {
+    // The test environment has no INTERNAL_API_TOKEN, which is the unconfigured console.
+    stubBackend({
+      "/api/jobs": fixtures.jobDetail,
+      "/api/applications": fixtures.untrackedForJob,
+    });
+    await renderPage(
+      JobDetailPage({
+        params: routeParams({ id: String(detailJob.id) }),
+        searchParams: searchParams(),
+      }),
+    );
+
+    expect(screen.getByRole("note")).toHaveTextContent("This console cannot write.");
+    expect(screen.getByRole("note")).toHaveTextContent("INTERNAL_API_TOKEN");
+    expect(screen.getByRole("button", { name: "Track" })).toBeDisabled();
+  });
+
+  it("disables saving on the record too", async () => {
+    stubBackend({ "/api/applications": application });
+    await renderPage(
+      ApplicationDetailPage({
+        params: routeParams({ id: String(application.id) }),
+        searchParams: searchParams(),
+      }),
+    );
+
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+  });
+
+  it("disables triage on the list too", async () => {
+    stubBackend({ "/api/applications": fixtures.applicationsPage });
+    await renderPage(ApplicationsPage({ searchParams: searchParams() }));
+
+    expect(screen.getAllByRole("button", { name: "Move" })[0]).toBeDisabled();
+  });
+});
+
 describe("the applications list", () => {
   it("puts a status control on every row so triage does not need a page load each", async () => {
     stubBackend({ "/api/applications": fixtures.applicationsPage });

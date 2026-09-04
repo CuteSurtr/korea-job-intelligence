@@ -409,6 +409,13 @@ every other field untouched, and returns to whatever filter the list was showing
 The forms post to server actions and navigate; none of it needs JavaScript in the browser. A
 write that the API refuses is reported with what the API said, rather than being swallowed.
 
+Writing needs the shared token. The API guards every write to `/api/applications` the same way
+it guards ingestion, and the console sends the token from its own environment, so it stays on
+the server and a browser never holds it. Compose passes `INTERNAL_API_TOKEN` to both, so the
+`.env` you create for seeding already covers this. A console started without it still shows
+everything, says so above each form, and disables the controls rather than letting you fill in
+a form that would only be rejected.
+
 ## Deploying the console to Vercel
 
 Vercel hosts the Next.js console. It cannot host the Spring Boot API or PostgreSQL, so the
@@ -431,13 +438,13 @@ changing it takes effect on redeploy without a code change. The `output: "standa
 is applied only when `DOCKER_BUILD=1`, which the Dockerfile sets, so a Vercel build produces a
 normal Next.js output.
 
-Before pointing a public console at a real backend, note that only `/api/internal/**` is
-authenticated. `/api/jobs` and `/api/companies` are a searchable mirror of job-board content,
-and `/api/applications` and `/api/dashboard` expose the candidate profile, application
-statuses, notes and contacts. The application endpoints also **write** without
-authentication: anyone who can reach the API can create an application, change its status, and
-add contacts and notes. Deploy it behind access control, or restrict the deployed API to the
-job and company endpoints, before it is reachable from the open internet.
+Before pointing a public console at a real backend, note what is and is not authenticated.
+Everything that changes state needs the shared token: the whole internal API, and every write
+to `/api/applications`. Reads do not. `/api/jobs` and `/api/companies` are a searchable mirror
+of job-board content, but `/api/applications` and `/api/dashboard` also read out the candidate
+profile, application statuses, notes and contacts, and anyone who can reach the API can read
+those. Deploy it behind access control, or restrict the deployed API to the job and company
+endpoints, before it is reachable from the open internet.
 
 Trigger a direct ingestion run against an employer board:
 
@@ -466,7 +473,7 @@ credentials.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `INTERNAL_API_TOKEN` | empty | Required by every `/api/internal/**` endpoint. Empty means those endpoints are disabled and answer `401`. Set it to `<64-hex-chars-from-openssl-rand-hex-32>` to enable ingestion |
+| `INTERNAL_API_TOKEN` | empty | Required by every `/api/internal/**` endpoint and by every write to `/api/applications`. Empty means ingestion and the CRM are read-only and answer `401`. Set it to `<64-hex-chars-from-openssl-rand-hex-32>`. The console needs the same value: Compose passes it through, and its server actions send it, so it never reaches a browser |
 | `POSTGRES_DB`, `POSTGRES_USER` | `kji`, `kji` | Local database name and user |
 | `POSTGRES_PASSWORD` | `kji` | Local-only database password. Replace with `<local-postgres-password>` for anything beyond your own machine |
 | `CACHE_ENABLED` | `true` | Redis is an accelerator; the system serves correctly without it |
@@ -516,14 +523,14 @@ Filters on the job list: `keyword`, `company`, `state`, `location`, `source`, `r
 ## Testing and CI
 
 ```bash
-cd backend  && ./gradlew clean build   # 105 backend tests, plus the coverage floors
-cd frontend && npm test                # 65 console tests
+cd backend  && ./gradlew clean build   # 106 backend tests, plus the coverage floors
+cd frontend && npm test                # 75 console tests
 cd frontend && npm run lint            # ESLint, flat config
 node tools/smoke.mjs                   # the two halves against each other, stack running
 cd frontend && npm run test:e2e        # the CRM forms in a browser, stack running
 ```
 
-**Backend, 105 tests.** Provider adapters run against recorded fixtures, so CI never depends on
+**Backend, 106 tests.** Provider adapters run against recorded fixtures, so CI never depends on
 a live job site. Everything else runs against real PostgreSQL, in a container started by
 Testcontainers. Where there is no Docker, point the suite at a PostgreSQL you already run and
 the same 98 tests pass:
@@ -535,7 +542,7 @@ KJI_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/kji_test ./gradlew test
 That database is truncated between tests, so give it one kept for testing rather than the one
 the application uses.
 
-**Console, 65 tests.** Vitest renders each page as a server component against fixtures captured
+**Console, 75 tests.** Vitest renders each page as a server component against fixtures captured
 from a running backend, so the shapes under test are the real DTOs rather than a guess. The
 suite covers the rendered rows, the filters each page sends to the API, the empty states, and
 the three ways a page can fail to show content: an unreachable backend, an API error, and a row

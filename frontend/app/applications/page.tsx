@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { BackendError } from "../components/BackendError";
-import { Flash, param } from "../components/Flash";
+import { Flash, WriteDisabled, param } from "../components/Flash";
 import { OrUnknown, StatusBadge } from "../components/Badges";
 import { setApplicationStatus } from "../lib/actions";
 import { APPLICATION_STATUSES, statusLabel } from "../lib/applications";
-import { fetchJson } from "../lib/api";
+import { canWrite, fetchJson } from "../lib/api";
 import { formatDate, formatDateTime } from "../lib/format";
 import type { Application, PageResponse } from "../lib/types";
 
@@ -18,6 +18,7 @@ export default async function ApplicationsPage({
   const params = await searchParams;
   const status = param(params, "status") ?? "";
   const returnTo = status ? `/applications?status=${encodeURIComponent(status)}` : "/applications";
+  const writable = canWrite();
 
   let applications: PageResponse<Application>;
   try {
@@ -43,6 +44,7 @@ export default async function ApplicationsPage({
       </p>
 
       <Flash saved={param(params, "saved")} error={param(params, "error")} />
+      <WriteDisabled />
 
       <form className="filters" method="get">
         <label>
@@ -120,7 +122,7 @@ export default async function ApplicationsPage({
                           </option>
                         ))}
                       </select>
-                      <button type="submit">Move</button>
+                      <button type="submit" disabled={!writable}>Move</button>
                     </form>
                   </td>
                   <td className="muted">{formatDate(application.appliedAt)}</td>
