@@ -1,15 +1,70 @@
 :root {
-  --bg: #0f1115;
-  --surface: #171a21;
-  --surface-raised: #1e222b;
-  --border: #2a2f3a;
-  --text: #e6e8ec;
-  --text-muted: #9aa1ae;
-  --accent: #6ea8fe;
-  --good: #56c271;
-  --warn: #e0b44a;
-  --bad: #e06c6c;
-  --unknown: #6b7280;
+  /* The Stripe template palette, flipped to its light canvas. The dark-era tokens were
+     polarity-coupled and could not be swapped one for one: --bg doubled as the page ground
+     AND as the text colour on the accent, and --surface-raised meant both "chip fill" and
+     "input fill". Each of those is split here so the two meanings cannot drift apart again. */
+  --canvas: #ffffff;
+  --canvas-soft: #f6f9fc;
+  --hairline: #e3e8ee;
+  /* Darker than the template's #a8c3de: at 1px that value is 1.82:1 against a white field,
+     which does not bound the control. #7593b3 is 3.19:1 on white, 3.02:1 on canvas-soft. */
+  --hairline-input: #7593b3;
+
+  --ink: #0d253d;
+  --ink-secondary: #273951;
+  /* Darker than the template's #64748d, which is 4.75:1 on white but 4.49:1 on canvas-soft -
+     it fails AA on exactly the surfaces .muted sits on. This holds the hue at 5.42 / 5.13. */
+  --ink-mute: #5b6b83;
+
+  --primary: #533afd;
+  --primary-deep: #4434d4;
+  --primary-press: #2e2b8c;
+  --primary-wash: #f1efff;
+  /* Never the page ground. The old file used --bg here and it only worked because the page
+     was near-black; that value is 3.05:1 on indigo. White on indigo is 6.19:1. */
+  --on-primary: #ffffff;
+
+  /* Row chrome. Hover is an indigo wash rather than a grey one, so a neutral grey chip stays
+     legible on the row under the cursor and hover never reads as a deeper zebra stripe. */
+  --row-zebra: #f8fafc;
+  --row-hover: #f1efff;
+
+  /* Semantic tones. DESIGN.md documents none for marketing and says outright that
+     success / error states "live in dashboard-product UI specifically" - this console is
+     that UI, so the tones are derived here rather than borrowed. Each is the darkest member
+     of its family that still clears 4.5:1 on white, on canvas-soft, on the hover row and on
+     its own chip. Chip fills are opaque, never rgba: a translucent chip changes colour as
+     the row beneath it hovers, which on a light ground is plainly visible. */
+  --good: #0e6245;
+  --good-chip: #e4f3ec;
+  --good-line: #a9d5c2;
+  --warn: #8a5a15;
+  --warn-chip: #faf1e0;
+  --warn-line: #e0c9a3;
+  --bad: #b3104a;
+  --bad-chip: #fdeaf1;
+  --bad-line: #f0b3c8;
+  --neutral-chip: #e9edf3;
+  --neutral-line: #d5dde7;
+
+  --radius-pill: 9999px;
+  --radius-input: 6px;
+  --radius-surface: 8px;
+
+  /* Sohne is proprietary and nothing is fetched at build time (see NOTES), so this is the
+     template's own sanctioned fallback chain. The two Korean faces at the tail are the only
+     thing keeping Hangul company names and job titles in a matching face - Inter, SF Pro and
+     Segoe all have zero Hangul coverage, so that tail must outlive any change here. */
+  --font-sans: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text",
+    "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo",
+    "Malgun Gothic", sans-serif;
+  /* The Korean faces sit before the monospace generic on purpose: .evidence and the job
+     description <pre> both render Hangul and Consolas / SF Mono carry none of it. */
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    "D2Coding", "Apple SD Gothic Neo", "Malgun Gothic", monospace;
+
+  /* Native date pickers and select dropdowns follow this; without it they render OS-dark. */
+  color-scheme: light;
 }
 
 * {
@@ -20,21 +75,72 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  /* The page ground is the soft tint and every surface on it is white, so cards and tables
+     separate by figure and ground rather than by shadow. Marketing lifts with a gradient
+     mesh; an operator reading a 13-column table for minutes wants flat, quiet surfaces. */
+  background: var(--canvas-soft);
+  color: var(--ink);
+  font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.5;
+  /* ss01 globally, per DESIGN.md. Every rule below that sets font-feature-settings restates
+     it, because the property replaces the inherited value rather than adding to it. */
+  font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-  color: var(--accent);
+  color: var(--primary);
   text-decoration: none;
 }
 
 a:hover {
   text-decoration: underline;
+}
+
+/* Indigo against the muted text these links sit inside measures 1.14:1, far under the 3:1 that
+   WCAG F73 requires before colour alone may mark a link. The template's link-on-light rule is
+   written for marketing prose; in a sentence it fails, so prose links keep an underline. Cell
+   links in the 21 tables fill their cell and are left bare. */
+p a,
+li a,
+.page-subtitle a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* The dark file had no focus style on any link or button - the UA ring was legible against
+   near-black and is not against white. One ring for everything, offset so it never hides
+   inside a control's own border and so the 2px gap of page showing through keeps it readable
+   against a filled indigo button. Nothing here sets border-radius: the outline already
+   follows the element's own, and overriding it would square off the button pills. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* A keyboard escape past the six nav links into the table the operator came for. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
+  background: var(--canvas);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  text-decoration: none;
 }
 
 .layout {
@@ -45,35 +151,42 @@ a:hover {
 .sidebar {
   width: 220px;
   flex-shrink: 0;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
+  background: var(--canvas);
+  border-right: 1px solid var(--hairline);
   padding: 20px 0;
 }
 
 .sidebar-brand {
-  padding: 0 20px 20px;
+  padding: 0 20px 18px;
   font-weight: 600;
-  letter-spacing: 0.01em;
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
 .sidebar-brand span {
   display: block;
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--text-muted);
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-mute);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .sidebar nav a {
   display: block;
-  padding: 8px 20px;
-  color: var(--text-muted);
+  /* A 2px rail that only colours in on hover: it marks the pointed-at row without shifting
+     the label, and it is the hook an active-page state would use if this layout could know
+     the route. It is a server component and must stay one, so it cannot. */
+  border-left: 2px solid transparent;
+  padding: 7px 20px 7px 18px;
+  color: var(--ink-secondary);
 }
 
 .sidebar nav a:hover {
-  background: var(--surface-raised);
-  color: var(--text);
+  background: var(--primary-wash);
+  border-left-color: var(--primary);
+  color: var(--primary-deep);
   text-decoration: none;
 }
 
@@ -83,28 +196,86 @@ a:hover {
   min-width: 0;
 }
 
+/* Weight 300 is the template's display signature and it survives here at one size only.
+   Two of the eleven pages put a Korean job title in the h1, and Malgun Gothic ships no Light
+   face, so a Hangul title renders Regular where Latin renders Light. At 22px that reads as
+   nothing; the tracking is -0.01em, far too small to close a Hangul syllable block up
+   against its neighbour. Everything below h1 stays at 400 or heavier, so the mismatch never
+   reaches the tables, which is where most of the Korean in this console actually lives. */
 h1 {
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
   margin: 0 0 4px;
 }
 
+/* Deviation from the 18px/300 heading tier: a section header rendered lighter than the body
+   text it introduces stops working as a header, and the detail pages stack five of them. */
 h2 {
-  font-size: 15px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
   margin: 28px 0 10px;
-  color: var(--text);
+  color: var(--ink);
 }
 
 h3 {
-  font-size: 13px;
-  margin: 18px 0 8px;
-  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  color: var(--ink-mute);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
+/* 26 bare paragraphs had no rule and were running on UA 1em margins. */
+p {
+  margin: 0 0 10px;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
 .page-subtitle {
-  color: var(--text-muted);
+  color: var(--ink-mute);
   margin: 0 0 18px;
+}
+
+/* The lead sentence of every error and flash banner; it was relying on UA bold. */
+strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Every <code> in the app sits inside a tinted flash or error panel, so a white chip with a
+   hairline reads as an inset value on any of those fills. */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--ink-secondary);
+}
+
+/* One list in the app, the stated requirements inside a .panel; UA discs at a 40px indent
+   lined up with nothing else on the page. */
+ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+li {
+  margin-bottom: 4px;
+}
+
+li:last-child {
+  margin-bottom: 0;
 }
 
 .card-grid {
@@ -113,37 +284,45 @@ h3 {
   gap: 12px;
 }
 
+/* 14px 16px, not the template's 32px card padding: six of these open the dashboard and at
+   32px they push the first table below the fold. */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-surface);
   padding: 14px 16px;
 }
 
 .card .label {
-  color: var(--text-muted);
-  font-size: 12px;
+  color: var(--ink-mute);
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
+/* Carries a number but no .numeric class, so it needs tnum of its own. The tightening
+   tracking is safe here and on .numeric because both only ever hold digits. */
 .card .value {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   margin-top: 6px;
+  font-feature-settings: "ss01", "tnum";
 }
 
 .card .sub {
-  color: var(--text-muted);
+  color: var(--ink-mute);
   font-size: 12px;
   margin-top: 2px;
 }
 
 .table-wrap {
   overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-surface);
+  background: var(--canvas);
 }
 
 table {
@@ -152,21 +331,27 @@ table {
   font-size: 13px;
 }
 
+/* The header band is tinted rather than ruled twice: on a table this wide an operator
+   scrolls sideways and has to keep hold of which strip is the header. */
+thead th {
+  background: var(--canvas-soft);
+}
+
 th {
   text-align: left;
-  padding: 9px 12px;
-  color: var(--text-muted);
-  font-weight: 500;
+  padding: 8px 12px;
+  color: var(--ink-mute);
+  font-weight: 600;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--hairline);
   white-space: nowrap;
 }
 
 td {
-  padding: 9px 12px;
-  border-bottom: 1px solid var(--border);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--hairline);
   vertical-align: top;
 }
 
@@ -174,58 +359,122 @@ tbody tr:last-child td {
   border-bottom: none;
 }
 
-tbody tr:hover {
-  background: var(--surface-raised);
+/* Zebra faint enough not to read as a state, hover strong enough that it does. The two have
+   to stay distinguishable: on a twelve-column row the stripe is what carries the eye across
+   and the hover is what says which row the pointer is on. */
+tbody tr:nth-child(even) {
+  background: var(--row-zebra);
 }
 
+tbody tr:hover {
+  background: var(--row-hover);
+}
+
+/* tnum plus ss01: font-feature-settings replaces the inherited value rather than adding to
+   it, so ss01 is restated or all 68 numeric cells silently lose it. The -0.02em is the
+   template's tabular tightening, applied only where the content is digits and never where
+   Hangul could appear. */
 .numeric {
   text-align: right;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "ss01", "tnum";
+  letter-spacing: -0.02em;
 }
 
 .muted {
-  color: var(--text-muted);
+  color: var(--ink-mute);
 }
 
 .unknown {
-  color: var(--unknown);
+  color: var(--ink-mute);
   font-style: italic;
 }
 
+/* Pill geometry per the template, but 2px of vertical padding rather than 4px: these render
+   inside table cells and the extra 4px would land on every row of a fifty-row list. */
 .badge {
   display: inline-block;
-  padding: 1px 7px;
-  border-radius: 10px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
   font-size: 11px;
-  border: 1px solid var(--border);
-  background: var(--surface-raised);
+  font-weight: 500;
+  line-height: 1.5;
+  border: 1px solid var(--neutral-line);
+  background: var(--neutral-chip);
+  color: var(--ink-secondary);
   white-space: nowrap;
+  /* ScoreCell renders a bare integer as a badge, so tnum belongs here too. */
+  font-feature-settings: "ss01", "tnum";
 }
 
+/* Each tone carries its meaning in the fill as well as in the text. Indigo is already the
+   link colour and the button fill, so hue on its own is not enough separation in a table
+   where a status chip sits two columns away from a company link. */
 .badge-good {
-  border-color: rgba(86, 194, 113, 0.4);
+  border-color: var(--good-line);
+  background: var(--good-chip);
   color: var(--good);
 }
 
 .badge-warn {
-  border-color: rgba(224, 180, 74, 0.4);
+  border-color: var(--warn-line);
+  background: var(--warn-chip);
   color: var(--warn);
 }
 
 .badge-bad {
-  border-color: rgba(224, 108, 108, 0.4);
+  border-color: var(--bad-line);
+  background: var(--bad-chip);
   color: var(--bad);
 }
 
+/* The one tone that never overrode its border on dark. It keeps the neutral chip and states
+   the border anyway, so it cannot pick up a tone by accident later. */
 .badge-unknown {
-  color: var(--unknown);
+  border-color: var(--neutral-line);
+  background: var(--neutral-chip);
+  color: var(--ink-mute);
 }
 
+/* Was .filters .reset, which left two of its four uses unstyled - "Open the application" in
+   the job track-form and "Discard" in the record-form both sit outside a .filters ancestor.
+   De-scoped to a bare class it becomes the console's one secondary button wherever it lands.
+   Declared after .badge so it wins on the shared `badge reset` markup. */
+/* Sits in an align-items:flex-end row directly beside the Apply button, so it carries the
+   button's own metrics; at the previous 12px/3px it stood ~7px shorter than its neighbour.
+   Full 8px 16px padding, so this control needs no exemption from the template's floor. */
+.reset {
+  /* inline-flex, not the .badge inline-block it inherits: the label has to stay centred when
+     the mobile block gives this a 44px touch target, and centring is what lines it up with the
+     Apply button beside it on desktop. */
+  display: inline-flex;
+  align-items: center;
+  background: var(--canvas);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.15;
+  padding: 8px 16px;
+}
+
+.reset:hover {
+  background: var(--primary-wash);
+  color: var(--primary-deep);
+  text-decoration: none;
+}
+
+/* Ten controls on the jobs list, one on the applications list. Boxing them stops the wide
+   bar reading as loose page furniture and gives the white fields a surface to sit on. */
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 8px 10px;
   align-items: flex-end;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-surface);
+  padding: 12px 14px;
   margin-bottom: 16px;
 }
 
@@ -234,76 +483,56 @@ tbody tr:hover {
   flex-direction: column;
   gap: 4px;
   font-size: 11px;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--ink-mute);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-}
-
-.filters input,
-.filters select {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text);
-  padding: 6px 8px;
-  font-size: 13px;
-  min-width: 130px;
-}
-
-.filters button {
-  background: var(--accent);
-  border: none;
-  border-radius: 4px;
-  color: #0f1115;
-  padding: 7px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.filters .reset {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
 }
 
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 10px 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 16px;
+  gap: 12px 24px;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-surface);
+  padding: 16px 20px;
 }
 
 .detail-grid .label {
   font-size: 11px;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--ink-mute);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  margin-bottom: 1px;
 }
 
 .panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 16px;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-surface);
+  padding: 16px 20px;
+}
+
+.panel h3:first-child {
+  margin-top: 0;
 }
 
 pre {
   white-space: pre-wrap;
   word-break: break-word;
   margin: 0;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.6;
 }
 
 .evidence {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--ink-mute);
+  /* Clamped so a long explanation cannot blow out the column it is sitting in. */
   max-width: 460px;
   display: block;
   overflow-wrap: anywhere;
@@ -311,19 +540,33 @@ pre {
 
 .pagination {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   margin-top: 14px;
-  color: var(--text-muted);
+  color: var(--ink-mute);
   font-size: 13px;
+  /* "Page 3 of 41" - digits, so tabular. */
+  font-feature-settings: "ss01", "tnum";
+}
+
+/* A disabled edge renders as a bare <span> beside a live <a>; on white the colour difference
+   is the only thing separating them, so the live one takes weight as well. */
+.pagination a {
+  font-weight: 500;
 }
 
 .error-panel {
-  border: 1px solid rgba(224, 108, 108, 0.4);
-  background: rgba(224, 108, 108, 0.08);
-  border-radius: 6px;
+  border: 1px solid var(--bad-line);
+  border-left-width: 3px;
+  border-left-color: var(--bad);
+  background: var(--bad-chip);
+  border-radius: var(--radius-surface);
   padding: 16px;
-  color: var(--text);
+  color: var(--ink);
+}
+
+.error-panel pre {
+  margin-top: 8px;
 }
 
 .skill-list {
@@ -347,28 +590,66 @@ pre {
   border: 0;
 }
 
+/* The three flashes carry their tone on a 3px left edge as well as in the fill, so the
+   difference between "saved" and "that did not save" survives a glance at an 8% tint. */
 .flash {
-  border-radius: 6px;
+  border-radius: var(--radius-surface);
   padding: 10px 14px;
   margin-bottom: 16px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-.flash-ok {
-  border-color: rgba(86, 194, 113, 0.4);
-  background: rgba(86, 194, 113, 0.08);
-}
-.flash-error {
-  border-color: rgba(224, 108, 108, 0.4);
-  background: rgba(224, 108, 108, 0.08);
+  border: 1px solid var(--hairline);
+  border-left-width: 3px;
+  background: var(--canvas);
+  color: var(--ink);
 }
 
+.flash-ok {
+  border-color: var(--good-line);
+  border-left-color: var(--good);
+  background: var(--good-chip);
+}
+
+.flash-error {
+  border-color: var(--bad-line);
+  border-left-color: var(--bad);
+  background: var(--bad-chip);
+}
+
+/* Kept beside its siblings; it used to sit 140 lines away, which is how it ended up as the
+   one variant nobody remembered to update. */
+.flash-warn {
+  border-color: var(--warn-line);
+  border-left-color: var(--warn);
+  background: var(--warn-chip);
+}
+
+/* Was two blocks with .inline-form wedged between them; merged so the box half and the
+   layout half cannot drift apart. The class name is load-bearing for the e2e suite. */
 .track-form {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-surface);
+  padding: 12px 14px;
+  margin-bottom: 16px;
 }
+
+.track-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 4px;
+}
+
+.track-form input[name="note"] {
+  flex: 1 1 240px;
+  min-width: 180px;
+}
+
 /* One row per application, so the control stays on one line rather than doubling the row
    height of every row in the table. */
 .inline-form {
@@ -377,24 +658,6 @@ pre {
   gap: 6px;
   align-items: center;
 }
-.track-form {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 12px 14px;
-  margin-bottom: 16px;
-}
-.track-label {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-right: 4px;
-}
-.track-form input[name="note"] {
-  flex: 1 1 240px;
-  min-width: 180px;
-}
 
 .record-form {
   display: flex;
@@ -402,104 +665,259 @@ pre {
   gap: 16px;
   margin-bottom: 24px;
 }
+
 .record-form fieldset {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-surface);
+  background: var(--canvas);
   padding: 14px 16px 16px;
   margin: 0;
 }
+
 .record-form legend {
   font-size: 11px;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--ink-mute);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 0 6px;
 }
+
 .field-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 12px 20px;
 }
+
 .field-grid label {
   display: flex;
   flex-direction: column;
   gap: 4px;
   font-size: 11px;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--ink-mute);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+
 .field-grid label.wide {
   grid-column: 1 / -1;
 }
+
 .form-actions {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
+/* White fields on white cards, which is the way round the template specifies it: the field
+   is the brightest thing on the surface and a border, not a fill, is what bounds it. The
+   uppercase caption lives on the wrapping <label> and text-transform inherits into the
+   control, so every group has to hand the typed value back its own casing and tracking. */
+.filters input,
+.filters select,
 .record-form input,
 .record-form select,
 .record-form textarea,
 .track-form input,
 .track-form select,
 .inline-form select {
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--text);
-  padding: 6px 8px;
+  background: var(--canvas);
+  border: 1px solid var(--hairline-input);
+  border-radius: var(--radius-input);
+  color: var(--ink);
+  padding: 6px 10px;
   font-size: 13px;
   font-family: inherit;
   text-transform: none;
   letter-spacing: normal;
 }
+
+.filters input,
+.filters select {
+  min-width: 130px;
+}
+
 .record-form textarea {
   resize: vertical;
   line-height: 1.5;
 }
+
+/* Nine inputs carry a placeholder and none of them had a rule; the UA default on white is
+   about #757575, which is borderline. This is the same muted ink as the labels, and the
+   typed value is much darker, so the two never read as the same thing. */
+::placeholder {
+  color: var(--ink-mute);
+  opacity: 1;
+}
+
+/* The border swaps to indigo as well as the ring, per the template's focused-input state.
+   The offset is +1px, not the old -1px: the field now has a real border for an inset ring
+   to disappear behind. */
+.filters input:focus,
+.filters select:focus,
 .record-form input:focus,
 .record-form select:focus,
 .record-form textarea:focus,
 .track-form input:focus,
 .track-form select:focus,
 .inline-form select:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: -1px;
+  border-color: var(--primary);
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
 }
 
-.record-form button,
-.track-form button,
-.inline-form button {
-  background: var(--accent);
-  border: none;
-  border-radius: 4px;
-  color: #0f1115;
-  padding: 7px 14px;
-  font-size: 13px;
-  font-weight: 600;
+/* Stated on the bare element as well as on the four form groups: the old file styled buttons
+   only by ancestor, so a button added anywhere else rendered as UA chrome. Both hard-coded
+   `color: #0f1115` sites collapse into --on-primary here. */
+button {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.15;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
   cursor: pointer;
-}
-.inline-form button {
-  padding: 5px 10px;
-  font-size: 12px;
   white-space: nowrap;
+  font-feature-settings: "ss01";
 }
+
+button:hover:not(:disabled) {
+  background: var(--primary-deep);
+}
+
+button:active:not(:disabled) {
+  background: var(--primary-press);
+}
+
+/* A console started without the shared token renders every button in this state, so it is a
+   normal surface rather than an edge case: the label stays fully readable, and the flat grey
+   fill sitting where an indigo one should be is what says "off". */
+button:disabled {
+  background: var(--hairline);
+  border-color: var(--hairline);
+  color: var(--ink-secondary);
+  cursor: not-allowed;
+}
+
+/* Deliberately under the template's 8px 16px floor. This button repeats once per row of the
+   applications table, and at full pill padding it would set the height of every row in the
+   list. It grows back to a real touch target below 768px. */
+.inline-form button {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+/* Secondary rather than filled. This button repeats once per row of the applications table,
+   so filling it would stack a column of indigo CTAs against a template that spends the fill
+   on one primary action per band. Held away from :disabled so a console started without the
+   shared token still shows the flat grey "off" state above. */
+.inline-form button:not(:disabled) {
+  background: var(--canvas);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.inline-form button:hover:not(:disabled) {
+  background: var(--primary-wash);
+  color: var(--primary-deep);
+}
+
 .inline-form select {
   min-width: 118px;
-  padding: 4px 6px;
+  padding: 4px 8px;
   font-size: 12px;
 }
-.flash-warn {
-  border-color: rgba(224, 180, 74, 0.4);
-  background: rgba(224, 180, 74, 0.08);
+
+/* Below the desktop breakpoint the fixed 220px rail becomes a scrolling strip. The console
+   had no responsive behaviour of any kind before this. */
+@media (max-width: 1023px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--hairline);
+    padding: 14px 0 0;
+  }
+
+  .sidebar-brand {
+    padding: 0 16px 10px;
+  }
+
+  .sidebar nav {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    padding: 0 12px;
+  }
+
+  .sidebar nav a {
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  .sidebar nav a:hover {
+    border-bottom-color: var(--primary);
+  }
 }
 
-.record-form button:disabled,
-.track-form button:disabled,
-.inline-form button:disabled {
-  background: var(--border);
-  color: var(--text-muted);
-  cursor: not-allowed;
+/* Touch targets: fields to 40px and buttons to 44px, the compact row control included. */
+@media (max-width: 767px) {
+  .content {
+    padding: 16px 14px 48px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .filters label,
+  .field-grid label {
+    flex: 1 1 100%;
+  }
+
+  .filters input,
+  .filters select,
+  .record-form input,
+  .record-form select,
+  .record-form textarea,
+  .track-form input,
+  .track-form select,
+  .inline-form select {
+    min-height: 40px;
+    width: 100%;
+  }
+
+  button,
+  .inline-form button,
+  .reset {
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .content {
+    padding: 32px 40px 72px;
+  }
+}
+
+/* The only motion in the file is a colour fade on the interactive chrome. */
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button,
+  .reset,
+  .sidebar nav a,
+  tbody tr {
+    transition: background-color 110ms ease, border-color 110ms ease, color 110ms ease;
+  }
 }
