@@ -1,0 +1,72 @@
+name: End to end
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - "collected/**"
+      - "tools/**"
+      - "docker-compose.yml"
+      - ".github/workflows/e2e.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - "collected/**"
+      - "tools/**"
+      - "docker-compose.yml"
+      - ".github/workflows/e2e.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: seeded stack
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      # The import endpoints answer 401 without a token, which is what seeding goes through.
+      - name: Generate an internal token
+        run: printf 'INTERNAL_API_TOKEN=%s\n' "$(openssl rand -hex 32)" > .env
+
+      - name: Build and start the stack
+        run: docker compose up -d --build
+
+      - name: Wait for every service to report healthy
+        run: |
+          for i in $(seq 1 60); do
+            unhealthy=$(docker compose ps --format '{{.Service}} {{.Health}}' \
+              | awk '$2 != "healthy" && $2 != "" { print $1 }')
+            if [ -z "$unhealthy" ]; then
+              echo "all services healthy"
+              exit 0
+            fi
+            echo "waiting on: $unhealthy"
+            sleep 5
+          done
+          echo "services never became healthy"
+          docker compose ps
+          exit 1
+
+      - name: Seed the collected fixtures through the import boundary
+        run: node tools/seed.mjs
+
+      - name: Drive the console against the backend
+        run: node tools/smoke.mjs
+
+      - name: Service logs on failure
+        if: failure()
+        run: docker compose logs --tail 120
+
+      - name: Stop the stack
+        if: always()
+        run: docker compose down -v

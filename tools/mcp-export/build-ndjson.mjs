@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 import { argv, exit } from "node:process";
 
 const MAPPERS = {
@@ -194,18 +195,20 @@ function stripTracking(url) {
   }
 }
 
-function main() {
-  const input = argv[2];
-  const output = argv[3];
-  if (!input || !output) {
-    fail("usage: node build-ndjson.mjs <collected.json> <out.ndjson>");
-  }
-
-  const payload = JSON.parse(readFileSync(input, "utf8"));
+/**
+ * Maps one collected payload into import-schema NDJSON lines.
+ *
+ * Exported so that the seeding script can reuse the mappers without shelling out, and so the
+ * mapping is reachable from a test. A record with no title or no company is dropped here
+ * rather than sent, because the backend would reject it as a normalization failure anyway.
+ */
+export function toNdjsonLines(payload) {
   const provider = payload.provider;
   const mapper = MAPPERS[provider];
   if (!mapper) {
-    fail(`unknown provider "${provider}"; expected one of ${Object.keys(MAPPERS).join(", ")}`);
+    throw new Error(
+      `unknown provider "${provider}"; expected one of ${Object.keys(MAPPERS).join(", ")}`,
+    );
   }
 
   const fetchedAt = payload.fetchedAt ?? new Date().toISOString();
@@ -217,12 +220,38 @@ function main() {
     .filter((record) => record.rawTitle && record.rawCompany)
     .map((record) => JSON.stringify(record));
 
-  writeFileSync(output, lines.join("\n") + "\n", "utf8");
-  const skipped = records.length - lines.length;
+  return { provider, collector, lines, skipped: records.length - lines.length };
+}
+
+/** Reads a collected file and writes the NDJSON beside it. Returns what {@link toNdjsonLines} did. */
+export function buildNdjson(input, output) {
+  const result = toNdjsonLines(JSON.parse(readFileSync(input, "utf8")));
+  writeFileSync(output, result.lines.join("\n") + "\n", "utf8");
+  return result;
+}
+
+export { MAPPERS };
+
+function main() {
+  const input = argv[2];
+  const output = argv[3];
+  if (!input || !output) {
+    fail("usage: node build-ndjson.mjs <collected.json> <out.ndjson>");
+  }
+
+  let result;
+  try {
+    result = buildNdjson(input, output);
+  } catch (error) {
+    fail(error.message);
+  }
+
   console.log(
-    `${provider}: ${lines.length} records written to ${output}` +
-      (skipped > 0 ? ` (${skipped} skipped for missing title or company)` : ""),
+    `${result.provider}: ${result.lines.length} records written to ${output}` +
+      (result.skipped > 0 ? ` (${result.skipped} skipped for missing title or company)` : ""),
   );
 }
 
-main();
+if (argv[1] && import.meta.url === pathToFileURL(argv[1]).href) {
+  main();
+}

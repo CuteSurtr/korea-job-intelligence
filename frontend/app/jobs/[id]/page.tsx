@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BackendError } from "../../components/BackendError";
 import {
@@ -7,7 +8,7 @@ import {
   SeniorityBadge,
   Unknown,
 } from "../../components/Badges";
-import { fetchJson } from "../../lib/api";
+import { fetchJson, isNotFound } from "../../lib/api";
 import {
   formatDate,
   formatDateTime,
@@ -29,6 +30,9 @@ export default async function JobDetailPage({
   try {
     detail = await fetchJson<JobDetail>(`/api/jobs/${id}`);
   } catch (error) {
+    if (isNotFound(error)) {
+      notFound();
+    }
     return (
       <>
         <h1>Job {id}</h1>

@@ -1,10 +1,35 @@
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8080";
 
+/** The backend could not be reached at all: wrong URL, not running, DNS, TLS, timeout. */
 export class BackendUnavailableError extends Error {
   constructor(path: string, cause: unknown) {
     super(`Backend request failed for ${path}: ${String(cause)}`);
     this.name = "BackendUnavailableError";
   }
+}
+
+/**
+ * The backend answered, but not with a success. Distinct from
+ * {@link BackendUnavailableError} because a 404 means the row does not exist, which is a
+ * normal answer, not an outage.
+ */
+export class BackendRequestError extends Error {
+  readonly status: number;
+  readonly path: string;
+  readonly body: string;
+
+  constructor(path: string, status: number, body: string) {
+    super(`Backend returned ${status} for ${path}: ${body.slice(0, 300)}`);
+    this.name = "BackendRequestError";
+    this.status = status;
+    this.path = path;
+    this.body = body;
+  }
+}
+
+/** True when the backend answered that the resource does not exist. */
+export function isNotFound(error: unknown): boolean {
+  return error instanceof BackendRequestError && error.status === 404;
 }
 
 export async function fetchJson<T>(
@@ -28,8 +53,7 @@ export async function fetchJson<T>(
   }
 
   if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Backend returned ${response.status} for ${path}: ${body.slice(0, 300)}`);
+    throw new BackendRequestError(path, response.status, await response.text());
   }
   return (await response.json()) as T;
 }

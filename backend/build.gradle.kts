@@ -43,6 +43,13 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     systemProperty("file.encoding", "UTF-8")
+    // Integration tests start their own PostgreSQL container by default. Forwarding these lets
+    // -Dkji.test.datasource.url point the suite at a database you already run, so the whole
+    // suite is runnable without Docker. See TestDatabase.
+    listOf("url", "username", "password").forEach { part ->
+        val key = "kji.test.datasource.$part"
+        System.getProperty(key)?.let { systemProperty(key, it) }
+    }
     testLogging {
         events("passed", "skipped", "failed")
     }

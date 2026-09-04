@@ -316,6 +316,35 @@ service declares a healthcheck and `restart: unless-stopped`, and the project is
 appears as a single **korea-job-intelligence** group in Docker Desktop that you can start and
 stop from the UI and that comes back after a reboot.
 
+A migrated database holds nothing but the source registry, so every console page opens on an
+empty state. Fill it from the collected fixtures in `collected/`:
+
+```bash
+printf 'INTERNAL_API_TOKEN=%s\n' "$(openssl rand -hex 32)" > .env
+docker compose up -d
+node tools/seed.mjs
+```
+
+That maps each collected file to import-schema NDJSON and posts it to the import boundary, the
+same path a real collector takes, so normalization, deduplication and scoring all run. It
+prints what each source contributed:
+
+```
+source    received  new  updated  merged  failed  status
+--------  --------  ---  -------  ------  ------  ---------
+freehire  20        20   0        0       0       SUCCEEDED
+indeed    10        10   0        0       0       SUCCEEDED
+jobkorea  64        64   0        0       0       SUCCEEDED
+linkedin  10        10   0        0       0       SUCCEEDED
+pathsdog  30        30   0        0       0       SUCCEEDED
+saramin   137       102  0        35      0       SUCCEEDED
+
+236 jobs, 35 merged as duplicates, 0 failures.
+```
+
+Re-running it updates rather than duplicates, and `--only pathsdog,saramin` narrows it to
+named sources. The internal token is read from `INTERNAL_API_TOKEN` or from a local `.env`.
+
 The one thing worth setting is the internal API token. Ingestion endpoints stay disabled and
 answer `401` until you provide one, which is deliberate: the system ships with no usable
 credential rather than a predictable default. Create a local `.env` next to the compose file,
@@ -342,7 +371,11 @@ For backend development, run the dependencies in Docker and the application from
 docker compose up -d postgres redis
 cd backend && ./gradlew bootRun
 cd frontend && npm install && npm run dev
+node tools/seed.mjs
 ```
+
+`bootRun` reads `INTERNAL_API_TOKEN` from its own environment rather than from the compose
+`.env`, so export the same value in the shell you start it from if you intend to seed.
 
 The Compose project is named, so two checkouts of this repository would fight over the same
 Docker Desktop group. If you keep a second copy, give it its own project and ports:
@@ -452,12 +485,37 @@ Filters on the job list: `keyword`, `company`, `state`, `location`, `source`, `r
 
 ## Testing and CI
 
-98 tests. Provider adapters run against recorded fixtures, so CI never depends on a live job
-site. Everything else runs against real PostgreSQL through Testcontainers.
+```bash
+cd backend  && ./gradlew clean build   # 98 backend tests, plus the coverage floors
+cd frontend && npm test                # 37 console tests
+cd frontend && npm run lint            # ESLint, flat config
+node tools/smoke.mjs                   # the two halves against each other, stack running
+```
+
+**Backend, 98 tests.** Provider adapters run against recorded fixtures, so CI never depends on
+a live job site. Everything else runs against real PostgreSQL, in a container started by
+Testcontainers. Where there is no Docker, point the suite at a PostgreSQL you already run and
+the same 98 tests pass:
 
 ```bash
-cd backend && ./gradlew clean build
+KJI_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/kji_test ./gradlew test
 ```
+
+That database is truncated between tests, so give it one kept for testing rather than the one
+the application uses.
+
+**Console, 37 tests.** Vitest renders each page as a server component against fixtures captured
+from a running backend, so the shapes under test are the real DTOs rather than a guess. The
+suite covers the rendered rows, the filters each page sends to the API, the empty states, and
+the three ways a page can fail to show content: an unreachable backend, an API error, and a row
+that does not exist.
+
+**End to end.** `tools/smoke.mjs` drives a running console over HTTP against a running backend
+holding seeded rows, and fails if any page comes back empty, broken, or apologising. The unit
+suites test each side against a stub and so cannot catch the two drifting apart; this can.
+
+Coverage is verified in the build, not merely reported: `jacocoTestCoverageVerification` runs
+as part of `check` with floors at 75% line and 50% branch against 80.7% and 57.8% measured.
 
 What the suite deliberately covers: normalization of Korean legal-form and experience
 variants, deadline sentinels, deduplication including the same-source guard, company
@@ -466,12 +524,10 @@ closure evidence, reopening, circuit opening, provenance from a claim back to it
 scoring separation and explanation, cache degradation with Redis absent, and the module
 dependency rules.
 
-Coverage is verified in the build, not merely reported: `jacocoTestCoverageVerification` runs
-as part of `check` with floors at 75% line and 50% branch against 80.7% and 57.8% measured.
-
-Two workflows. Backend: build, test, coverage summary, artifacts, image build, then start the
-image against a real PostgreSQL to prove it migrates and serves. Frontend: typecheck,
-production dependency audit, build, image build.
+Three workflows. Backend: build, test, coverage summary, artifacts, image build, then start the
+image against a real PostgreSQL to prove it migrates and serves. Frontend: production
+dependency audit, typecheck, lint, test, build, image build. End to end: build the whole stack
+with Compose, wait for every healthcheck, seed it, then run the smoke test against it.
 
 ## Repository layout
 
@@ -480,7 +536,7 @@ backend/     Spring Boot modular monolith
 frontend/    Next.js operator console
 docs/        Architecture decision records, schema, source coverage, run log
 ops/         Prometheus and Grafana configuration
-tools/       Out-of-band collectors that emit NDJSON for the import boundary
+tools/       seed.mjs, smoke.mjs, and the out-of-band collector that emits import NDJSON
 collected/   Provider-shaped input for the recorded run, replayable
 ```
 
