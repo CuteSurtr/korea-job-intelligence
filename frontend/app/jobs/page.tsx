@@ -3,6 +3,7 @@ import { BackendError } from "../components/BackendError";
 import { LifecycleBadge, OrUnknown, ScoreCell, SeniorityBadge } from "../components/Badges";
 import { fetchJson } from "../lib/api";
 import { formatDeadline, formatExperience, formatRelativeDays } from "../lib/format";
+import { SECTORS, sectorLabel } from "../lib/applications";
 import type { Job, PageResponse } from "../lib/types";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +50,8 @@ export default async function JobsPage({
     keyword: first(params, "keyword"),
     company: first(params, "company"),
     roleFamily: first(params, "roleFamily"),
+    sector: first(params, "sector"),
+    financialOnly: first(params, "financialOnly") === "true" ? true : undefined,
     seniority: first(params, "seniority"),
     location: first(params, "location"),
     source: first(params, "source"),
@@ -88,6 +91,24 @@ export default async function JobsPage({
         <label>
           Company
           <input name="company" defaultValue={query.company} placeholder="Coupang" />
+        </label>
+        <label>
+          Sector
+          <select name="sector" defaultValue={query.sector}>
+            <option value="">any</option>
+            {SECTORS.map((value) => (
+              <option key={value} value={value}>
+                {sectorLabel(value)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Finance only
+          <select name="financialOnly" defaultValue={query.financialOnly ? "true" : ""}>
+            <option value="">no</option>
+            <option value="true">yes</option>
+          </select>
         </label>
         <label>
           Role family
@@ -197,6 +218,9 @@ export default async function JobsPage({
                   </td>
                   <td className="muted">
                     <OrUnknown value={job.roleFamily?.toLowerCase().replace(/_/g, " ")} />
+                  </td>
+                  <td className="muted">
+                    <OrUnknown value={job.sector ? sectorLabel(job.sector) : null} />
                   </td>
                   <td>
                     <SeniorityBadge bucket={job.seniorityBucket} />

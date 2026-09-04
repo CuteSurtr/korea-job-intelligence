@@ -28,3 +28,41 @@ export function isApplicationStatus(value: string): value is ApplicationStatus {
 export function statusLabel(status: string): string {
   return status.toLowerCase().replace(/_/g, " ");
 }
+
+/**
+ * Sectors a posting can be filed under, finance first.
+ *
+ * These mirror the values the backend's lexicon produces. A posting with no established sector
+ * carries none, which is why "any" is a real choice rather than a default that hides rows.
+ */
+export const SECTORS = [
+  "FINTECH",
+  "BANKING",
+  "SECURITIES",
+  "CRYPTO",
+  "INSURANCE",
+  "ECOMMERCE",
+  "GAMING",
+  "AI_ML",
+  "HEALTHCARE",
+  "MOBILITY",
+  "EDUCATION",
+  "SECURITY",
+  "MEDIA",
+  "ENTERPRISE_SAAS",
+] as const;
+
+export type Sector = (typeof SECTORS)[number];
+
+/** The sectors that make a role a financial-engineering role. */
+export const FINANCIAL_SECTORS: readonly Sector[] = [
+  "FINTECH",
+  "BANKING",
+  "SECURITIES",
+  "CRYPTO",
+  "INSURANCE",
+];
+
+export function sectorLabel(sector: string): string {
+  return sector.toLowerCase().replace(/_/g, " ");
+}

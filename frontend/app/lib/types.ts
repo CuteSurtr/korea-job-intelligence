@@ -13,6 +13,7 @@ export interface Job {
   companyRiskLevel: string;
   title: string;
   roleFamily: string | null;
+  sector: string | null;
   seniorityBucket: string | null;
   yearsExperienceMin: number | null;
   yearsExperienceMax: number | null;

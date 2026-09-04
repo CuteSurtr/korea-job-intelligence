@@ -73,6 +73,49 @@ describe("jobs list", () => {
     expect(url.searchParams.get("openOnly")).toBe("true");
   });
 
+  it("passes the sector filter through to the API", async () => {
+    const fetchMock = stubBackend({ "/api/jobs": fixtures.jobsPage });
+    await renderPage(JobsPage({ searchParams: searchParams({ sector: "BANKING" }) }));
+
+    const url = fetchMock.mock.calls[0][0] as URL;
+    expect(url.searchParams.get("sector")).toBe("BANKING");
+  });
+
+  it("asks for financial roles without naming the sectors", async () => {
+    // "financial engineering roles" is the question; which of the five financial sectors a
+    // posting landed in is the API's business, not the searcher's.
+    const fetchMock = stubBackend({ "/api/jobs": fixtures.financialJobsPage });
+    await renderPage(JobsPage({ searchParams: searchParams({ financialOnly: "true" }) }));
+
+    const url = fetchMock.mock.calls[0][0] as URL;
+    expect(url.searchParams.get("financialOnly")).toBe("true");
+    expect(url.searchParams.has("sector")).toBe(false);
+  });
+
+  it("does not ask for financial roles unless it was asked to", async () => {
+    const fetchMock = stubBackend({ "/api/jobs": fixtures.jobsPage });
+    await renderPage(JobsPage({ searchParams: searchParams() }));
+
+    const url = fetchMock.mock.calls[0][0] as URL;
+    expect(url.searchParams.has("financialOnly")).toBe(false);
+  });
+
+  it("shows each posting's sector, and says nothing where none was established", async () => {
+    stubBackend({ "/api/jobs": fixtures.jobsPage });
+    await renderPage(JobsPage({ searchParams: searchParams() }));
+
+    const rows = screen.getAllByRole("row").slice(1);
+    for (const [index, job] of fixtures.jobsPage.content.entries()) {
+      const cells = within(rows[index]).getAllByRole("cell");
+      const text = cells.map((c) => c.textContent).join(" | ");
+      if (job.sector) {
+        expect(text).toContain(job.sector.toLowerCase().replace(/_/g, " "));
+      } else {
+        expect(text).toContain("unknown");
+      }
+    }
+  });
+
   it("keeps the filter form usable when nothing matched", async () => {
     stubBackend({ "/api/jobs": fixtures.emptyPage });
     await renderPage(JobsPage({ searchParams: searchParams({ keyword: "nothing" }) }));

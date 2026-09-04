@@ -574,8 +574,19 @@ so adding a board is configuration rather than code.
 | GET | `/actuator/health`, `/actuator/prometheus` | Health and metrics |
 
 Filters on the job list: `keyword`, `company`, `state`, `location`, `source`, `roleFamily`,
-`seniority`, `maxYearsExperience`, `minCareerValue`, `minCandidateFit`, `remotePolicy`,
-`degreeRequired`, `companyRisk`, `postedWithinDays`, `openOnly`. Sorts: `BEST_MATCH`,
+`sector`, `financialOnly`, `seniority`, `maxYearsExperience`, `minCareerValue`,
+`minCandidateFit`, `remotePolicy`, `degreeRequired`, `companyRisk`, `postedWithinDays`,
+`openOnly`.
+
+`sector` and `roleFamily` are different axes. A role family says a job is backend; a sector
+says that backend job is at a bank rather than a game studio, and finding financial engineering
+work needs the second. Sectors: `FINTECH`, `BANKING`, `SECURITIES`, `CRYPTO`, `INSURANCE`,
+`ECOMMERCE`, `GAMING`, `AI_ML`, `HEALTHCARE`, `MOBILITY`, `EDUCATION`, `SECURITY`, `MEDIA`,
+`ENTERPRISE_SAAS`. `financialOnly=true` matches the first five without naming them.
+
+A sector is taken from the employer's name or the role's title, never from body text: postings
+mention adjacent industries constantly, and a sector inferred from that was wrong far more
+often than it was right. A posting with nothing to go on carries no sector at all. Sorts: `BEST_MATCH`,
 `HIGHEST_CAREER_VALUE`, `JUNIOR_FRIENDLY`, `NEWEST`, `CLOSING_SOON`, `RECENTLY_VERIFIED`,
 `MOST_SOURCES`, `COMPANY`.
 
