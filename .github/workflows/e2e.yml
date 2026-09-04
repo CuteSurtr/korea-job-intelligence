@@ -41,16 +41,23 @@ jobs:
       - name: Build and start the stack
         run: docker compose up -d --build
 
+      # Every service is named rather than derived from the running set, so a stack that
+      # started nothing, or a service whose health is still unreported, fails here instead of
+      # passing an empty list as "all healthy".
       - name: Wait for every service to report healthy
         run: |
+          expected="postgres redis backend frontend"
           for i in $(seq 1 60); do
-            unhealthy=$(docker compose ps --format '{{.Service}} {{.Health}}' \
-              | awk '$2 != "healthy" && $2 != "" { print $1 }')
-            if [ -z "$unhealthy" ]; then
+            running=$(docker compose ps --format '{{.Service}} {{.Health}}')
+            missing=""
+            for service in $expected; do
+              echo "$running" | grep -qx "$service healthy" || missing="$missing $service"
+            done
+            if [ -z "$missing" ]; then
               echo "all services healthy"
               exit 0
             fi
-            echo "waiting on: $unhealthy"
+            echo "waiting on:$missing"
             sleep 5
           done
           echo "services never became healthy"

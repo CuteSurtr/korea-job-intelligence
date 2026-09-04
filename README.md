@@ -516,14 +516,14 @@ Filters on the job list: `keyword`, `company`, `state`, `location`, `source`, `r
 ## Testing and CI
 
 ```bash
-cd backend  && ./gradlew clean build   # 101 backend tests, plus the coverage floors
+cd backend  && ./gradlew clean build   # 105 backend tests, plus the coverage floors
 cd frontend && npm test                # 65 console tests
 cd frontend && npm run lint            # ESLint, flat config
 node tools/smoke.mjs                   # the two halves against each other, stack running
 cd frontend && npm run test:e2e        # the CRM forms in a browser, stack running
 ```
 
-**Backend, 101 tests.** Provider adapters run against recorded fixtures, so CI never depends on
+**Backend, 105 tests.** Provider adapters run against recorded fixtures, so CI never depends on
 a live job site. Everything else runs against real PostgreSQL, in a container started by
 Testcontainers. Where there is no Docker, point the suite at a PostgreSQL you already run and
 the same 98 tests pass:
