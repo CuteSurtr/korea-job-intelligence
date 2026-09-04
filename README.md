@@ -100,6 +100,7 @@ flowchart LR
     UI --> API
     APP -- "/actuator/prometheus" --> PROM
     PROM --> GRAF
+    PG -- "read-only role" --> GRAF
 ```
 
 There is deliberately no Kafka, no Kubernetes and no Elasticsearch. PostgreSQL full-text
@@ -407,8 +408,30 @@ Add the observability stack when you want it:
 docker compose --profile observability up -d
 ```
 
-Prometheus lands on `http://localhost:9090` and Grafana on `http://localhost:3001`, with the
-datasource and the ingestion dashboard provisioned.
+Prometheus lands on `http://localhost:9090` and Grafana on `http://localhost:3001`, with both
+datasources and both dashboards provisioned.
+
+The two dashboards answer different questions and should not be merged:
+
+- **Ingestion and sources** reads Prometheus. Is the pipeline working — discovery and closure
+  rates, deduplication, source latency and failures, circuit state.
+- **Discovery** reads the application database directly. What the pipeline *found*, laid out
+  against the three things this project is for: engineering roles at smaller employers,
+  engineering roles in a financial sector, and everything else. Those are joins across jobs,
+  companies and sources, which is not a shape a counter can hold.
+
+The discovery dashboard connects as `kji_readonly`, a role that can read and nothing else.
+Compose creates it automatically when Postgres initialises an empty volume. A stack whose volume
+already exists predates this and has to be given the role by hand, as the database owner:
+
+```bash
+GRAFANA_DB_PASSWORD=a-strong-password \
+  psql "postgresql://kji@localhost:5432/kji" -f ops/postgres/grafana-readonly.sql
+```
+
+Set the same `GRAFANA_DB_PASSWORD` in `.env` so Grafana connects with it. Grafana lets anyone
+with dashboard edit rights run arbitrary SQL against a datasource, so keep that role read-only
+rather than pointing it at the application's own credentials.
 
 For backend development, run the dependencies in Docker and the application from source:
 
@@ -543,6 +566,7 @@ credentials.
 | `POSTGRES_PORT`, `REDIS_HOST_PORT` | `5432`, `6379` | Published dependency ports |
 | `PROMETHEUS_PORT`, `GRAFANA_PORT` | `9090`, `3001` | Published observability ports |
 | `GRAFANA_USER`, `GRAFANA_PASSWORD` | `admin`, `admin` | Local Grafana login. Change before exposing it anywhere |
+| `GRAFANA_DB_USER`, `GRAFANA_DB_PASSWORD` | `kji_readonly`, `kji` | Read-only database role the discovery dashboard queries as |
 
 The compose defaults are development conveniences for a stack bound to your own machine. The
 read API has no authentication and the database password is a placeholder, so treat this as a
@@ -677,7 +701,7 @@ forms in Chromium.
 backend/     Spring Boot modular monolith
 frontend/    Next.js operator console
 docs/        Architecture decision records, schema, source coverage, run log
-ops/         Prometheus and Grafana configuration
+ops/         Prometheus, Grafana and database-role configuration
 tools/       seed.mjs, smoke.mjs, and the out-of-band collector that emits import NDJSON
 collected/   Provider-shaped input for the recorded run, replayable
 ```

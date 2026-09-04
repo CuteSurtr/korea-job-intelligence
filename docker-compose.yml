@@ -8,10 +8,15 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-kji}
       POSTGRES_USER: ${POSTGRES_USER:-kji}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kji}
+      # Read by the init script below, which creates the role Grafana connects as.
+      GRAFANA_DB_PASSWORD: ${GRAFANA_DB_PASSWORD:-kji}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - kji-postgres:/var/lib/postgresql/data
+      # Runs only when the volume is empty. An existing stack has to be given the role by hand;
+      # ops/postgres/grafana-readonly.sql says how.
+      - ./ops/postgres/grafana-readonly.sql:/docker-entrypoint-initdb.d/10-grafana-readonly.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kji} -d ${POSTGRES_DB:-kji}"]
       interval: 10s
@@ -99,10 +104,18 @@ services:
     restart: unless-stopped
     depends_on:
       - prometheus
+      - postgres
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
       GF_USERS_ALLOW_SIGN_UP: "false"
+      # The application database, for the discovery dashboard. Prometheus answers whether
+      # ingestion is working; this answers what it found, which is a join, not a counter.
+      GRAFANA_DB_HOST: postgres
+      GRAFANA_DB_PORT: "5432"
+      GRAFANA_DB_NAME: ${POSTGRES_DB:-kji}
+      GRAFANA_DB_USER: ${GRAFANA_DB_USER:-kji_readonly}
+      GRAFANA_DB_PASSWORD: ${GRAFANA_DB_PASSWORD:-kji}
     volumes:
       - ./ops/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./ops/grafana/dashboards:/var/lib/grafana/dashboards:ro

@@ -1,7 +1,14 @@
 apiVersion: 1
 
+# Operational metrics: is ingestion working, and how fast. The Postgres datasource next to this
+# one holds the application's own data and answers what ingestion found.
+#
+# The uid is what the ingestion dashboard's panels name. Without it a panel falls back to
+# whichever datasource is marked default, so flipping isDefault would silently repoint every
+# PromQL query at a SQL database.
 datasources:
   - name: Prometheus
+    uid: kji-prometheus
     type: prometheus
     access: proxy
     url: http://prometheus:9090

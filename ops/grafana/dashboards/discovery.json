@@ -1,0 +1,953 @@
+{
+  "uid": "kji-discovery",
+  "title": "Korea job intelligence - discovery",
+  "description": "What the pipeline has found, read against the three things this project is for: engineering roles at smaller employers, engineering roles in finance, and everything else. The ingestion dashboard next to this one answers whether the pipeline is working; this one answers what it found.",
+  "tags": [
+    "kji"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5m",
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "editable": true,
+  "graphTooltip": 0,
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "What is open right now",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Open postings",
+      "description": "Everything not closed on recorded evidence.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT count(*) AS value FROM jobs j WHERE j.lifecycle_state <> 'CLOSED'",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "At smaller employers",
+      "description": "Open postings whose employer is not one of the recognised big names. Null stage means unassessed, not small — this counts both.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT count(*) AS value FROM jobs j JOIN companies c ON c.id = j.company_id WHERE j.lifecycle_state <> 'CLOSED' AND (c.stage IS NULL OR c.stage <> 'LARGE')",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "In a financial sector",
+      "description": "Fintech, banking, securities, crypto or insurance.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT count(*) AS value FROM jobs j WHERE j.lifecycle_state <> 'CLOSED' AND j.sector IN ('FINTECH','BANKING','SECURITIES','CRYPTO','INSURANCE')",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Junior accessible",
+      "description": "Seniority A or B. C and above are excluded, and an unestablished seniority is not counted as junior.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT count(*) AS value FROM jobs j WHERE j.lifecycle_state <> 'CLOSED' AND j.seniority_bucket IN ('A','B')",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "row",
+      "title": "1 - Hidden gems: engineering at smaller employers",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "panels": []
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Open engineering roles at employers that are not big names",
+      "description": "Ordered by career value, then by how recently the posting was first seen. A role family of null means the classifier found no evidence, so those rows are excluded rather than guessed at — widen the filter below if you want them.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n  c.canonical_name AS \"Employer\",\n  j.canonical_title AS \"Role\",\n  lower(j.role_family) AS \"Family\",\n  coalesce(lower(j.sector), '') AS \"Sector\",\n  j.seniority_bucket AS \"Sen\",\n  j.career_value_score AS \"SWE\",\n  coalesce(j.location_city, j.location_raw) AS \"Location\",\n  j.first_seen_at AS \"First seen\"\nFROM jobs j\nJOIN companies c ON c.id = j.company_id\nWHERE j.lifecycle_state <> 'CLOSED' AND (c.stage IS NULL OR c.stage <> 'LARGE') AND j.role_family IS NOT NULL\nORDER BY j.career_value_score DESC NULLS LAST, j.first_seen_at DESC\nLIMIT 200",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "barchart",
+      "title": "Smaller employers by open postings",
+      "description": "How deep the coverage of each employer is. A long tail of ones is what shallow discovery looks like: the employer was found, its board was not read.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 80,
+            "axisPlacement": "auto",
+            "gradientMode": "none"
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "xTickLabelRotation": 0,
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT c.canonical_name AS \"Employer\", count(*)::int AS \"Open postings\"\nFROM jobs j JOIN companies c ON c.id = j.company_id\nWHERE j.lifecycle_state <> 'CLOSED' AND (c.stage IS NULL OR c.stage <> 'LARGE')\nGROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 25",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "barchart",
+      "title": "How many employers sit at each depth",
+      "description": "Employers bucketed by how many open postings each has. A spike at one is the signal that discovery is finding names rather than boards.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 80,
+            "axisPlacement": "auto",
+            "gradientMode": "none"
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "vertical",
+        "showValue": "auto",
+        "stacking": "none",
+        "xTickLabelRotation": 0,
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT depth::text AS \"Open postings per employer\", count(*)::int AS \"Employers\"\nFROM (\n  SELECT c.id, count(*) AS depth\n  FROM jobs j JOIN companies c ON c.id = j.company_id\n  WHERE j.lifecycle_state <> 'CLOSED' AND (c.stage IS NULL OR c.stage <> 'LARGE')\n  GROUP BY c.id\n) per_employer\nGROUP BY depth ORDER BY depth",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "row",
+      "title": "2 - Financial sector engineering",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "panels": []
+    },
+    {
+      "id": 11,
+      "type": "table",
+      "title": "Open roles in a financial sector",
+      "description": "Sector is assigned from the employer first and the title second; the description is deliberately not consulted, because it named the wrong industry more often than the right one. Confidence sits with the extracted field on the job's own page.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n  c.canonical_name AS \"Employer\",\n  j.canonical_title AS \"Role\",\n  lower(j.sector) AS \"Sector\",\n  coalesce(lower(j.role_family), '') AS \"Family\",\n  j.seniority_bucket AS \"Sen\",\n  j.career_value_score AS \"SWE\",\n  coalesce(c.stage, '') AS \"Employer size\",\n  coalesce(j.location_city, j.location_raw) AS \"Location\"\nFROM jobs j\nJOIN companies c ON c.id = j.company_id\nWHERE j.lifecycle_state <> 'CLOSED' AND j.sector IN ('FINTECH','BANKING','SECURITIES','CRYPTO','INSURANCE')\nORDER BY j.career_value_score DESC NULLS LAST, c.canonical_name\nLIMIT 200",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "barchart",
+      "title": "Financial postings by sector",
+      "description": "Five sectors are treated as financial. Which one a posting landed in is intelligence, not a filter anyone should have to know to ask the question.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 38
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 80,
+            "axisPlacement": "auto",
+            "gradientMode": "none"
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "xTickLabelRotation": 0,
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT lower(j.sector) AS \"Sector\", count(*)::int AS \"Open postings\"\nFROM jobs j WHERE j.lifecycle_state <> 'CLOSED' AND j.sector IN ('FINTECH','BANKING','SECURITIES','CRYPTO','INSURANCE')\nGROUP BY 1 ORDER BY 2 DESC",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "barchart",
+      "title": "Financial postings by employer size",
+      "description": "Whether the financial roles found are concentrated in the big names or spread wider.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 38
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 80,
+            "axisPlacement": "auto",
+            "gradientMode": "none"
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "xTickLabelRotation": 0,
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT coalesce(c.stage, 'unassessed') AS \"Employer size\", count(*)::int AS \"Open postings\"\nFROM jobs j JOIN companies c ON c.id = j.company_id\nWHERE j.lifecycle_state <> 'CLOSED' AND j.sector IN ('FINTECH','BANKING','SECURITIES','CRYPTO','INSURANCE')\nGROUP BY 1 ORDER BY 2 DESC",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "row",
+      "title": "3 - Everything else",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 47
+      },
+      "panels": []
+    },
+    {
+      "id": 15,
+      "type": "barchart",
+      "title": "Open postings by role family",
+      "description": "Only postings the classifier could place. Roughly three in four carry no role family, which is the extraction gap rather than a shortage of engineering roles.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 48
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 80,
+            "axisPlacement": "auto",
+            "gradientMode": "none"
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "xTickLabelRotation": 0,
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT lower(j.role_family) AS \"Role family\", count(*)::int AS \"Open postings\"\nFROM jobs j WHERE j.lifecycle_state <> 'CLOSED' AND j.role_family IS NOT NULL\nGROUP BY 1 ORDER BY 2 DESC",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "barchart",
+      "title": "Open postings by seniority",
+      "description": "A and B are the junior-accessible buckets. Unestablished is shown as its own bar rather than folded into a neighbour.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 48
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "lineWidth": 0,
+            "fillOpacity": 80,
+            "axisPlacement": "auto",
+            "gradientMode": "none"
+          },
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "vertical",
+        "showValue": "auto",
+        "stacking": "none",
+        "xTickLabelRotation": 0,
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT coalesce(j.seniority_bucket, 'unestablished') AS \"Seniority\", count(*)::int AS \"Open postings\"\nFROM jobs j WHERE j.lifecycle_state <> 'CLOSED'\nGROUP BY 1 ORDER BY 1",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "table",
+      "title": "Highest career value outside the financial sectors",
+      "description": "The rest of the engineering market, ranked the same way.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 57
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n  c.canonical_name AS \"Employer\",\n  j.canonical_title AS \"Role\",\n  lower(j.role_family) AS \"Family\",\n  coalesce(lower(j.sector), '') AS \"Sector\",\n  j.seniority_bucket AS \"Sen\",\n  j.career_value_score AS \"SWE\",\n  j.application_priority_score AS \"Priority\",\n  coalesce(j.location_city, j.location_raw) AS \"Location\"\nFROM jobs j\nJOIN companies c ON c.id = j.company_id\nWHERE j.lifecycle_state <> 'CLOSED' AND j.role_family IS NOT NULL\n  AND (j.sector IS NULL OR j.sector NOT IN ('FINTECH','BANKING','SECURITIES','CRYPTO','INSURANCE'))\nORDER BY j.career_value_score DESC NULLS LAST, j.application_priority_score DESC NULLS LAST\nLIMIT 200",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "row",
+      "title": "Where the numbers come from",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 68
+      },
+      "panels": []
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Postings first seen per day, by source",
+      "description": "Counted against the job's first sighting, so a posting is attributed to whichever source found it first and never counted twice.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 69
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "lineWidth": 0,
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            },
+            "axisPlacement": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "time_series",
+          "rawSql": "SELECT\n  date_trunc('day', j.first_seen_at) AS time,\n  s.code AS metric,\n  count(DISTINCT j.id)::int AS value\nFROM jobs j\nJOIN job_sources js ON js.job_id = j.id\nJOIN sources s ON s.id = js.source_id\nWHERE $__timeFilter(j.first_seen_at)\nGROUP BY 1, 2\nORDER BY 1",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "table",
+      "title": "What each source is contributing",
+      "description": "Provider rows against distinct jobs. A source whose two numbers are far apart is either corroborating what another source already found or repeating itself.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 77
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n  s.code AS \"Source\",\n  s.adapter_kind AS \"Adapter\",\n  count(*)::int AS \"Provider rows\",\n  count(DISTINCT js.job_id)::int AS \"Distinct jobs\",\n  count(DISTINCT j.company_id)::int AS \"Employers\",\n  sum((j.lifecycle_state <> 'CLOSED')::int)::int AS \"Still open\",\n  max(js.last_seen_at) AS \"Last seen\"\nFROM job_sources js\nJOIN sources s ON s.id = js.source_id\nJOIN jobs j ON j.id = js.job_id\nGROUP BY 1, 2 ORDER BY 4 DESC",
+          "editorMode": "code"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "table",
+      "title": "Employers the console has not sized",
+      "description": "Stage is recorded only on evidence: a lexicon name match, or the employer running its own board. Everything here is unassessed, which is not the same as small.",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "kji-postgres"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 86
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "kji-postgres"
+          },
+          "format": "table",
+          "rawSql": "SELECT\n  c.canonical_name AS \"Employer\",\n  count(*)::int AS \"Open postings\",\n  count(DISTINCT js.source_id)::int AS \"Sources\",\n  min(j.first_seen_at) AS \"First seen\"\nFROM companies c\nJOIN jobs j ON j.company_id = c.id\nLEFT JOIN job_sources js ON js.job_id = j.id\nWHERE c.stage IS NULL AND j.lifecycle_state <> 'CLOSED'\nGROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 100",
+          "editorMode": "code"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+apiVersion: 1
+
+# The application database, read-only.
+#
+# The Prometheus datasource next to this one answers "is ingestion working". This one answers
+# "what did ingestion find", which is a different question and cannot be asked of a counter: the
+# shapes worth seeing here are joins across jobs, companies and sources, not rates over time.
+#
+# Every value comes from the environment. Grafana interpolates $VAR and ${VAR} in provisioning
+# files but has no shell-style default syntax, so a ${VAR:-fallback} here would be passed through
+# as a literal and the datasource would point at nonsense. Compose supplies all five with its own
+# defaults; anything running Grafana another way has to set them.
+#
+# GRAFANA_DB_USER should be kji_readonly, created by ops/postgres/grafana-readonly.sql. Grafana
+# lets anyone with dashboard edit rights run arbitrary SQL against a datasource, so whatever
+# credentials this holds are the blast radius.
+datasources:
+  - name: Postgres
+    uid: kji-postgres
+    type: grafana-postgresql-datasource
+    access: proxy
+    url: $GRAFANA_DB_HOST:$GRAFANA_DB_PORT
+    user: $GRAFANA_DB_USER
+    database: $GRAFANA_DB_NAME
+    isDefault: false
+    editable: false
+    jsonData:
+      sslmode: disable
+      maxOpenConns: 4
+      maxIdleConns: 2
+      connMaxLifetime: 14400
+    secureJsonData:
+      password: $GRAFANA_DB_PASSWORD
