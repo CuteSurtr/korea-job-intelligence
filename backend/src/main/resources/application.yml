@@ -50,6 +50,20 @@ management:
         http.server.requests: true
         kji.source.request.latency: true
         kji.ingestion.run.duration: true
+        # Hikari times connection acquisition with a plain Timer, which Micrometer exports as a
+        # summary carrying only _count and _sum. The Grafana panel asks for a p95 and
+        # histogram_quantile needs buckets, so that panel had no series to draw at all.
+        hikaricp.connections.acquire: true
+      # A warm pool hands back a connection in microseconds. Micrometer's default range starts
+      # at 1ms, which would drop every observation into the first bucket and flatten the p95.
+      minimum-expected-value:
+        hikaricp.connections.acquire: 100us
+      # A full board crawl runs well past the 30s Micrometer assumes a timer will ever reach.
+      # Anything slower only lands in the +Inf bucket, where histogram_quantile cannot see it,
+      # so p95 pinned to exactly 30s while a Coupang run genuinely took 56s.
+      maximum-expected-value:
+        kji.ingestion.run.duration: 10m
+        http.server.requests: 5m
 
 kji:
   internal:

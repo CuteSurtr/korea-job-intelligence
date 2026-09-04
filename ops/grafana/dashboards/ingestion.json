@@ -11,12 +11,12 @@
     {
       "id": 1,
       "type": "timeseries",
-      "title": "Jobs discovered per source",
+      "title": "Jobs discovered per source (6h rolling)",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
       "targets": [
         {
-          "expr": "sum by (source) (rate(kji_ingestion_jobs_discovered_total[15m]))",
+          "expr": "sum by (source) (increase(kji_ingestion_jobs_discovered_total[6h]))",
           "legendFormat": "{{source}}",
           "refId": "A"
         }
@@ -25,12 +25,12 @@
     {
       "id": 2,
       "type": "timeseries",
-      "title": "Jobs closed per source",
+      "title": "Jobs closed per source (6h rolling)",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
       "targets": [
         {
-          "expr": "sum by (source) (rate(kji_ingestion_jobs_closed_total[15m]))",
+          "expr": "sum by (source) (increase(kji_ingestion_jobs_closed_total[6h]))",
           "legendFormat": "{{source}}",
           "refId": "A"
         }
@@ -39,12 +39,12 @@
     {
       "id": 3,
       "type": "timeseries",
-      "title": "Deduplication rate",
+      "title": "Deduplication rate (6h rolling)",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
       "fieldConfig": { "defaults": { "unit": "percentunit", "max": 1, "min": 0 }, "overrides": [] },
       "targets": [
         {
-          "expr": "sum(rate(kji_ingestion_jobs_duplicates_total[1h])) / clamp_min(sum(rate(kji_ingestion_records_normalized_total[1h])), 1)",
+          "expr": "sum(increase(kji_ingestion_jobs_duplicates_total[6h])) / clamp_min(sum(increase(kji_ingestion_records_normalized_total[6h])), 1)",
           "legendFormat": "duplicates / normalized",
           "refId": "A"
         }
@@ -58,7 +58,7 @@
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum by (le, source) (rate(kji_source_request_latency_seconds_bucket[15m])))",
+          "expr": "histogram_quantile(0.95, sum by (le, source) (rate(kji_source_request_latency_seconds_bucket[6h])))",
           "legendFormat": "{{source}}",
           "refId": "A"
         }
@@ -67,17 +67,17 @@
     {
       "id": 5,
       "type": "timeseries",
-      "title": "Source failures and rate limits",
+      "title": "Source failures and rate limits (6h rolling)",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
       "targets": [
         {
-          "expr": "sum by (source) (rate(kji_source_failures_total[15m]))",
+          "expr": "sum by (source) (increase(kji_source_failures_total[6h])) or on() vector(0)",
           "legendFormat": "failures {{source}}",
           "refId": "A"
         },
         {
-          "expr": "sum by (source) (rate(kji_source_rate_limits_total[15m]))",
+          "expr": "sum by (source) (increase(kji_source_rate_limits_total[6h])) or on() vector(0)",
           "legendFormat": "rate limits {{source}}",
           "refId": "B"
         }
@@ -86,17 +86,17 @@
     {
       "id": 6,
       "type": "timeseries",
-      "title": "Normalization and record failures",
+      "title": "Normalization and record failures (6h rolling)",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
       "targets": [
         {
-          "expr": "sum by (source) (rate(kji_ingestion_normalization_failures_total[15m]))",
+          "expr": "sum by (source) (increase(kji_ingestion_normalization_failures_total[6h])) or on() vector(0)",
           "legendFormat": "normalization {{source}}",
           "refId": "A"
         },
         {
-          "expr": "sum by (source) (rate(kji_ingestion_record_failures_total[15m]))",
+          "expr": "sum by (source) (increase(kji_ingestion_record_failures_total[6h])) or on() vector(0)",
           "legendFormat": "record {{source}}",
           "refId": "B"
         }
@@ -110,7 +110,7 @@
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum by (le, source) (rate(kji_ingestion_run_duration_seconds_bucket[1h])))",
+          "expr": "histogram_quantile(0.95, sum by (le, source) (rate(kji_ingestion_run_duration_seconds_bucket[6h])))",
           "legendFormat": "{{source}}",
           "refId": "A"
         }
@@ -124,7 +124,7 @@
       "fieldConfig": { "defaults": { "unit": "percentunit", "max": 1, "min": 0 }, "overrides": [] },
       "targets": [
         {
-          "expr": "sum(rate(kji_cache_requests_total{result=\"hit\"}[15m])) / clamp_min(sum(rate(kji_cache_requests_total[15m])), 1)",
+          "expr": "sum(increase(kji_cache_requests_total{result=\"hit\"}[1h])) / clamp_min(sum(increase(kji_cache_requests_total[1h])), 1)",
           "legendFormat": "hit ratio",
           "refId": "A"
         }
@@ -138,7 +138,7 @@
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(hikaricp_connections_acquire_seconds_bucket[15m])))",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(hikaricp_connections_acquire_seconds_bucket[1h])))",
           "legendFormat": "acquire p95",
           "refId": "A"
         }
@@ -152,7 +152,7 @@
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum by (le, uri) (rate(http_server_requests_seconds_bucket{uri!~\"/actuator.*\"}[15m])))",
+          "expr": "histogram_quantile(0.95, sum by (le, uri) (rate(http_server_requests_seconds_bucket{uri!~\"/actuator.*\"}[1h])))",
           "legendFormat": "{{uri}}",
           "refId": "A"
         }
