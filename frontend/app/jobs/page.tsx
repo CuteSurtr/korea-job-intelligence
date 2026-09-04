@@ -52,6 +52,7 @@ export default async function JobsPage({
     roleFamily: first(params, "roleFamily"),
     sector: first(params, "sector"),
     financialOnly: first(params, "financialOnly") === "true" ? true : undefined,
+    excludeLarge: first(params, "excludeLarge") === "true" ? true : undefined,
     seniority: first(params, "seniority"),
     location: first(params, "location"),
     source: first(params, "source"),
@@ -106,6 +107,13 @@ export default async function JobsPage({
         <label>
           Finance only
           <select name="financialOnly" defaultValue={query.financialOnly ? "true" : ""}>
+            <option value="">no</option>
+            <option value="true">yes</option>
+          </select>
+        </label>
+        <label>
+          Hide big names
+          <select name="excludeLarge" defaultValue={query.excludeLarge ? "true" : ""}>
             <option value="">no</option>
             <option value="true">yes</option>
           </select>
@@ -221,6 +229,11 @@ export default async function JobsPage({
                   </td>
                   <td className="muted">
                     <OrUnknown value={job.sector ? sectorLabel(job.sector) : null} />
+                  </td>
+                  <td className="muted">
+                    {job.companyStage === "LARGE" ? "big name" : job.companyStage === "EMERGING"
+                      ? "own board"
+                      : "-"}
                   </td>
                   <td>
                     <SeniorityBadge bucket={job.seniorityBucket} />

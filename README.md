@@ -578,6 +578,21 @@ Filters on the job list: `keyword`, `company`, `state`, `location`, `source`, `r
 `minCandidateFit`, `remotePolicy`, `degreeRequired`, `companyRisk`, `postedWithinDays`,
 `openOnly`.
 
+`companyStage` and `excludeLarge` are the third axis. A stage is `LARGE` when the employer's
+name matched the curated list of big Korean names, `EMERGING` when the posting was found on the
+employer's own applicant tracking board, and absent otherwise. `excludeLarge=true` drops the
+big names and keeps everything else, including employers nothing is known about, because an
+unknown company is exactly what "hidden gem" means.
+
+The three questions this project exists to answer are the three combinations:
+
+| Question | Query |
+| --- | --- |
+| Roles at companies I would not already have found | `excludeLarge=true` |
+| Financial engineering roles | `financialOnly=true` |
+| Financial engineering at a smaller employer | `excludeLarge=true&financialOnly=true` |
+| Everything else | neither filter |
+
 `sector` and `roleFamily` are different axes. A role family says a job is backend; a sector
 says that backend job is at a bank rather than a game studio, and finding financial engineering
 work needs the second. Sectors: `FINTECH`, `BANKING`, `SECURITIES`, `CRYPTO`, `INSURANCE`,

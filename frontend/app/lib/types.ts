@@ -14,6 +14,7 @@ export interface Job {
   title: string;
   roleFamily: string | null;
   sector: string | null;
+  companyStage: string | null;
   seniorityBucket: string | null;
   yearsExperienceMin: number | null;
   yearsExperienceMax: number | null;

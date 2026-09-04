@@ -116,6 +116,33 @@ describe("jobs list", () => {
     }
   });
 
+  it("asks the API to hide big-name employers", async () => {
+    const fetchMock = stubBackend({ "/api/jobs": fixtures.emergingJobsPage });
+    await renderPage(JobsPage({ searchParams: searchParams({ excludeLarge: "true" }) }));
+
+    const url = fetchMock.mock.calls[0][0] as URL;
+    expect(url.searchParams.get("excludeLarge")).toBe("true");
+  });
+
+  it("does not hide anything unless asked", async () => {
+    const fetchMock = stubBackend({ "/api/jobs": fixtures.jobsPage });
+    await renderPage(JobsPage({ searchParams: searchParams() }));
+
+    const url = fetchMock.mock.calls[0][0] as URL;
+    expect(url.searchParams.has("excludeLarge")).toBe(false);
+  });
+
+  it("combines the two questions, for finance at a smaller employer", async () => {
+    const fetchMock = stubBackend({ "/api/jobs": fixtures.emergingJobsPage });
+    await renderPage(
+      JobsPage({ searchParams: searchParams({ excludeLarge: "true", financialOnly: "true" }) }),
+    );
+
+    const url = fetchMock.mock.calls[0][0] as URL;
+    expect(url.searchParams.get("excludeLarge")).toBe("true");
+    expect(url.searchParams.get("financialOnly")).toBe("true");
+  });
+
   it("keeps the filter form usable when nothing matched", async () => {
     stubBackend({ "/api/jobs": fixtures.emptyPage });
     await renderPage(JobsPage({ searchParams: searchParams({ keyword: "nothing" }) }));
