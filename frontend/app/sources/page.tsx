@@ -3,6 +3,13 @@ import { CircuitBadge } from "../components/Badges";
 import { fetchJson } from "../lib/api";
 import { formatDateTime, formatRelativeDays } from "../lib/format";
 import type { SourceHealthEntry, SourceRegistryEntry } from "../lib/types";
+import {
+  Badge,
+  Container,
+  TableWrap,
+  Td,
+  Th,
+} from "../components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +24,7 @@ export default async function SourcesPage() {
   } catch (error) {
     return (
       <>
-        <h1>Sources</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Sources</h1>
         <BackendError error={error} />
       </>
     );
@@ -26,89 +33,85 @@ export default async function SourcesPage() {
   const healthByCode = new Map(health.map((entry) => [entry.sourceCode, entry]));
 
   return (
-    <>
-      <h1>Sources</h1>
-      <p className="page-subtitle">
+    <Container width="table">
+      <h1 className="text-2xl font-semibold tracking-tight">Sources</h1>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         Runtime-available sources are queried by the backend itself. The rest arrive through the
         NDJSON import boundary, which is a statement about reachability, not about quality.
       </p>
 
-      <div className="table-wrap">
-        <table>
+      <TableWrap>
           <thead>
             <tr>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Adapter</th>
-              <th>Runtime</th>
-              <th className="numeric">Trust</th>
-              <th>Stable ids</th>
-              <th>Full description</th>
-              <th>Enabled</th>
+              <Th>Code</Th>
+              <Th>Name</Th>
+              <Th>Adapter</Th>
+              <Th>Runtime</Th>
+              <Th align="right">Trust</Th>
+              <Th>Stable ids</Th>
+              <Th>Full description</Th>
+              <Th>Enabled</Th>
             </tr>
           </thead>
           <tbody>
             {sources.map((source) => (
               <tr key={source.code}>
-                <td>{source.code}</td>
-                <td className="muted">{source.displayName}</td>
-                <td className="muted">{source.adapterKind.toLowerCase().replace(/_/g, " ")}</td>
-                <td>
-                  <span className={`badge ${source.runtimeAvailable ? "badge-good" : "badge-unknown"}`}>
+                <Td>{source.code}</Td>
+                <Td className="text-muted-foreground">{source.displayName}</Td>
+                <Td className="text-muted-foreground">{source.adapterKind.toLowerCase().replace(/_/g, " ")}</Td>
+                <Td>
+                  <Badge tone={source.runtimeAvailable ? "good" : "neutral"}>
                     {source.runtimeAvailable ? "direct" : "import only"}
-                  </span>
-                </td>
-                <td className="numeric">{source.trustTier}</td>
-                <td className={source.stableExternalId ? "" : "unknown"}>
+                  </Badge>
+                </Td>
+                <Td align="right">{source.trustTier}</Td>
+                <Td className={source.stableExternalId ? "" : "text-muted-foreground/70"}>
                   {source.stableExternalId ? "yes" : "no"}
-                </td>
-                <td className="muted">{source.providesFullDescription ? "yes" : "no"}</td>
-                <td className="muted">{source.enabled ? "yes" : "no"}</td>
+                </Td>
+                <Td className="text-muted-foreground">{source.providesFullDescription ? "yes" : "no"}</Td>
+                <Td className="text-muted-foreground">{source.enabled ? "yes" : "no"}</Td>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </TableWrap>
 
-      <h2>Health</h2>
-      <div className="table-wrap">
-        <table>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Health</h2>
+      <TableWrap>
           <thead>
             <tr>
-              <th>Source</th>
-              <th>Circuit</th>
-              <th>Last success</th>
-              <th>Last failure</th>
-              <th className="numeric">Consecutive failures</th>
-              <th className="numeric">Latency</th>
-              <th className="numeric">Records last run</th>
-              <th className="numeric">Rate limits</th>
-              <th>Last error</th>
+              <Th>Source</Th>
+              <Th>Circuit</Th>
+              <Th>Last success</Th>
+              <Th>Last failure</Th>
+              <Th align="right">Consecutive failures</Th>
+              <Th align="right">Latency</Th>
+              <Th align="right">Records last run</Th>
+              <Th align="right">Rate limits</Th>
+              <Th>Last error</Th>
             </tr>
           </thead>
           <tbody>
             {health.map((entry) => (
               <tr key={entry.sourceCode}>
-                <td>{entry.sourceCode}</td>
-                <td>
+                <Td>{entry.sourceCode}</Td>
+                <Td>
                   <CircuitBadge state={entry.circuitState} />
-                </td>
-                <td className="muted">{formatRelativeDays(entry.lastSuccessAt)}</td>
-                <td className="muted">{formatRelativeDays(entry.lastFailureAt)}</td>
-                <td className="numeric">{entry.consecutiveFailures}</td>
-                <td className="numeric muted">
+                </Td>
+                <Td className="text-muted-foreground">{formatRelativeDays(entry.lastSuccessAt)}</Td>
+                <Td className="text-muted-foreground">{formatRelativeDays(entry.lastFailureAt)}</Td>
+                <Td align="right">{entry.consecutiveFailures}</Td>
+                <Td align="right" className="text-muted-foreground">
                   {entry.rollingLatencyMs === null ? "-" : `${entry.rollingLatencyMs} ms`}
-                </td>
-                <td className="numeric">{entry.recordsLastRun}</td>
-                <td className="numeric">{entry.rateLimitEvents}</td>
-                <td className="muted">
+                </Td>
+                <Td align="right">{entry.recordsLastRun}</Td>
+                <Td align="right">{entry.rateLimitEvents}</Td>
+                <Td className="text-muted-foreground">
                   <span className="evidence">{entry.lastError ?? "-"}</span>
-                </td>
+                </Td>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </TableWrap>
 
       <p className="pagination muted">
         Health last updated{" "}
@@ -122,6 +125,6 @@ export default async function SourcesPage() {
           : "never"}
         {healthByCode.size > 0 ? "" : ""}
       </p>
-    </>
+    </Container>
   );
 }

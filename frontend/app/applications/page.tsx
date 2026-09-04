@@ -1,12 +1,21 @@
 import Link from "next/link";
 import { BackendError } from "../components/BackendError";
 import { Flash, WriteDisabled, param } from "../components/Flash";
-import { OrUnknown, StatusBadge } from "../components/Badges";
+import { StatusBadge } from "../components/Badges";
 import { setApplicationStatus } from "../lib/actions";
 import { APPLICATION_STATUSES, statusLabel } from "../lib/applications";
 import { canWrite, fetchJson } from "../lib/api";
 import { formatDate, formatDateTime } from "../lib/format";
 import type { Application, PageResponse } from "../lib/types";
+import {
+  Container,
+  OrUnknown,
+  TableWrap,
+  Td,
+  Th,
+  buttonClass,
+  secondaryButtonClass,
+} from "../components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -29,16 +38,16 @@ export default async function ApplicationsPage({
   } catch (error) {
     return (
       <>
-        <h1>Applications</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Applications</h1>
         <BackendError error={error} />
       </>
     );
   }
 
   return (
-    <>
-      <h1>Applications</h1>
-      <p className="page-subtitle">
+    <Container width="table">
+      <h1 className="text-2xl font-semibold tracking-tight">Applications</h1>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         {applications.totalElements} tracked applications. Every status change is recorded with the
         status it came from.
       </p>
@@ -46,7 +55,7 @@ export default async function ApplicationsPage({
       <Flash saved={param(params, "saved")} error={param(params, "error")} />
       <WriteDisabled />
 
-      <form className="filters" method="get">
+      <form className="mb-5 flex flex-wrap items-end gap-3 rounded-lg border bg-surface p-3" method="get">
         <label>
           Status
           <select name="status" defaultValue={status}>
@@ -58,51 +67,50 @@ export default async function ApplicationsPage({
             ))}
           </select>
         </label>
-        <button type="submit">Apply</button>
-        <Link className="badge reset" href="/applications">
+        <button type="submit" className={buttonClass}>Apply</button>
+        <Link className={secondaryButtonClass} href="/applications">
           Reset
         </Link>
       </form>
 
-      <div className="table-wrap">
-        <table>
+      <TableWrap>
           <thead>
             <tr>
-              <th>Company</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Move to</th>
-              <th>Applied</th>
-              <th>Resume</th>
-              <th>Interview stage</th>
-              <th>Follow up</th>
-              <th>Updated</th>
+              <Th>Company</Th>
+              <Th>Role</Th>
+              <Th>Status</Th>
+              <Th>Move to</Th>
+              <Th>Applied</Th>
+              <Th>Resume</Th>
+              <Th>Interview stage</Th>
+              <Th>Follow up</Th>
+              <Th>Updated</Th>
             </tr>
           </thead>
           <tbody>
             {applications.content.length === 0 ? (
               <tr>
-                <td colSpan={9} className="muted">
+                <Td colSpan={9} className="text-muted-foreground">
                   {status
                     ? `No application is ${statusLabel(status)}.`
                     : "No application has been recorded yet. Open a job and track it."}
-                </td>
+                </Td>
               </tr>
             ) : (
               applications.content.map((application) => (
                 <tr key={application.id}>
-                  <td className="muted">
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={application.companyName} />
-                  </td>
-                  <td>
+                  </Td>
+                  <Td>
                     <Link href={`/applications/${application.id}`}>
                       <OrUnknown value={application.jobTitle} />
                     </Link>
-                  </td>
-                  <td>
+                  </Td>
+                  <Td>
                     <StatusBadge status={application.status} />
-                  </td>
-                  <td>
+                  </Td>
+                  <Td>
                     {/* Triage is almost always a status change and nothing else, so it happens
                         here rather than by opening every row. */}
                     <form action={setApplicationStatus} className="inline-form">
@@ -124,22 +132,21 @@ export default async function ApplicationsPage({
                       </select>
                       <button type="submit" disabled={!writable}>Move</button>
                     </form>
-                  </td>
-                  <td className="muted">{formatDate(application.appliedAt)}</td>
-                  <td className="muted">
+                  </Td>
+                  <Td className="text-muted-foreground">{formatDate(application.appliedAt)}</Td>
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={application.resumeVersion} />
-                  </td>
-                  <td className="muted">
+                  </Td>
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={application.interviewStage} />
-                  </td>
-                  <td className="muted">{formatDate(application.followUpAt)}</td>
-                  <td className="muted">{formatDateTime(application.updatedAt)}</td>
+                  </Td>
+                  <Td className="text-muted-foreground">{formatDate(application.followUpAt)}</Td>
+                  <Td className="text-muted-foreground">{formatDateTime(application.updatedAt)}</Td>
                 </tr>
               ))
             )}
           </tbody>
-        </table>
-      </div>
-    </>
+        </TableWrap>
+    </Container>
   );
 }

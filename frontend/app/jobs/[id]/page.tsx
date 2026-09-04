@@ -1,18 +1,28 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BackendError } from "../../components/BackendError";
+import { Flash, WriteDisabled, param } from "../../components/Flash";
 import {
   LifecycleBadge,
-  OrUnknown,
   ScoreCell,
   SeniorityBadge,
   StatusBadge,
-  Unknown,
 } from "../../components/Badges";
-import { Flash, WriteDisabled, param } from "../../components/Flash";
+import {
+  Badge,
+  Container,
+  Fact,
+  FactGrid,
+  OrUnknown,
+  TableWrap,
+  Td,
+  Th,
+  Unknown,
+  secondaryButtonClass,
+} from "../../components/ui";
 import { trackJob } from "../../lib/actions";
-import { APPLICATION_STATUSES, statusLabel } from "../../lib/applications";
 import { canWrite, fetchJson, isNotFound } from "../../lib/api";
+import { APPLICATION_STATUSES, statusLabel } from "../../lib/applications";
 import {
   formatDate,
   formatDateTime,
@@ -42,7 +52,7 @@ export default async function JobDetailPage({
     }
     return (
       <>
-        <h1>Job {id}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Job {id}</h1>
         <BackendError error={error} />
       </>
     );
@@ -64,9 +74,9 @@ export default async function JobDetailPage({
   }
 
   return (
-    <>
-      <h1>{job.title}</h1>
-      <p className="page-subtitle">
+    <Container width="detail">
+      <h1 className="text-2xl font-semibold tracking-tight">{job.title}</h1>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         <Link href={`/companies/${job.companyId}`}>{job.companyName}</Link>
         {" - "}
         <LifecycleBadge state={job.lifecycleState} />
@@ -102,7 +112,7 @@ export default async function JobDetailPage({
             </select>
             <input name="note" placeholder="why it moved" />
             <button type="submit" disabled={!canWrite()}>Move</button>
-            <Link className="badge reset" href={`/applications/${tracked.id}`}>
+            <Link className={secondaryButtonClass} href={`/applications/${tracked.id}`}>
               Open the application
             </Link>
           </>
@@ -125,112 +135,108 @@ export default async function JobDetailPage({
         )}
       </form>
 
-      <div className="detail-grid">
-        <Field label="Role family" value={job.roleFamily?.toLowerCase().replace(/_/g, " ")} />
+      <FactGrid>
+        <Fact label="Role family" value={job.roleFamily?.toLowerCase().replace(/_/g, " ")} />
         <div>
-          <div className="label">Seniority</div>
+          <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Seniority</div>
           <div>
             <SeniorityBadge bucket={job.seniorityBucket} />{" "}
-            <span className="muted">{intelligence?.seniorityLabel ?? ""}</span>
+            <span className="text-muted-foreground">{intelligence?.seniorityLabel ?? ""}</span>
           </div>
         </div>
-        <Field
+        <Fact
           label="Experience"
           value={formatExperience(job.yearsExperienceMin, job.yearsExperienceMax)}
         />
-        <Field label="Degree required" value={job.degreeRequired} />
-        <Field label="Employment type" value={job.employmentType} />
-        <Field label="Remote policy" value={job.remotePolicy} />
-        <Field label="Location" value={job.locationRaw ?? job.locationCity} />
-        <Field label="First seen" value={formatDate(job.firstSeenAt)} />
-        <Field label="Last seen" value={formatDate(job.lastSeenAt)} />
-        <Field label="Last verified" value={formatDate(job.lastVerifiedAt)} />
-        <Field label="Posted" value={formatDate(job.postedAt)} />
-        <Field
+        <Fact label="Degree required" value={job.degreeRequired} />
+        <Fact label="Employment type" value={job.employmentType} />
+        <Fact label="Remote policy" value={job.remotePolicy} />
+        <Fact label="Location" value={job.locationRaw ?? job.locationCity} />
+        <Fact label="First seen" value={formatDate(job.firstSeenAt)} />
+        <Fact label="Last seen" value={formatDate(job.lastSeenAt)} />
+        <Fact label="Last verified" value={formatDate(job.lastVerifiedAt)} />
+        <Fact label="Posted" value={formatDate(job.postedAt)} />
+        <Fact
           label="Deadline"
           value={formatDeadline(job.deadlineAt, job.deadlineOpenEnded)}
         />
-        <Field label="Sources" value={String(job.sourceCount)} />
-        {job.closedAt ? <Field label="Closed" value={`${formatDate(job.closedAt)} (${job.closedReason})`} /> : null}
-      </div>
+        <Fact label="Sources" value={String(job.sourceCount)} />
+        {job.closedAt ? <Fact label="Closed" value={`${formatDate(job.closedAt)} (${job.closedReason})`} /> : null}
+      </FactGrid>
 
-      <h2>Scores</h2>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Scores</h2>
       {detail.scores.length === 0 ? (
-        <p className="muted">No score has been computed for this job.</p>
+        <p className="text-muted-foreground">No score has been computed for this job.</p>
       ) : (
-        <div className="table-wrap">
-          <table>
+        <TableWrap>
             <thead>
               <tr>
-                <th>Kind</th>
-                <th>Profile</th>
-                <th className="numeric">Score</th>
-                <th className="numeric">Confidence</th>
-                <th>Version</th>
-                <th>Why</th>
+                <Th>Kind</Th>
+                <Th>Profile</Th>
+                <Th align="right">Score</Th>
+                <Th align="right">Confidence</Th>
+                <Th>Version</Th>
+                <Th>Why</Th>
               </tr>
             </thead>
             <tbody>
               {detail.scores.map((score: JobScore) => (
                 <tr key={`${score.scoreKind}-${score.profileCode ?? "none"}`}>
-                  <td>{score.scoreKind.toLowerCase().replace(/_/g, " ")}</td>
-                  <td className="muted">{score.profileCode ?? "-"}</td>
-                  <td className="numeric">
+                  <Td>{score.scoreKind.toLowerCase().replace(/_/g, " ")}</Td>
+                  <Td className="text-muted-foreground">{score.profileCode ?? "-"}</Td>
+                  <Td align="right">
                     <ScoreCell value={score.score} />
-                  </td>
-                  <td className="numeric muted">{score.confidence.toFixed(2)}</td>
-                  <td className="muted">{score.scoreVersion}</td>
-                  <td>
+                  </Td>
+                  <Td align="right" className="text-muted-foreground">{score.confidence.toFixed(2)}</Td>
+                  <Td className="text-muted-foreground">{score.scoreVersion}</Td>
+                  <Td className="align-top">
                     <pre className="evidence">{score.explanation}</pre>
-                  </td>
+                  </Td>
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </TableWrap>
       )}
 
-      <h2>Extracted fields and their evidence</h2>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Extracted fields and their evidence</h2>
       {!intelligence || intelligence.fields.length === 0 ? (
-        <p className="muted">
+        <p className="text-muted-foreground">
           Nothing was extracted with enough evidence to record. Unknown is the honest answer here.
         </p>
       ) : (
-        <div className="table-wrap">
-          <table>
+        <TableWrap>
             <thead>
               <tr>
-                <th>Field</th>
-                <th>Value</th>
-                <th className="numeric">Confidence</th>
-                <th>Method</th>
-                <th>Evidence</th>
-                <th className="numeric">Snapshot</th>
+                <Th>Field</Th>
+                <Th>Value</Th>
+                <Th align="right">Confidence</Th>
+                <Th>Method</Th>
+                <Th>Evidence</Th>
+                <Th align="right">Snapshot</Th>
               </tr>
             </thead>
             <tbody>
               {intelligence.fields.map((field) => (
                 <tr key={field.fieldName}>
-                  <td>{field.fieldName}</td>
-                  <td>
+                  <Td>{field.fieldName}</Td>
+                  <Td>
                     <OrUnknown value={field.fieldValue} />
-                  </td>
-                  <td className="numeric muted">{field.confidence.toFixed(2)}</td>
-                  <td className="muted">{field.extractionMethod.toLowerCase().replace(/_/g, " ")}</td>
-                  <td>
+                  </Td>
+                  <Td align="right" className="text-muted-foreground">{field.confidence.toFixed(2)}</Td>
+                  <Td className="text-muted-foreground">{field.extractionMethod.toLowerCase().replace(/_/g, " ")}</Td>
+                  <Td>
                     <span className="evidence">{field.evidenceText ?? "-"}</span>
-                  </td>
-                  <td className="numeric muted">{field.evidenceSnapshotId ?? "-"}</td>
+                  </Td>
+                  <Td align="right" className="text-muted-foreground">{field.evidenceSnapshotId ?? "-"}</Td>
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </TableWrap>
       )}
 
-      <h2>Skills</h2>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Skills</h2>
       {!intelligence || intelligence.skills.length === 0 ? (
-        <p className="muted">No skill was detected in this posting.</p>
+        <p className="text-muted-foreground">No skill was detected in this posting.</p>
       ) : (
         <div className="panel">
           {["REQUIRED", "PREFERRED", "MENTIONED"].map((level) => {
@@ -243,9 +249,7 @@ export default async function JobDetailPage({
                 <h3>{level.toLowerCase()}</h3>
                 <div className="skill-list">
                   {skills.map((skill) => (
-                    <span className="badge" key={`${level}-${skill.skillSlug}`}>
-                      {skill.skillSlug}
-                    </span>
+                    <Badge key={`${level}-${skill.skillSlug}`}>{skill.skillSlug}</Badge>
                   ))}
                 </div>
               </div>
@@ -256,7 +260,7 @@ export default async function JobDetailPage({
 
       {intelligence && intelligence.requirements.length > 0 ? (
         <>
-          <h2>Requirements as stated</h2>
+          <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Requirements as stated</h2>
           <div className="panel">
             <ul>
               {intelligence.requirements.map((line, index) => (
@@ -267,32 +271,31 @@ export default async function JobDetailPage({
         </>
       ) : null}
 
-      <h2>Where it was found</h2>
-      <div className="table-wrap">
-        <table>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Where it was found</h2>
+      <TableWrap>
           <thead>
             <tr>
-              <th>Source</th>
-              <th>External id</th>
-              <th>Matched by</th>
-              <th className="numeric">Confidence</th>
-              <th>Active</th>
-              <th>First seen</th>
-              <th>Last seen</th>
-              <th>Link</th>
+              <Th>Source</Th>
+              <Th>External id</Th>
+              <Th>Matched by</Th>
+              <Th align="right">Confidence</Th>
+              <Th>Active</Th>
+              <Th>First seen</Th>
+              <Th>Last seen</Th>
+              <Th>Link</Th>
             </tr>
           </thead>
           <tbody>
             {detail.sources.map((source) => (
               <tr key={source.id}>
-                <td>{source.sourceCode}</td>
-                <td className="muted">{source.externalId ?? source.externalKey}</td>
-                <td className="muted">{source.matchMethod.toLowerCase().replace(/_/g, " ")}</td>
-                <td className="numeric muted">{Number(source.matchConfidence).toFixed(2)}</td>
-                <td>{source.active ? "yes" : "no"}</td>
-                <td className="muted">{formatDate(source.firstSeenAt)}</td>
-                <td className="muted">{formatDate(source.lastSeenAt)}</td>
-                <td>
+                <Td>{source.sourceCode}</Td>
+                <Td className="text-muted-foreground">{source.externalId ?? source.externalKey}</Td>
+                <Td className="text-muted-foreground">{source.matchMethod.toLowerCase().replace(/_/g, " ")}</Td>
+                <Td align="right" className="text-muted-foreground">{Number(source.matchConfidence).toFixed(2)}</Td>
+                <Td>{source.active ? "yes" : "no"}</Td>
+                <Td className="text-muted-foreground">{formatDate(source.firstSeenAt)}</Td>
+                <Td className="text-muted-foreground">{formatDate(source.lastSeenAt)}</Td>
+                <Td>
                   {source.sourceUrl ? (
                     <a href={source.sourceUrl} target="_blank" rel="noreferrer">
                       open
@@ -300,110 +303,93 @@ export default async function JobDetailPage({
                   ) : (
                     <Unknown />
                   )}
-                </td>
+                </Td>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </TableWrap>
 
-      <h2>Verification history</h2>
-      <div className="table-wrap">
-        <table>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Verification history</h2>
+      <TableWrap>
           <thead>
             <tr>
-              <th>When</th>
-              <th>Method</th>
-              <th>Outcome</th>
-              <th>Detail</th>
+              <Th>When</Th>
+              <Th>Method</Th>
+              <Th>Outcome</Th>
+              <Th>Detail</Th>
             </tr>
           </thead>
           <tbody>
             {detail.verifications.map((verification) => (
               <tr key={verification.id}>
-                <td className="muted">{formatDateTime(verification.verifiedAt)}</td>
-                <td>{verification.method.toLowerCase().replace(/_/g, " ")}</td>
-                <td>{verification.outcome.toLowerCase()}</td>
-                <td className="muted">{verification.detail ?? "-"}</td>
+                <Td className="text-muted-foreground">{formatDateTime(verification.verifiedAt)}</Td>
+                <Td>{verification.method.toLowerCase().replace(/_/g, " ")}</Td>
+                <Td>{verification.outcome.toLowerCase()}</Td>
+                <Td className="text-muted-foreground">{verification.detail ?? "-"}</Td>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </TableWrap>
 
-      <h2>Lifecycle history</h2>
-      <div className="table-wrap">
-        <table>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Lifecycle history</h2>
+      <TableWrap>
           <thead>
             <tr>
-              <th>When</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Reason</th>
+              <Th>When</Th>
+              <Th>From</Th>
+              <Th>To</Th>
+              <Th>Reason</Th>
             </tr>
           </thead>
           <tbody>
             {detail.lifecycle.map((event) => (
               <tr key={event.id}>
-                <td className="muted">{formatDateTime(event.occurredAt)}</td>
-                <td className="muted">{event.fromState?.toLowerCase() ?? "-"}</td>
-                <td>{event.toState.toLowerCase()}</td>
-                <td className="muted">{event.reasonCode.toLowerCase().replace(/_/g, " ")}</td>
+                <Td className="text-muted-foreground">{formatDateTime(event.occurredAt)}</Td>
+                <Td className="text-muted-foreground">{event.fromState?.toLowerCase() ?? "-"}</Td>
+                <Td>{event.toState.toLowerCase()}</Td>
+                <Td className="text-muted-foreground">{event.reasonCode.toLowerCase().replace(/_/g, " ")}</Td>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </TableWrap>
 
-      <h2>Raw snapshots</h2>
-      <div className="table-wrap">
-        <table>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Raw snapshots</h2>
+      <TableWrap>
           <thead>
             <tr>
-              <th className="numeric">Id</th>
-              <th>Source</th>
-              <th>Fetched</th>
-              <th>Raw company</th>
-              <th>Raw experience</th>
-              <th>Raw education</th>
-              <th>Raw deadline</th>
+              <Th align="right">Id</Th>
+              <Th>Source</Th>
+              <Th>Fetched</Th>
+              <Th>Raw company</Th>
+              <Th>Raw experience</Th>
+              <Th>Raw education</Th>
+              <Th>Raw deadline</Th>
             </tr>
           </thead>
           <tbody>
             {detail.snapshots.map((snapshot) => (
               <tr key={snapshot.id}>
-                <td className="numeric">{snapshot.id}</td>
-                <td>{snapshot.sourceCode}</td>
-                <td className="muted">{formatDateTime(snapshot.fetchedAt)}</td>
-                <td className="muted">{snapshot.rawCompany ?? "-"}</td>
-                <td className="muted">{snapshot.rawExperience ?? "-"}</td>
-                <td className="muted">{snapshot.rawEducation ?? "-"}</td>
-                <td className="muted">{snapshot.rawDeadline ?? "-"}</td>
+                <Td align="right">{snapshot.id}</Td>
+                <Td>{snapshot.sourceCode}</Td>
+                <Td className="text-muted-foreground">{formatDateTime(snapshot.fetchedAt)}</Td>
+                <Td className="text-muted-foreground">{snapshot.rawCompany ?? "-"}</Td>
+                <Td className="text-muted-foreground">{snapshot.rawExperience ?? "-"}</Td>
+                <Td className="text-muted-foreground">{snapshot.rawEducation ?? "-"}</Td>
+                <Td className="text-muted-foreground">{snapshot.rawDeadline ?? "-"}</Td>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </TableWrap>
 
       {detail.description ? (
         <>
-          <h2>Description</h2>
+          <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Description</h2>
           <div className="panel">
             <pre>{detail.description}</pre>
           </div>
         </>
       ) : null}
-    </>
+    </Container>
   );
 }
 
-function Field({ label, value }: { label: string; value: string | null | undefined }) {
-  return (
-    <div>
-      <div className="label">{label}</div>
-      <div>
-        <OrUnknown value={value} />
-      </div>
-    </div>
-  );
-}

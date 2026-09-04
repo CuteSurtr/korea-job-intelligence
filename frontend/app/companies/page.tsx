@@ -1,8 +1,15 @@
 import Link from "next/link";
 import { BackendError } from "../components/BackendError";
-import { OrUnknown, RiskBadge } from "../components/Badges";
+import { RiskBadge } from "../components/Badges";
 import { fetchJson } from "../lib/api";
 import type { Company } from "../lib/types";
+import {
+  Container,
+  OrUnknown,
+  TableWrap,
+  Td,
+  Th,
+} from "../components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -13,65 +20,63 @@ export default async function CompaniesPage() {
   } catch (error) {
     return (
       <>
-        <h1>Companies</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Companies</h1>
         <BackendError error={error} />
       </>
     );
   }
 
   return (
-    <>
-      <h1>Companies</h1>
-      <p className="page-subtitle">
+    <Container width="table">
+      <h1 className="text-2xl font-semibold tracking-tight">Companies</h1>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         {companies.length} employers resolved from the postings seen so far.
       </p>
 
-      <div className="table-wrap">
-        <table>
+      <TableWrap>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Normalized</th>
-              <th>Country</th>
-              <th>Industry</th>
-              <th className="numeric">Employees</th>
-              <th>Risk</th>
-              <th className="numeric">Open jobs</th>
+              <Th>Name</Th>
+              <Th>Normalized</Th>
+              <Th>Country</Th>
+              <Th>Industry</Th>
+              <Th align="right">Employees</Th>
+              <Th>Risk</Th>
+              <Th align="right">Open jobs</Th>
             </tr>
           </thead>
           <tbody>
             {companies.length === 0 ? (
               <tr>
-                <td colSpan={7} className="muted">
+                <Td colSpan={7} className="text-muted-foreground">
                   No company has been resolved yet.
-                </td>
+                </Td>
               </tr>
             ) : (
               companies.map((company) => (
                 <tr key={company.id}>
-                  <td>
+                  <Td>
                     <Link href={`/companies/${company.id}`}>{company.canonicalName}</Link>
-                  </td>
-                  <td className="muted">{company.normalizedName}</td>
-                  <td className="muted">
+                  </Td>
+                  <Td className="text-muted-foreground">{company.normalizedName}</Td>
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={company.countryCode} />
-                  </td>
-                  <td className="muted">
+                  </Td>
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={company.industry} />
-                  </td>
-                  <td className="numeric">
+                  </Td>
+                  <Td align="right">
                     <OrUnknown value={company.employeeCount} />
-                  </td>
-                  <td>
+                  </Td>
+                  <Td>
                     <RiskBadge level={company.riskLevel} />
-                  </td>
-                  <td className="numeric">{company.openJobCount}</td>
+                  </Td>
+                  <Td align="right">{company.openJobCount}</Td>
                 </tr>
               ))
             )}
           </tbody>
-        </table>
-      </div>
-    </>
+        </TableWrap>
+    </Container>
   );
 }

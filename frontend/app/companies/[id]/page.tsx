@@ -1,10 +1,20 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BackendError } from "../../components/BackendError";
-import { LifecycleBadge, OrUnknown, RiskBadge, ScoreCell } from "../../components/Badges";
+import { LifecycleBadge, RiskBadge, ScoreCell } from "../../components/Badges";
 import { fetchJson, isNotFound } from "../../lib/api";
 import { formatDate, formatDateTime } from "../../lib/format";
 import type { Company, Job, PageResponse } from "../../lib/types";
+import {
+  Badge,
+  Container,
+  Fact,
+  FactGrid,
+  OrUnknown,
+  TableWrap,
+  Td,
+  Th,
+} from "../../components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -31,105 +41,100 @@ export default async function CompanyDetailPage({
     }
     return (
       <>
-        <h1>Company {id}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Company {id}</h1>
         <BackendError error={error} />
       </>
     );
   }
 
   return (
-    <>
-      <h1>{company.canonicalName}</h1>
-      <p className="page-subtitle">
+    <Container width="detail">
+      <h1 className="text-2xl font-semibold tracking-tight">{company.canonicalName}</h1>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         <RiskBadge level={company.riskLevel} /> - {company.openJobCount} open postings
       </p>
 
-      <div className="detail-grid">
-        <Field label="Normalized name" value={company.normalizedName} />
-        <Field label="Website" value={company.websiteDomain} />
-        <Field label="Country" value={company.countryCode} />
-        <Field label="Industry" value={company.industry} />
-        <Field label="Company type" value={company.companyType} />
-        <Field label="Founded" value={formatDate(company.foundedOn)} />
-        <Field
+      <FactGrid>
+        <Fact label="Normalized name" value={company.normalizedName} />
+        <Fact label="Website" value={company.websiteDomain} />
+        <Fact label="Country" value={company.countryCode} />
+        <Fact label="Industry" value={company.industry} />
+        <Fact label="Company type" value={company.companyType} />
+        <Fact label="Founded" value={formatDate(company.foundedOn)} />
+        <Fact
           label="Employees"
           value={company.employeeCount === null ? null : String(company.employeeCount)}
         />
-        <Field label="Risk assessed" value={formatDate(company.riskAssessedAt)} />
-      </div>
+        <Fact label="Risk assessed" value={formatDate(company.riskAssessedAt)} />
+      </FactGrid>
 
-      <h2>Known names</h2>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Known names</h2>
       <div className="panel">
         <div className="skill-list">
           {company.aliases.length === 0 ? (
-            <span className="muted">Only the canonical name has been observed.</span>
+            <span className="text-muted-foreground">Only the canonical name has been observed.</span>
           ) : (
             company.aliases.map((alias) => (
-              <span className="badge" key={alias}>
-                {alias}
-              </span>
+              <Badge key={alias}>{alias}</Badge>
             ))
           )}
         </div>
       </div>
 
-      <h2>Provider identifiers</h2>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Provider identifiers</h2>
       {company.identifiers.length === 0 ? (
-        <p className="muted">No provider identifier has been observed for this company.</p>
+        <p className="text-muted-foreground">No provider identifier has been observed for this company.</p>
       ) : (
-        <div className="table-wrap">
-          <table>
+        <TableWrap>
             <thead>
               <tr>
-                <th>Type</th>
-                <th>Value</th>
-                <th>Observed</th>
+                <Th>Type</Th>
+                <Th>Value</Th>
+                <Th>Observed</Th>
               </tr>
             </thead>
             <tbody>
               {company.identifiers.map((identifier) => (
                 <tr key={`${identifier.type}-${identifier.value}`}>
-                  <td>{identifier.type}</td>
-                  <td className="muted">{identifier.value}</td>
-                  <td className="muted">{formatDateTime(identifier.observedAt)}</td>
+                  <Td>{identifier.type}</Td>
+                  <Td className="text-muted-foreground">{identifier.value}</Td>
+                  <Td className="text-muted-foreground">{formatDateTime(identifier.observedAt)}</Td>
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </TableWrap>
       )}
 
-      <h2>Metrics</h2>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Metrics</h2>
       {company.metrics.length === 0 ? (
-        <p className="muted">
+        <p className="text-muted-foreground">
           No company metric has been supplied by a source. Nothing is estimated here.
         </p>
       ) : (
-        <div className="table-wrap">
-          <table>
+        <TableWrap>
             <thead>
               <tr>
-                <th>Metric</th>
-                <th className="numeric">Value</th>
-                <th>Unit</th>
-                <th>Effective</th>
-                <th>Observed</th>
-                <th>Evidence</th>
+                <Th>Metric</Th>
+                <Th align="right">Value</Th>
+                <Th>Unit</Th>
+                <Th>Effective</Th>
+                <Th>Observed</Th>
+                <Th>Evidence</Th>
               </tr>
             </thead>
             <tbody>
               {company.metrics.map((metric, index) => (
                 <tr key={`${metric.key}-${index}`}>
-                  <td>{metric.key}</td>
-                  <td className="numeric">
+                  <Td>{metric.key}</Td>
+                  <Td align="right">
                     <OrUnknown value={metric.numericValue ?? metric.textValue} />
-                  </td>
-                  <td className="muted">
+                  </Td>
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={metric.unit} />
-                  </td>
-                  <td className="muted">{formatDate(metric.effectiveDate)}</td>
-                  <td className="muted">{formatDate(metric.observedAt)}</td>
-                  <td>
+                  </Td>
+                  <Td className="text-muted-foreground">{formatDate(metric.effectiveDate)}</Td>
+                  <Td className="text-muted-foreground">{formatDate(metric.observedAt)}</Td>
+                  <Td>
                     {metric.evidenceUrl ? (
                       <a href={metric.evidenceUrl} target="_blank" rel="noreferrer">
                         source
@@ -137,107 +142,92 @@ export default async function CompanyDetailPage({
                     ) : (
                       <span className="unknown">none</span>
                     )}
-                  </td>
+                  </Td>
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </TableWrap>
       )}
 
-      <h2>Risk reasons</h2>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Risk reasons</h2>
       {company.riskReasons.length === 0 ? (
-        <p className="muted">
+        <p className="text-muted-foreground">
           Risk is {company.riskLevel.toLowerCase()} because nothing has been assessed yet, not
           because the company was judged safe.
         </p>
       ) : (
-        <div className="table-wrap">
-          <table>
+        <TableWrap>
             <thead>
               <tr>
-                <th>Assessed</th>
-                <th>Level</th>
-                <th>Reason</th>
-                <th>Detail</th>
+                <Th>Assessed</Th>
+                <Th>Level</Th>
+                <Th>Reason</Th>
+                <Th>Detail</Th>
               </tr>
             </thead>
             <tbody>
               {company.riskReasons.map((reason, index) => (
                 <tr key={`${reason.reasonCode}-${index}`}>
-                  <td className="muted">{formatDate(reason.assessedAt)}</td>
-                  <td>
+                  <Td className="text-muted-foreground">{formatDate(reason.assessedAt)}</Td>
+                  <Td>
                     <RiskBadge level={reason.riskLevel} />
-                  </td>
-                  <td>{reason.reasonCode.toLowerCase().replace(/_/g, " ")}</td>
-                  <td className="muted">{reason.reasonDetail}</td>
+                  </Td>
+                  <Td>{reason.reasonCode.toLowerCase().replace(/_/g, " ")}</Td>
+                  <Td className="text-muted-foreground">{reason.reasonDetail}</Td>
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </TableWrap>
       )}
 
-      <h2>Postings</h2>
-      <div className="table-wrap">
-        <table>
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Postings</h2>
+      <TableWrap>
           <thead>
             <tr>
-              <th>Role</th>
-              <th>Family</th>
-              <th className="numeric">SWE</th>
-              <th className="numeric">Fit</th>
-              <th>Location</th>
-              <th>First seen</th>
-              <th>State</th>
+              <Th>Role</Th>
+              <Th>Family</Th>
+              <Th align="right">SWE</Th>
+              <Th align="right">Fit</Th>
+              <Th>Location</Th>
+              <Th>First seen</Th>
+              <Th>State</Th>
             </tr>
           </thead>
           <tbody>
             {jobs.content.length === 0 ? (
               <tr>
-                <td colSpan={7} className="muted">
+                <Td colSpan={7} className="text-muted-foreground">
                   No posting is tracked for this company.
-                </td>
+                </Td>
               </tr>
             ) : (
               jobs.content.map((job) => (
                 <tr key={job.id}>
-                  <td>
+                  <Td>
                     <Link href={`/jobs/${job.id}`}>{job.title}</Link>
-                  </td>
-                  <td className="muted">
+                  </Td>
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={job.roleFamily?.toLowerCase().replace(/_/g, " ")} />
-                  </td>
-                  <td className="numeric">
+                  </Td>
+                  <Td align="right">
                     <ScoreCell value={job.careerValueScore} />
-                  </td>
-                  <td className="numeric">
+                  </Td>
+                  <Td align="right">
                     <ScoreCell value={job.candidateFitScore} />
-                  </td>
-                  <td className="muted">
+                  </Td>
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={job.locationCity ?? job.locationRaw} />
-                  </td>
-                  <td className="muted">{formatDate(job.firstSeenAt)}</td>
-                  <td>
+                  </Td>
+                  <Td className="text-muted-foreground">{formatDate(job.firstSeenAt)}</Td>
+                  <Td>
                     <LifecycleBadge state={job.lifecycleState} />
-                  </td>
+                  </Td>
                 </tr>
               ))
             )}
           </tbody>
-        </table>
-      </div>
-    </>
+        </TableWrap>
+    </Container>
   );
 }
 
-function Field({ label, value }: { label: string; value: string | null | undefined }) {
-  return (
-    <div>
-      <div className="label">{label}</div>
-      <div>
-        <OrUnknown value={value} />
-      </div>
-    </div>
-  );
-}

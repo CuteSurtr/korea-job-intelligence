@@ -2,12 +2,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackendError } from "../../components/BackendError";
 import { Flash, WriteDisabled, param } from "../../components/Flash";
-import { OrUnknown, StatusBadge } from "../../components/Badges";
+import { StatusBadge } from "../../components/Badges";
 import { saveApplication } from "../../lib/actions";
 import { APPLICATION_STATUSES, statusLabel } from "../../lib/applications";
 import { canWrite, fetchJson, isNotFound } from "../../lib/api";
 import { formatDate, formatDateTime } from "../../lib/format";
 import type { Application } from "../../lib/types";
+import {
+  Container,
+  Fact,
+  FactGrid,
+  OrUnknown,
+  TableWrap,
+  Td,
+  Th,
+  secondaryButtonClass,
+} from "../../components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -39,18 +49,18 @@ export default async function ApplicationDetailPage({
     }
     return (
       <>
-        <h1>Application {id}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Application {id}</h1>
         <BackendError error={error} />
       </>
     );
   }
 
   return (
-    <>
-      <h1>
+    <Container width="detail">
+      <h1 className="text-2xl font-semibold tracking-tight">
         <OrUnknown value={application.jobTitle} />
       </h1>
-      <p className="page-subtitle">
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         <OrUnknown value={application.companyName} /> - <StatusBadge status={application.status} />{" "}
         - <Link href={`/jobs/${application.jobId}`}>the posting</Link> -{" "}
         <Link href="/applications">all applications</Link>
@@ -166,78 +176,59 @@ export default async function ApplicationDetailPage({
 
         <div className="form-actions">
           <button type="submit" disabled={!canWrite()}>Save</button>
-          <Link className="badge reset" href={`/applications/${application.id}`}>
+          <Link className={secondaryButtonClass} href={`/applications/${application.id}`}>
             Discard
           </Link>
         </div>
       </form>
 
-      <h2>Status history</h2>
-      <p className="muted">
+      <h2 className="mt-6 mb-3 text-sm font-semibold tracking-tight">Status history</h2>
+      <p className="text-muted-foreground">
         Every change is recorded with the status it came from, so this cannot be rewritten by
         editing the form above.
       </p>
-      <div className="table-wrap">
-        <table>
+      <TableWrap>
           <thead>
             <tr>
-              <th>When</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Note</th>
+              <Th>When</Th>
+              <Th>From</Th>
+              <Th>To</Th>
+              <Th>Note</Th>
             </tr>
           </thead>
           <tbody>
             {application.history.length === 0 ? (
               <tr>
-                <td colSpan={4} className="muted">
+                <Td colSpan={4} className="text-muted-foreground">
                   No status change has been recorded.
-                </td>
+                </Td>
               </tr>
             ) : (
               application.history.map((change, index) => (
                 <tr key={`${change.changedAt}-${index}`}>
-                  <td className="muted">{formatDateTime(change.changedAt)}</td>
-                  <td className="muted">
+                  <Td className="text-muted-foreground">{formatDateTime(change.changedAt)}</Td>
+                  <Td className="text-muted-foreground">
                     {change.fromStatus ? <StatusBadge status={change.fromStatus} /> : "-"}
-                  </td>
-                  <td>
+                  </Td>
+                  <Td>
                     <StatusBadge status={change.toStatus} />
-                  </td>
-                  <td className="muted">
+                  </Td>
+                  <Td className="text-muted-foreground">
                     <OrUnknown value={change.note} />
-                  </td>
+                  </Td>
                 </tr>
               ))
             )}
           </tbody>
-        </table>
-      </div>
+        </TableWrap>
 
-      <div className="detail-grid">
-        <div>
-          <div className="label">Created</div>
-          <div>{formatDateTime(application.createdAt)}</div>
-        </div>
-        <div>
-          <div className="label">Updated</div>
-          <div>{formatDateTime(application.updatedAt)}</div>
-        </div>
-        <div>
-          <div className="label">Rejected</div>
-          <div>{formatDate(application.rejectionAt)}</div>
-        </div>
-        <div>
-          <div className="label">Offer</div>
-          <div>{formatDate(application.offerAt)}</div>
-        </div>
-        <div>
-          <div className="label">Profile</div>
-          <div>
-            <OrUnknown value={application.profileCode} />
-          </div>
-        </div>
-      </div>
-    </>
+      <FactGrid>
+        <Fact label="Created" value={formatDateTime(application.createdAt)} />
+        <Fact label="Updated" value={formatDateTime(application.updatedAt)} />
+        <Fact label="Rejected" value={formatDate(application.rejectionAt)} />
+        <Fact label="Offer" value={formatDate(application.offerAt)} />
+        <Fact label="Profile" value={application.profileCode} />
+      </FactGrid>
+    </Container>
   );
 }

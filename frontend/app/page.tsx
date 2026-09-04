@@ -1,6 +1,18 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { BackendError } from "./components/BackendError";
 import { StatusBadge } from "./components/Badges";
+import {
+  Card,
+  CardHeader,
+  Container,
+  Empty,
+  PageHeader,
+  Stat,
+  TableWrap,
+  Td,
+  Th,
+} from "./components/ui";
 import { fetchJson } from "./lib/api";
 import { formatDateTime } from "./lib/format";
 import type { Dashboard } from "./lib/types";
@@ -13,10 +25,10 @@ export default async function DashboardPage() {
     dashboard = await fetchJson<Dashboard>("/api/dashboard");
   } catch (error) {
     return (
-      <>
-        <h1>Dashboard</h1>
+      <Container>
+        <PageHeader title="Dashboard" />
         <BackendError error={error} />
-      </>
+      </Container>
     );
   }
 
@@ -26,13 +38,13 @@ export default async function DashboardPage() {
     .reduce((total, [, count]) => total + count, 0);
 
   return (
-    <>
-      <h1>Dashboard</h1>
-      <p className="page-subtitle">
-        Profile {dashboard.profileCode ?? "none"} - {dashboard.sourceCount} sources registered
-      </p>
+    <Container>
+      <PageHeader
+        title="Dashboard"
+        subtitle={`Profile ${dashboard.profileCode ?? "none"} · ${dashboard.sourceCount} sources registered`}
+      />
 
-      <div className="card-grid">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <Stat label="Open jobs" value={open} sub={`${dashboard.totalJobs} tracked in total`} />
         <Stat
           label="Junior accessible"
@@ -65,95 +77,109 @@ export default async function DashboardPage() {
         />
       </div>
 
-      <h2>Lifecycle</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>State</th>
-              <th className="numeric">Jobs</th>
-              <th>Meaning</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(dashboard.jobsByLifecycleState).map(([state, count]) => (
-              <tr key={state}>
-                <td>{state.toLowerCase()}</td>
-                <td className="numeric">{count}</td>
-                <td className="muted">{LIFECYCLE_MEANING[state] ?? ""}</td>
+      <div className="mt-6 grid items-start gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader title="Lifecycle" hint="where every tracked posting stands" />
+          <TableWrap>
+            <thead>
+              <tr>
+                <Th>State</Th>
+                <Th align="right">Jobs</Th>
+                <Th>Meaning</Th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y">
+              {Object.entries(dashboard.jobsByLifecycleState).map(([state, count]) => (
+                <tr key={state}>
+                  <Td>{state.toLowerCase()}</Td>
+                  <Td align="right">{count}</Td>
+                  <Td className="whitespace-normal text-muted-foreground">
+                    {LIFECYCLE_MEANING[state] ?? ""}
+                  </Td>
+                </tr>
+              ))}
+            </tbody>
+          </TableWrap>
+        </Card>
+
+        <Card>
+          <CardHeader title="Applications by status" />
+          <TableWrap>
+            <thead>
+              <tr>
+                <Th>Status</Th>
+                <Th align="right">Count</Th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {Object.entries(dashboard.applicationsByStatus).map(([status, count]) => (
+                <tr key={status}>
+                  <Td>
+                    <StatusBadge status={status} />
+                  </Td>
+                  <Td align="right" className={count === 0 ? "text-muted-foreground/60" : ""}>
+                    {count}
+                  </Td>
+                </tr>
+              ))}
+            </tbody>
+          </TableWrap>
+        </Card>
       </div>
 
-      <h2>Applications by status</h2>
-      <div className="table-wrap">
-        <table>
+      <div className="mt-6">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="text-sm font-semibold tracking-tight">Recent ingestion runs</h2>
+          <Link
+            href="/search-runs"
+            className="inline-flex items-center gap-1 text-sm text-brand hover:underline"
+          >
+            All search runs
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </Link>
+        </div>
+        <TableWrap>
           <thead>
             <tr>
-              <th>Status</th>
-              <th className="numeric">Count</th>
+              <Th>Started</Th>
+              <Th>Source</Th>
+              <Th>Status</Th>
+              <Th align="right">Received</Th>
+              <Th align="right">New</Th>
+              <Th align="right">Duplicates</Th>
+              <Th align="right">Closed</Th>
+              <Th align="right">Failures</Th>
             </tr>
           </thead>
-          <tbody>
-            {Object.entries(dashboard.applicationsByStatus).map(([status, count]) => (
-              <tr key={status}>
-                <td>
-                  <StatusBadge status={status} />
-                </td>
-                <td className="numeric">{count}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <h2>Recent ingestion runs</h2>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Started</th>
-              <th>Source</th>
-              <th>Status</th>
-              <th className="numeric">Received</th>
-              <th className="numeric">New</th>
-              <th className="numeric">Duplicates</th>
-              <th className="numeric">Closed</th>
-              <th className="numeric">Failures</th>
-            </tr>
-          </thead>
-          <tbody>
+          <tbody className="divide-y">
             {dashboard.recentRuns.length === 0 ? (
               <tr>
-                <td colSpan={8} className="muted">
-                  No ingestion run has been recorded yet.
+                <td colSpan={8}>
+                  <Empty>No ingestion run has been recorded yet.</Empty>
                 </td>
               </tr>
             ) : (
               dashboard.recentRuns.map((run) => (
                 <tr key={run.runUuid}>
-                  <td>{formatDateTime(run.startedAt)}</td>
-                  <td>{run.sourceCode}</td>
-                  <td>
+                  <Td className="text-muted-foreground">{formatDateTime(run.startedAt)}</Td>
+                  <Td>{run.sourceCode}</Td>
+                  <Td>
                     <StatusBadge status={run.status} />
-                  </td>
-                  <td className="numeric">{run.recordsReceived}</td>
-                  <td className="numeric">{run.newJobs}</td>
-                  <td className="numeric">{run.duplicates}</td>
-                  <td className="numeric">{run.jobsClosed}</td>
-                  <td className="numeric">{run.failures}</td>
+                  </Td>
+                  <Td align="right">{run.recordsReceived}</Td>
+                  <Td align="right">{run.newJobs}</Td>
+                  <Td align="right">{run.duplicates}</Td>
+                  <Td align="right">{run.jobsClosed}</Td>
+                  <Td align="right" className={run.failures > 0 ? "text-bad" : ""}>
+                    {run.failures}
+                  </Td>
                 </tr>
               ))
             )}
           </tbody>
-        </table>
+        </TableWrap>
       </div>
-      <p className="pagination">
-        <Link href="/search-runs">All search runs</Link>
-      </p>
-    </>
+    </Container>
   );
 }
 
@@ -165,13 +191,3 @@ const LIFECYCLE_MEANING: Record<string, string> = {
   CLOSED: "closed on recorded evidence",
   REOPENED: "seen again after being closed",
 };
-
-function Stat({ label, value, sub }: { label: string; value: number | string; sub: string }) {
-  return (
-    <div className="card">
-      <div className="label">{label}</div>
-      <div className="value">{value}</div>
-      <div className="sub">{sub}</div>
-    </div>
-  );
-}
