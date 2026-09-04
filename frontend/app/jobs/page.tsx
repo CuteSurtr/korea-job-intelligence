@@ -197,6 +197,8 @@ export default async function JobsPage({
               <th>Company</th>
               <th>Role</th>
               <th>Family</th>
+              <th>Sector</th>
+              <th>Employer</th>
               <th>Sen.</th>
               <th className="numeric">SWE</th>
               <th className="numeric">Fit</th>
