@@ -14,29 +14,41 @@
 import { readFileSync } from "node:fs";
 import { argv, env, exit } from "node:process";
 
-/** Reads INTERNAL_API_TOKEN from the environment, falling back to a local .env. */
-function readToken() {
-  if (env.INTERNAL_API_TOKEN) {
-    return env.INTERNAL_API_TOKEN.trim();
+/** Reads a setting from the environment, falling back to a local .env. */
+function readSetting(name) {
+  if (env[name]) {
+    return env[name].trim();
   }
   const envFile = new URL("../.env", import.meta.url);
   try {
     for (const line of readFileSync(envFile, "utf8").split("\n")) {
-      const match = /^\s*(?:export\s+)?INTERNAL_API_TOKEN\s*=\s*(.*)$/.exec(line);
+      const match = new RegExp(`^\\s*(?:export\\s+)?${name}\\s*=\\s*(.*)$`).exec(line);
       if (match) {
         return match[1].trim().replace(/^["']|["']$/g, "");
       }
     }
   } catch {
-    // no .env; the write checks will say so
+    // no .env; the checks that need it will say so
   }
   return null;
 }
 
+function readToken() {
+  return readSetting("INTERNAL_API_TOKEN");
+}
+
+/** Where the stack is published: an explicit URL wins, else the ports Compose maps. */
+function origin(urlVar, portVar, fallbackPort) {
+  if (env[urlVar]) {
+    return env[urlVar];
+  }
+  return `http://localhost:${readSetting(portVar) || fallbackPort}`;
+}
+
 function parseArgs() {
   const options = {
-    frontend: env.FRONTEND_URL ?? "http://localhost:3000",
-    backend: env.BACKEND_URL ?? "http://localhost:8080",
+    frontend: origin("FRONTEND_URL", "FRONTEND_PORT", "3000"),
+    backend: origin("BACKEND_URL", "BACKEND_PORT", "8080"),
     timeout: 180,
   };
   for (let i = 2; i < argv.length; i += 1) {

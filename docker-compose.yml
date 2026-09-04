@@ -44,6 +44,15 @@ services:
       REDIS_HOST: redis
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-}
       INGESTION_SCHEDULER_ENABLED: ${INGESTION_SCHEDULER_ENABLED:-false}
+      # Documented as overridable, so they have to actually reach the process. Compose does
+      # not forward a variable just because it is in .env; each one has to be named here.
+      CACHE_ENABLED: ${CACHE_ENABLED:-true}
+      INGESTION_STALE_AFTER: ${INGESTION_STALE_AFTER:-P14D}
+      INGESTION_UNVERIFIED_AFTER: ${INGESTION_UNVERIFIED_AFTER:-P3D}
+      INGESTION_FIXED_DELAY: ${INGESTION_FIXED_DELAY:-PT6H}
+      SOURCE_CIRCUIT_FAILURE_THRESHOLD: ${SOURCE_CIRCUIT_FAILURE_THRESHOLD:-5}
+      SOURCE_REQUEST_TIMEOUT: ${SOURCE_REQUEST_TIMEOUT:-PT10S}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     healthcheck:

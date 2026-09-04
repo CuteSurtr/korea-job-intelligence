@@ -17,6 +17,7 @@ evidence, and ranks them for a specific candidate.
 - [Provenance rules](#provenance-rules)
 - [Results from a real run](#results-from-a-real-run)
 - [Running it](#running-it)
+  - [What you need](#what-you-need)
   - [If the build dies](#if-the-build-dies)
 - [Tracking applications](#tracking-applications)
 - [Deploying the console to Vercel](#deploying-the-console-to-vercel)
@@ -306,6 +307,17 @@ keys. All three are fixed with regression tests and written up in
 
 ## Running it
 
+### What you need
+
+| For | You need |
+| --- | --- |
+| The whole stack | Docker Desktop, or Docker Engine with the Compose plugin |
+| `tools/seed.mjs` and `tools/smoke.mjs` | Node 22 or newer |
+| Building the backend from source | JDK 21, or nothing — the Gradle wrapper fetches a matching toolchain when the machine has none. Gradle 8.10.2 does not launch on JDK 24 or newer, so if `JAVA_HOME` points at one, unset it or point it at 21 |
+| Working on the console | Node 22 or newer, then `npm ci` in `frontend/` |
+
+Nothing else has to be installed: the images build the backend and the console themselves.
+
 No configuration file is required. Every setting has a working default, so the whole stack
 comes up with one command:
 
@@ -400,22 +412,37 @@ datasource and the ingestion dashboard provisioned.
 
 For backend development, run the dependencies in Docker and the application from source:
 
+`bootRun` and `npm run dev` both run in the foreground and never exit, so these are four
+separate terminals, not one script:
+
 ```bash
+# terminal 1 — dependencies
 docker compose up -d postgres redis
+
+# terminal 2 — the API, from the repository root
 cd backend && ./gradlew bootRun
+
+# terminal 3 — the console, from the repository root
 cd frontend && npm install && npm run dev
+
+# terminal 4 — load the fixtures, from the repository root
 node tools/seed.mjs
 ```
 
 `bootRun` reads `INTERNAL_API_TOKEN` from its own environment rather than from the compose
-`.env`, so export the same value in the shell you start it from if you intend to seed.
+`.env`, so export the same value in the shell you start it from if you intend to seed or to
+use the CRM.
 
 The Compose project is named, so two checkouts of this repository would fight over the same
 Docker Desktop group. If you keep a second copy, give it its own project and ports:
 
 ```bash
-docker compose -p kji-second up -d
+FRONTEND_PORT=3100 BACKEND_PORT=8180 POSTGRES_PORT=5532 REDIS_HOST_PORT=6479 \
+  docker compose -p kji-second up -d
 ```
+
+`-p` renames the project but does not move the published ports, so without those overrides the
+second stack fails to bind against the first.
 
 ## Tracking applications
 
@@ -554,20 +581,24 @@ Filters on the job list: `keyword`, `company`, `state`, `location`, `source`, `r
 
 ## Testing and CI
 
+Each line runs from the repository root and returns you there, so they can be pasted in any
+order. `npm ci` in `frontend/` first, if you have not already.
+
 ```bash
-cd backend  && ./gradlew clean build   # 106 backend tests, plus the coverage floors
-cd frontend && npm test                # 75 console tests
-cd frontend && npm run lint            # ESLint, flat config
-node tools/smoke.mjs                   # the two halves against each other, stack running
-cd frontend && npm run test:e2e        # the CRM forms in a browser, stack running
+(cd backend  && ./gradlew clean build)   # 106 backend tests, plus the coverage floors
+(cd frontend && npm test)                # 75 console tests
+(cd frontend && npm run lint)            # ESLint, flat config
+node tools/smoke.mjs                     # the two halves against each other, stack running
+(cd frontend && npm run test:e2e)        # the CRM forms in a browser, stack running
 ```
 
 **Backend, 106 tests.** Provider adapters run against recorded fixtures, so CI never depends on
 a live job site. Everything else runs against real PostgreSQL, in a container started by
 Testcontainers. Where there is no Docker, point the suite at a PostgreSQL you already run and
-the same 98 tests pass:
+the same 106 tests pass:
 
 ```bash
+cd backend
 KJI_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/kji_test ./gradlew test
 ```
 

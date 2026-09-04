@@ -25,8 +25,16 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const COLLECTED = join(ROOT, "collected");
 const IMPORTS = join(ROOT, "imports");
 
+/** The API's published origin: an explicit BACKEND_URL wins, else the port Compose maps. */
+function defaultBackend() {
+  if (env.BACKEND_URL) {
+    return env.BACKEND_URL;
+  }
+  return `http://localhost:${setting("BACKEND_PORT") || "8080"}`;
+}
+
 function parseArgs() {
-  const options = { backend: env.BACKEND_URL ?? "http://localhost:8080", only: null, timeout: 120 };
+  const options = { backend: defaultBackend(), only: null, timeout: 120 };
   for (let i = 2; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--backend") {
