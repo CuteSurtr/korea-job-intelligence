@@ -100,8 +100,16 @@ describe("jobs list", () => {
 
 describe("job detail", () => {
   it("shows the posting with its evidence chain", async () => {
-    stubBackend({ "/api/jobs": fixtures.jobDetail });
-    await renderPage(JobDetailPage({ params: routeParams({ id: String(detailJob.id) }) }));
+    stubBackend({
+      "/api/jobs": fixtures.jobDetail,
+      "/api/applications": fixtures.untrackedForJob,
+    });
+    await renderPage(
+      JobDetailPage({
+        params: routeParams({ id: String(detailJob.id) }),
+        searchParams: searchParams(),
+      }),
+    );
 
     expect(screen.getByRole("heading", { level: 1, name: detailJob.title })).toBeInTheDocument();
     expect(
@@ -117,13 +125,15 @@ describe("job detail", () => {
     // notFound() signals App Router to render the 404 segment; it must not be swallowed into
     // the "could not reach the API" panel, which sends people to restart a healthy stack.
     await expect(
-      JobDetailPage({ params: routeParams({ id: "999999" }) }),
+      JobDetailPage({ params: routeParams({ id: "999999" }), searchParams: searchParams() }),
     ).rejects.toThrow(/NEXT_HTTP_ERROR_FALLBACK|NEXT_NOT_FOUND/);
   });
 
   it("still reports a genuine outage as an outage", async () => {
     stubUnreachableBackend();
-    await renderPage(JobDetailPage({ params: routeParams({ id: "1" }) }));
+    await renderPage(
+      JobDetailPage({ params: routeParams({ id: "1" }), searchParams: searchParams() }),
+    );
     expect(screen.getByText("The console could not reach the API.")).toBeInTheDocument();
   });
 });
@@ -243,7 +253,9 @@ describe("applications", () => {
     stubBackend({ "/api/applications": fixtures.emptyPage });
     await renderPage(ApplicationsPage({ searchParams: searchParams() }));
 
-    expect(screen.getByText("No application has been recorded yet.")).toBeInTheDocument();
+    expect(
+      screen.getByText("No application has been recorded yet. Open a job and track it."),
+    ).toBeInTheDocument();
   });
 
   it("passes the status filter to the API", async () => {

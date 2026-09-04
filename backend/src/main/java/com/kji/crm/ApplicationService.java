@@ -3,6 +3,7 @@ package com.kji.crm;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,12 @@ public class ApplicationService {
                 ? applicationRepository.findByProfileIdOrderByUpdatedAtDesc(profileId, pageable)
                 : applicationRepository.findByProfileIdAndStatusOrderByUpdatedAtDesc(
                         profileId, status, pageable);
+    }
+
+    /** The application a profile has for one job, of which there is at most one. */
+    @Transactional(readOnly = true)
+    public Optional<Application> find(Long jobId, Long profileId) {
+        return applicationRepository.findByJobIdAndProfileId(jobId, profileId);
     }
 
     @Transactional(readOnly = true)

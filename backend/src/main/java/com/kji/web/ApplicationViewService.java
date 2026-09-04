@@ -31,8 +31,18 @@ public class ApplicationViewService {
 
     @Transactional(readOnly = true)
     public PageResponse<ApplicationResponse> list(String profileCode, ApplicationStatus status,
-                                                  int page, int size) {
+                                                  Long jobId, int page, int size) {
         CandidateProfile profile = requireProfile(profileCode);
+        if (jobId != null) {
+            // A profile has at most one application per job, so this is a lookup rather than a
+            // query. It answers "is this job already tracked?" without listing everything.
+            List<ApplicationResponse> found = applicationService.find(jobId, profile.getId())
+                    .filter(application -> status == null || application.getStatus() == status)
+                    .map(application -> toResponse(application, profile.getCode(), true))
+                    .map(List::of)
+                    .orElseGet(List::of);
+            return PageResponse.of(found, size);
+        }
         return PageResponse.from(
                 applicationService.list(profile.getId(), status, page, size),
                 application -> toResponse(application, profile.getCode(), false));

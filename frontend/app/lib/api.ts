@@ -58,6 +58,64 @@ export async function fetchJson<T>(
   return (await response.json()) as T;
 }
 
+/**
+ * Sends a body to the API and returns the parsed answer.
+ *
+ * Writes are never cached and never retried: a retry on a status change would record a second
+ * entry in the application's history, which is the one thing that history is for.
+ */
+export async function sendJson<T>(
+  path: string,
+  method: "POST" | "PATCH",
+  body: unknown,
+): Promise<T> {
+  const url = new URL(path, BACKEND_URL);
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      cache: "no-store",
+    });
+  } catch (cause) {
+    throw new BackendUnavailableError(path, cause);
+  }
+
+  if (!response.ok) {
+    throw new BackendRequestError(path, response.status, await response.text());
+  }
+  return (await response.json()) as T;
+}
+
+/**
+ * The sentence the API meant for a person, when it sent one.
+ *
+ * The error bodies carry {error, message}; anything else falls back to the raw text so a
+ * failure is never reported as an empty banner.
+ */
+export function apiMessage(error: unknown): string {
+  if (error instanceof BackendRequestError) {
+    try {
+      const parsed = JSON.parse(error.body) as { message?: string; error?: string };
+      if (parsed.message) {
+        return parsed.message;
+      }
+      if (parsed.error) {
+        return parsed.error;
+      }
+    } catch {
+      // not JSON; fall through to the raw body
+    }
+    return error.body.slice(0, 300) || `The API answered ${error.status}.`;
+  }
+  if (error instanceof BackendUnavailableError) {
+    return `The API at ${BACKEND_URL} could not be reached.`;
+  }
+  return error instanceof Error ? error.message : String(error);
+}
+
 export function backendUrl(): string {
   return BACKEND_URL;
 }

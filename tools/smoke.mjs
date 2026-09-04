@@ -176,6 +176,13 @@ async function main() {
     assert(html.includes(`/companies/${companyId}`), "job detail did not link its company");
   });
 
+  await check("job detail offers to track the posting", async () => {
+    const html = await page(options.frontend, `/jobs/${jobId}`);
+    assert(html.includes("track-form"), "no tracking form on the job page");
+    // a server action receives nothing but the form, so the job has to travel inside it
+    assert(html.includes('name="jobId"'), "the tracking form does not carry the job");
+  });
+
   await check("companies list renders", async () => {
     const html = await page(options.frontend, "/companies");
     assert(html.includes(`/companies/${companyId}`), `no link to company ${companyId}`);
@@ -188,7 +195,42 @@ async function main() {
     assert(html.includes(`/search-runs/${runId}`), `no link to run ${runId}`);
   });
   await check("search run detail renders", () => page(options.frontend, `/search-runs/${runId}`));
-  await check("applications renders", () => page(options.frontend, "/applications"));
+  await check("applications renders", async () => {
+    const html = await page(options.frontend, "/applications");
+    assert(html.includes('name="status"'), "no status control on the applications page");
+  });
+
+  await check("the CRM write path round-trips through the API", async () => {
+    const created = await fetch(`${options.backend}/api/applications`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jobId, status: "INTERESTED", note: "smoke test" }),
+    });
+    assert(created.ok, `creating an application answered ${created.status}`);
+    const application = await created.json();
+
+    const moved = await fetch(`${options.backend}/api/applications/${application.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "APPLIED", note: "smoke test" }),
+    });
+    assert(moved.ok, `moving an application answered ${moved.status}`);
+    const after = await moved.json();
+    assert(after.status === "APPLIED", `status stayed ${after.status}`);
+    // both transitions have to be on the record, which is the point of tracking at all
+    assert(after.history.length >= 2, `history recorded ${after.history.length} changes`);
+
+    const lookup = await json(`/api/applications?jobId=${jobId}`);
+    assert(lookup.totalElements === 1, "the job lookup did not find the application just created");
+  });
+
+  await check("the console shows the application on its record page", async () => {
+    const lookup = await json(`/api/applications?jobId=${jobId}`);
+    const application = lookup.content[0];
+    const html = await page(options.frontend, `/applications/${application.id}`);
+    assert(html.includes("Status history"), "the record page has no status history");
+    assert(html.includes('name="resumeVersion"'), "the record page has no edit form");
+  });
 
   await check("a missing job in the console is 404, not a fake outage", async () => {
     const response = await fetch(`${options.frontend}/jobs/999999999`);

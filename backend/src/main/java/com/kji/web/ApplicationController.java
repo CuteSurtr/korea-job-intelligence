@@ -6,6 +6,7 @@ import com.kji.web.dto.ApplicationResponse;
 import com.kji.web.dto.PageResponse;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Locale;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,9 +31,10 @@ public class ApplicationController {
     public PageResponse<ApplicationResponse> list(
             @RequestParam(required = false) String profile,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) Long jobId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size) {
-        return viewService.list(profile, parseStatus(status), page, size);
+        return viewService.list(profile, parseStatus(status), jobId, page, size);
     }
 
     @GetMapping("/{id}")
@@ -55,7 +57,12 @@ public class ApplicationController {
         if (status == null || status.isBlank()) {
             return null;
         }
-        return ApplicationStatus.valueOf(status.trim().toUpperCase(Locale.ROOT));
+        try {
+            return ApplicationStatus.valueOf(status.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException cause) {
+            throw new IllegalArgumentException("Unknown application status \"" + status.trim()
+                    + "\". Expected one of " + Arrays.toString(ApplicationStatus.values()) + ".");
+        }
     }
 
     public record UpsertRequest(

@@ -17,6 +17,7 @@ evidence, and ranks them for a specific candidate.
 - [Provenance rules](#provenance-rules)
 - [Results from a real run](#results-from-a-real-run)
 - [Running it](#running-it)
+- [Tracking applications](#tracking-applications)
 - [Deploying the console to Vercel](#deploying-the-console-to-vercel)
 - [Configuration](#configuration)
 - [API](#api)
@@ -384,6 +385,30 @@ Docker Desktop group. If you keep a second copy, give it its own project and por
 docker compose -p kji-second up -d
 ```
 
+## Tracking applications
+
+The console writes, so an application is tracked and moved from the pages that show the work
+rather than from a terminal.
+
+**From a posting.** Every job page says whether it is already tracked. If it is not, pick a
+starting status, say why it is worth tracking, and the note is recorded against the
+application's first transition. If it is, the same control moves it and links through to the
+record. Tracking is keyed on the job and the profile and updates in place, so pressing it twice
+moves one application rather than creating a second.
+
+**On the record.** `/applications/{id}` is the whole application in one form: status and the
+note that explains the change, applied and follow-up dates, resume and cover letter versions,
+contact, referral, interview stage and notes. Below it is the status history, every change with
+the status it came from. That history is written by the API when the status moves and cannot be
+edited from the form, which is the point of keeping it.
+
+**From the list.** `/applications` carries a status control on each row, because triage is
+almost always a status change and nothing else. Moving a row sends the status alone and leaves
+every other field untouched, and returns to whatever filter the list was showing.
+
+The forms post to server actions and navigate; none of it needs JavaScript in the browser. A
+write that the API refuses is reported with what the API said, rather than being swallowed.
+
 ## Deploying the console to Vercel
 
 Vercel hosts the Next.js console. It cannot host the Spring Boot API or PostgreSQL, so the
@@ -406,11 +431,13 @@ changing it takes effect on redeploy without a code change. The `output: "standa
 is applied only when `DOCKER_BUILD=1`, which the Dockerfile sets, so a Vercel build produces a
 normal Next.js output.
 
-Before pointing a public console at a real backend, note that the read API has no
-authentication. `/api/jobs` and `/api/companies` are a searchable mirror of job-board content,
+Before pointing a public console at a real backend, note that only `/api/internal/**` is
+authenticated. `/api/jobs` and `/api/companies` are a searchable mirror of job-board content,
 and `/api/applications` and `/api/dashboard` expose the candidate profile, application
-statuses, notes and contacts. Deploy it behind access control, or restrict the deployed API to
-the job and company endpoints, before it is reachable from the open internet.
+statuses, notes and contacts. The application endpoints also **write** without
+authentication: anyone who can reach the API can create an application, change its status, and
+add contacts and notes. Deploy it behind access control, or restrict the deployed API to the
+job and company endpoints, before it is reachable from the open internet.
 
 Trigger a direct ingestion run against an employer board:
 
@@ -473,7 +500,10 @@ so adding a board is configuration rather than code.
 | GET | `/api/search-runs/{id}` | One run with counters and its recorded failures |
 | POST | `/api/internal/ingestion/import` | NDJSON import boundary |
 | POST | `/api/internal/ingestion/run` | Trigger a direct-source run |
-| GET, POST, PATCH | `/api/applications` | Application CRM with status history |
+| GET | `/api/applications` | Application CRM, filtered by `status` or by `jobId` |
+| GET | `/api/applications/{id}` | One application with its full status history |
+| POST | `/api/applications` | Start tracking a job, or move the application that already tracks it |
+| PATCH | `/api/applications/{id}` | Change status and details, recording the transition |
 | GET | `/api/dashboard` | Aggregate counters |
 | GET | `/actuator/health`, `/actuator/prometheus` | Health and metrics |
 
@@ -486,13 +516,14 @@ Filters on the job list: `keyword`, `company`, `state`, `location`, `source`, `r
 ## Testing and CI
 
 ```bash
-cd backend  && ./gradlew clean build   # 98 backend tests, plus the coverage floors
-cd frontend && npm test                # 37 console tests
+cd backend  && ./gradlew clean build   # 101 backend tests, plus the coverage floors
+cd frontend && npm test                # 65 console tests
 cd frontend && npm run lint            # ESLint, flat config
 node tools/smoke.mjs                   # the two halves against each other, stack running
+cd frontend && npm run test:e2e        # the CRM forms in a browser, stack running
 ```
 
-**Backend, 98 tests.** Provider adapters run against recorded fixtures, so CI never depends on
+**Backend, 101 tests.** Provider adapters run against recorded fixtures, so CI never depends on
 a live job site. Everything else runs against real PostgreSQL, in a container started by
 Testcontainers. Where there is no Docker, point the suite at a PostgreSQL you already run and
 the same 98 tests pass:
@@ -504,15 +535,29 @@ KJI_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/kji_test ./gradlew test
 That database is truncated between tests, so give it one kept for testing rather than the one
 the application uses.
 
-**Console, 37 tests.** Vitest renders each page as a server component against fixtures captured
+**Console, 65 tests.** Vitest renders each page as a server component against fixtures captured
 from a running backend, so the shapes under test are the real DTOs rather than a guess. The
 suite covers the rendered rows, the filters each page sends to the API, the empty states, and
 the three ways a page can fail to show content: an unreachable backend, an API error, and a row
-that does not exist.
+that does not exist. The write path is covered at the seam that matters: what body each server
+action sends for a given form, how a date input becomes an instant, which statuses are refused
+before the API is called, and what the console says when a write is rejected.
 
 **End to end.** `tools/smoke.mjs` drives a running console over HTTP against a running backend
 holding seeded rows, and fails if any page comes back empty, broken, or apologising. The unit
 suites test each side against a stub and so cannot catch the two drifting apart; this can.
+
+**In a browser.** The CRM forms post to server actions, and a server action only runs when a
+browser submits the form Next rendered, so `frontend/e2e` drives the real thing in Chromium:
+track a job from its posting, edit the whole record, triage from the list, and check the API
+holds what the forms claimed. Point it at a stack that is already up and seeded:
+
+```bash
+cd frontend && npx playwright install chromium && npm run test:e2e
+```
+
+Where a machine already has a Chromium and cannot download Playwright's own build, set
+`PLAYWRIGHT_CHROMIUM_PATH` at that binary.
 
 Coverage is verified in the build, not merely reported: `jacocoTestCoverageVerification` runs
 as part of `check` with floors at 75% line and 50% branch against 80.7% and 57.8% measured.
@@ -527,7 +572,8 @@ dependency rules.
 Three workflows. Backend: build, test, coverage summary, artifacts, image build, then start the
 image against a real PostgreSQL to prove it migrates and serves. Frontend: production
 dependency audit, typecheck, lint, test, build, image build. End to end: build the whole stack
-with Compose, wait for every healthcheck, seed it, then run the smoke test against it.
+with Compose, wait for every healthcheck, seed it, run the smoke test, then drive the CRM
+forms in Chromium.
 
 ## Repository layout
 

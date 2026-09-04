@@ -668,5 +668,126 @@
       "circuitOpenedAt": null,
       "updatedAt": "2026-09-04T00:15:09.487623Z"
     }
-  ]
+  ],
+  "application": {
+    "id": 1,
+    "jobId": 42,
+    "jobTitle": "FR WEBTOON Lead (경력)",
+    "companyName": "네이버웹툰",
+    "profileId": 1,
+    "profileCode": "default",
+    "status": "APPLIED",
+    "appliedAt": "2026-09-04T00:40:50.443582Z",
+    "resumeVersion": null,
+    "coverLetterVersion": null,
+    "contactName": "Jae",
+    "contactEmail": null,
+    "referral": null,
+    "interviewStage": null,
+    "interviewNotes": null,
+    "followUpAt": null,
+    "rejectionAt": null,
+    "offerAt": null,
+    "notes": "strong match",
+    "createdAt": "2026-09-04T00:40:50.393394Z",
+    "updatedAt": "2026-09-04T00:40:50.449323Z",
+    "history": [
+      {
+        "fromStatus": null,
+        "toStatus": "INTERESTED",
+        "changedAt": "2026-09-04T00:40:50.387090Z",
+        "note": "found via search"
+      },
+      {
+        "fromStatus": "INTERESTED",
+        "toStatus": "APPLIED",
+        "changedAt": "2026-09-04T00:40:50.443582Z",
+        "note": "submitted"
+      }
+    ]
+  },
+  "applicationsPage": {
+    "content": [
+      {
+        "id": 1,
+        "jobId": 42,
+        "jobTitle": "FR WEBTOON Lead (경력)",
+        "companyName": "네이버웹툰",
+        "profileId": 1,
+        "profileCode": "default",
+        "status": "APPLIED",
+        "appliedAt": "2026-09-04T00:40:50.443582Z",
+        "resumeVersion": null,
+        "coverLetterVersion": null,
+        "contactName": "Jae",
+        "contactEmail": null,
+        "referral": null,
+        "interviewStage": null,
+        "interviewNotes": null,
+        "followUpAt": null,
+        "rejectionAt": null,
+        "offerAt": null,
+        "notes": "strong match",
+        "createdAt": "2026-09-04T00:40:50.393394Z",
+        "updatedAt": "2026-09-04T00:40:50.449323Z",
+        "history": []
+      }
+    ],
+    "page": 0,
+    "size": 3,
+    "totalElements": 1,
+    "totalPages": 1
+  },
+  "trackedForJob": {
+    "content": [
+      {
+        "id": 1,
+        "jobId": 42,
+        "jobTitle": "FR WEBTOON Lead (경력)",
+        "companyName": "네이버웹툰",
+        "profileId": 1,
+        "profileCode": "default",
+        "status": "APPLIED",
+        "appliedAt": "2026-09-04T00:40:50.443582Z",
+        "resumeVersion": null,
+        "coverLetterVersion": null,
+        "contactName": "Jae",
+        "contactEmail": null,
+        "referral": null,
+        "interviewStage": null,
+        "interviewNotes": null,
+        "followUpAt": null,
+        "rejectionAt": null,
+        "offerAt": null,
+        "notes": "strong match",
+        "createdAt": "2026-09-04T00:40:50.393394Z",
+        "updatedAt": "2026-09-04T00:40:50.449323Z",
+        "history": [
+          {
+            "fromStatus": null,
+            "toStatus": "INTERESTED",
+            "changedAt": "2026-09-04T00:40:50.387090Z",
+            "note": "found via search"
+          },
+          {
+            "fromStatus": "INTERESTED",
+            "toStatus": "APPLIED",
+            "changedAt": "2026-09-04T00:40:50.443582Z",
+            "note": "submitted"
+          }
+        ]
+      }
+    ],
+    "page": 0,
+    "size": 25,
+    "totalElements": 1,
+    "totalPages": 1
+  },
+  "untrackedForJob": {
+    "content": [],
+    "page": 0,
+    "size": 25,
+    "totalElements": 0,
+    "totalPages": 0
+  }
 }

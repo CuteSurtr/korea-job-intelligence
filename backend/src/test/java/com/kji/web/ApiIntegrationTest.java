@@ -218,6 +218,89 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @DisplayName("the application list answers whether one job is already tracked")
+    void applicationsCanBeLookedUpByJob() throws Exception {
+        Long tracked = jobRepository.findAll().get(0).getId();
+        Long untracked = jobRepository.findAll().get(1).getId();
+
+        // The console asks this before showing a job, to decide between "track" and "open".
+        mockMvc.perform(get("/api/applications").param("jobId", String.valueOf(tracked)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(0));
+
+        mockMvc.perform(post("/api/applications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"jobId":%d,"status":"INTERESTED"}
+                                """.formatted(tracked)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/applications").param("jobId", String.valueOf(tracked)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].jobId").value(tracked))
+                // the lookup carries the history, so the job page can show the last change
+                .andExpect(jsonPath("$.content[0].history.length()").value(1));
+
+        mockMvc.perform(get("/api/applications").param("jobId", String.valueOf(untracked)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(0));
+
+        // the status filter still narrows a job lookup
+        mockMvc.perform(get("/api/applications")
+                        .param("jobId", String.valueOf(tracked))
+                        .param("status", "APPLIED"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(0));
+    }
+
+    @Test
+    @DisplayName("posting the same job twice updates the application rather than duplicating it")
+    void repeatedCreateUpdatesInPlace() throws Exception {
+        Long jobId = jobRepository.findAll().get(0).getId();
+        String body = """
+                {"jobId":%d,"status":"%s"}
+                """;
+
+        String first = mockMvc.perform(post("/api/applications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body.formatted(jobId, "INTERESTED")))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        String second = mockMvc.perform(post("/api/applications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body.formatted(jobId, "READY_TO_APPLY")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("READY_TO_APPLY"))
+                .andReturn().getResponse().getContentAsString();
+
+        assertThat(objectMapper.readTree(second).get("id").asLong())
+                .isEqualTo(objectMapper.readTree(first).get("id").asLong());
+
+        mockMvc.perform(get("/api/applications"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1));
+    }
+
+    @Test
+    @DisplayName("an unknown application status is refused with the statuses that would work")
+    void unknownStatusIsRefused() throws Exception {
+        Long jobId = jobRepository.findAll().get(0).getId();
+
+        mockMvc.perform(post("/api/applications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"jobId":%d,"status":"MAYBE_LATER"}
+                                """.formatted(jobId)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("invalid_request"))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.allOf(
+                        org.hamcrest.Matchers.containsString("MAYBE_LATER"),
+                        org.hamcrest.Matchers.containsString("READY_TO_APPLY"))));
+    }
+
+    @Test
     @DisplayName("the dashboard reports lifecycle counts, source health and recent runs")
     void dashboardAggregates() throws Exception {
         mockMvc.perform(get("/api/dashboard"))

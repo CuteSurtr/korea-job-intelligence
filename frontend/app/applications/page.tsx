@@ -1,23 +1,14 @@
 import Link from "next/link";
 import { BackendError } from "../components/BackendError";
+import { Flash, param } from "../components/Flash";
 import { OrUnknown, StatusBadge } from "../components/Badges";
+import { setApplicationStatus } from "../lib/actions";
+import { APPLICATION_STATUSES, statusLabel } from "../lib/applications";
 import { fetchJson } from "../lib/api";
 import { formatDate, formatDateTime } from "../lib/format";
 import type { Application, PageResponse } from "../lib/types";
 
 export const dynamic = "force-dynamic";
-
-const STATUSES = [
-  "NOT_REVIEWED",
-  "INTERESTED",
-  "READY_TO_APPLY",
-  "APPLIED",
-  "INTERVIEW",
-  "OFFER",
-  "REJECTED",
-  "WITHDRAWN",
-  "IGNORED",
-];
 
 export default async function ApplicationsPage({
   searchParams,
@@ -25,8 +16,8 @@ export default async function ApplicationsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const statusParam = params.status;
-  const status = Array.isArray(statusParam) ? (statusParam[0] ?? "") : (statusParam ?? "");
+  const status = param(params, "status") ?? "";
+  const returnTo = status ? `/applications?status=${encodeURIComponent(status)}` : "/applications";
 
   let applications: PageResponse<Application>;
   try {
@@ -51,14 +42,16 @@ export default async function ApplicationsPage({
         status it came from.
       </p>
 
+      <Flash saved={param(params, "saved")} error={param(params, "error")} />
+
       <form className="filters" method="get">
         <label>
           Status
           <select name="status" defaultValue={status}>
             <option value="">any</option>
-            {STATUSES.map((value) => (
+            {APPLICATION_STATUSES.map((value) => (
               <option key={value} value={value}>
-                {value.toLowerCase().replace(/_/g, " ")}
+                {statusLabel(value)}
               </option>
             ))}
           </select>
@@ -76,6 +69,7 @@ export default async function ApplicationsPage({
               <th>Company</th>
               <th>Role</th>
               <th>Status</th>
+              <th>Move to</th>
               <th>Applied</th>
               <th>Resume</th>
               <th>Interview stage</th>
@@ -86,8 +80,10 @@ export default async function ApplicationsPage({
           <tbody>
             {applications.content.length === 0 ? (
               <tr>
-                <td colSpan={8} className="muted">
-                  No application has been recorded yet.
+                <td colSpan={9} className="muted">
+                  {status
+                    ? `No application is ${statusLabel(status)}.`
+                    : "No application has been recorded yet. Open a job and track it."}
                 </td>
               </tr>
             ) : (
@@ -97,12 +93,35 @@ export default async function ApplicationsPage({
                     <OrUnknown value={application.companyName} />
                   </td>
                   <td>
-                    <Link href={`/jobs/${application.jobId}`}>
+                    <Link href={`/applications/${application.id}`}>
                       <OrUnknown value={application.jobTitle} />
                     </Link>
                   </td>
                   <td>
                     <StatusBadge status={application.status} />
+                  </td>
+                  <td>
+                    {/* Triage is almost always a status change and nothing else, so it happens
+                        here rather than by opening every row. */}
+                    <form action={setApplicationStatus} className="inline-form">
+                      <input type="hidden" name="id" value={application.id} />
+                      <input type="hidden" name="returnTo" value={returnTo} />
+                      <label className="sr-only" htmlFor={`status-${application.id}`}>
+                        Move {application.jobTitle ?? `application ${application.id}`} to
+                      </label>
+                      <select
+                        id={`status-${application.id}`}
+                        name="status"
+                        defaultValue={application.status}
+                      >
+                        {APPLICATION_STATUSES.map((value) => (
+                          <option key={value} value={value}>
+                            {statusLabel(value)}
+                          </option>
+                        ))}
+                      </select>
+                      <button type="submit">Move</button>
+                    </form>
                   </td>
                   <td className="muted">{formatDate(application.appliedAt)}</td>
                   <td className="muted">
