@@ -47,22 +47,36 @@ function parseArgs() {
   return options;
 }
 
-/** Reads INTERNAL_API_TOKEN from the environment, falling back to a local .env. */
-function readToken() {
-  if (env.INTERNAL_API_TOKEN) {
-    return env.INTERNAL_API_TOKEN.trim();
+/** Reads a setting from the environment, falling back to a local .env. */
+function setting(name) {
+  if (env[name]) {
+    return env[name].trim();
   }
   const envFile = join(ROOT, ".env");
   if (!existsSync(envFile)) {
     return null;
   }
   for (const line of readFileSync(envFile, "utf8").split("\n")) {
-    const match = /^\s*(?:export\s+)?INTERNAL_API_TOKEN\s*=\s*(.*)$/.exec(line);
+    const match = new RegExp(`^\\s*(?:export\\s+)?${name}\\s*=\\s*(.*)$`).exec(line);
     if (match) {
       return match[1].trim().replace(/^["']|["']$/g, "");
     }
   }
   return null;
+}
+
+function readToken() {
+  return setting("INTERNAL_API_TOKEN");
+}
+
+/**
+ * Where the console is actually published.
+ *
+ * Compose maps ${FRONTEND_PORT:-3000} on the host, so someone who moved the console off 3000
+ * would otherwise be sent to whatever is already sitting there.
+ */
+function consoleUrl() {
+  return `http://localhost:${setting("FRONTEND_PORT") || "3000"}`;
 }
 
 async function waitForBackend(backend, timeoutSeconds) {
@@ -204,7 +218,7 @@ async function main() {
   console.log("");
   console.log(
     `${dashboard.totalJobs} jobs, ${totals.duplicates} merged as duplicates, ` +
-      `${totals.failures} failures. Console: http://localhost:3000`,
+      `${totals.failures} failures. Console: ${consoleUrl()}`,
   );
   if (totals.failures > 0) {
     console.log("Failed lines are stored in ingestion_failures; see /search-runs in the console.");
