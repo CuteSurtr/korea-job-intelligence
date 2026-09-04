@@ -74,6 +74,11 @@ public class JobSearchService {
                 predicates.add(builder.equal(root.get("roleFamily"),
                         query.roleFamily().trim().toUpperCase(Locale.ROOT)));
             }
+            if (!query.sectors().isEmpty()) {
+                // Which sectors count as, say, financial is a policy the web layer decides and
+                // expands before it gets here; searching only has to match the list it is given.
+                predicates.add(root.get("sector").in(query.sectors()));
+            }
             if (!query.seniorityBuckets().isEmpty()) {
                 predicates.add(root.get("seniorityBucket").in(query.seniorityBuckets()));
             }

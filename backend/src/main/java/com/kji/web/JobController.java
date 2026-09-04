@@ -1,5 +1,6 @@
 package com.kji.web;
 
+import com.kji.intelligence.SectorClassifier;
 import com.kji.job.LifecycleState;
 import com.kji.search.JobSearchQuery;
 import com.kji.web.dto.JobDetailResponse;
@@ -34,6 +35,8 @@ public class JobController {
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String source,
             @RequestParam(required = false) String roleFamily,
+            @RequestParam(required = false) String sector,
+            @RequestParam(required = false) Boolean financialOnly,
             @RequestParam(required = false) String seniority,
             @RequestParam(required = false) Integer maxYearsExperience,
             @RequestParam(required = false) Double minCareerValue,
@@ -48,7 +51,8 @@ public class JobController {
             @RequestParam(defaultValue = "25") int size) {
 
         JobSearchQuery query = new JobSearchQuery(keyword, company, parseStates(state), location,
-                source, roleFamily, splitUpper(seniority), maxYearsExperience, minCareerValue,
+                source, roleFamily, resolveSectors(sector, financialOnly), splitUpper(seniority),
+                maxYearsExperience, minCareerValue,
                 minCandidateFit, remotePolicy, degreeRequired, companyRisk, postedWithinDays,
                 openOnly, parseSort(sort), page, size);
         return queryService.list(query);
@@ -57,6 +61,25 @@ public class JobController {
     @GetMapping("/jobs/{id}")
     public JobDetailResponse detail(@PathVariable Long id) {
         return detailAssembler.assemble(id);
+    }
+
+    /**
+     * Turns the two ways of asking for a sector into the one list searching understands.
+     *
+     * <p>{@code financialOnly} exists because "financial engineering roles" is the question
+     * people actually have, and which of the five financial sectors a posting landed in is not
+     * something they should need to know to ask it. Naming a sector explicitly still works, and
+     * the two combine: sector=BANKING with financialOnly=true is just BANKING.
+     */
+    private List<String> resolveSectors(String sector, Boolean financialOnly) {
+        List<String> named = splitUpper(sector);
+        if (!Boolean.TRUE.equals(financialOnly)) {
+            return named;
+        }
+        if (named.isEmpty()) {
+            return List.copyOf(SectorClassifier.financialSectors());
+        }
+        return named.stream().filter(SectorClassifier::isFinancial).toList();
     }
 
     private List<LifecycleState> parseStates(String state) {

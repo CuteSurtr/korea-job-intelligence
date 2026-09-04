@@ -120,6 +120,17 @@ public class Lexicon {
         return data.roleFamilies();
     }
 
+    /**
+     * Industry terms, ordered so that the financial sectors are tested first.
+     *
+     * {@link TermMatcher#firstMatch} returns on the first mapping that hits, so order decides
+     * ties. Finance leads because a posting that mentions both payments and commerce is far
+     * more likely to be a payments company mentioning its market than the reverse.
+     */
+    public List<TermMapping> sectors() {
+        return data.sectors();
+    }
+
     public List<LocationAlias> locationCityAliases() {
         return data.locationCityAliases();
     }
@@ -194,6 +205,7 @@ public class Lexicon {
             List<TermMapping> remotePolicies,
             List<String> seniorityExcluded,
             List<TermMapping> roleFamilies,
+            List<TermMapping> sectors,
             List<SectionHeading> sectionHeadings,
             List<RawSalaryPattern> salaryPatterns,
             List<LocationAlias> locationCityAliases

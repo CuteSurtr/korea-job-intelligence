@@ -32,6 +32,12 @@ public class JobIntelligence {
     @Column(name = "role_family", length = 48)
     private String roleFamily;
 
+    @Column(name = "sector")
+    private String sector;
+
+    @Column(name = "sector_confidence")
+    private java.math.BigDecimal sectorConfidence;
+
     @Column(name = "seniority_bucket", length = 1)
     private String seniorityBucket;
 
@@ -130,6 +136,19 @@ public class JobIntelligence {
 
     public void setRoleFamily(String roleFamily) {
         this.roleFamily = roleFamily;
+    }
+
+    public void setSector(String sector, java.math.BigDecimal confidence) {
+        this.sector = sector;
+        this.sectorConfidence = confidence;
+    }
+
+    public String getSector() {
+        return sector;
+    }
+
+    public java.math.BigDecimal getSectorConfidence() {
+        return sectorConfidence;
     }
 
     public void setSeniority(String bucket, String label) {

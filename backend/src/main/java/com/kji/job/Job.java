@@ -102,6 +102,9 @@ public class Job {
     @Column(name = "role_family", length = 48)
     private String roleFamily;
 
+    @Column(name = "sector")
+    private String sector;
+
     @Column(name = "seniority_bucket", length = 1)
     private String seniorityBucket;
 
@@ -270,8 +273,9 @@ public class Job {
     public void applyIntelligenceSummary(String roleFamily, String seniorityBucket,
                                          Integer yearsExperienceMin, Integer yearsExperienceMax,
                                          String remotePolicy, String employmentType,
-                                         String degreeRequired) {
+                                         String degreeRequired, String sector) {
         this.roleFamily = roleFamily;
+        this.sector = sector;
         this.seniorityBucket = seniorityBucket;
         this.yearsExperienceMin = yearsExperienceMin;
         this.yearsExperienceMax = yearsExperienceMax;
@@ -288,6 +292,10 @@ public class Job {
         this.candidateFitScore = candidateFitScore;
         this.applicationPriorityScore = applicationPriorityScore;
         this.scoredAt = scoredAt;
+    }
+
+    public String getSector() {
+        return sector;
     }
 
     public String getRoleFamily() {

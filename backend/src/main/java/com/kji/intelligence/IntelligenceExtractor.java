@@ -31,6 +31,7 @@ public class IntelligenceExtractor {
     private final SalaryParser salaryParser;
     private final SeniorityClassifier seniorityClassifier;
     private final RoleFamilyClassifier roleFamilyClassifier;
+    private final SectorClassifier sectorClassifier;
     private final SkillExtractor skillExtractor;
     private final Lexicon lexicon;
     private final Clock clock;
@@ -44,6 +45,7 @@ public class IntelligenceExtractor {
                                  SalaryParser salaryParser,
                                  SeniorityClassifier seniorityClassifier,
                                  RoleFamilyClassifier roleFamilyClassifier,
+                                 SectorClassifier sectorClassifier,
                                  SkillExtractor skillExtractor,
                                  Lexicon lexicon,
                                  Clock clock) {
@@ -56,6 +58,7 @@ public class IntelligenceExtractor {
         this.salaryParser = salaryParser;
         this.seniorityClassifier = seniorityClassifier;
         this.roleFamilyClassifier = roleFamilyClassifier;
+        this.sectorClassifier = sectorClassifier;
         this.skillExtractor = skillExtractor;
         this.lexicon = lexicon;
         this.clock = clock;
@@ -73,6 +76,8 @@ public class IntelligenceExtractor {
                 seniorityClassifier.classify(experience, input.title());
         Extracted<String> roleFamily =
                 roleFamilyClassifier.classify(input.title(), input.description());
+        Extracted<String> sector = sectorClassifier.classify(
+                input.companyName(), input.title(), input.description());
         EducationParser.Result education =
                 educationParser.parse(input.rawEducation(), requirementsText, preferredText);
         Extracted<String> employmentType = TermMatcher.firstMatch(lexicon.employmentTypes(),
@@ -85,6 +90,8 @@ public class IntelligenceExtractor {
                 .orElseGet(() -> new JobIntelligence(input.jobId(), EXTRACTOR_VERSION, now));
         intelligence.apply(EXTRACTOR_VERSION, input.snapshotId(), now);
         intelligence.setRoleFamily(roleFamily.value());
+        intelligence.setSector(sector.value(),
+                sector.isKnown() ? java.math.BigDecimal.valueOf(sector.confidence()) : null);
         intelligence.setSeniority(
                 seniority.isKnown() ? seniority.value().bucket() : null,
                 seniority.isKnown() ? seniority.value().label() : null);
@@ -108,6 +115,7 @@ public class IntelligenceExtractor {
         JobIntelligence saved = intelligenceRepository.save(intelligence);
 
         writeField(input, now, "role_family", roleFamily);
+        writeField(input, now, "sector", sector);
         writeField(input, now, "seniority_bucket", seniority.isKnown()
                 ? Extracted.of(seniority.value().bucket(), seniority.confidence(),
                 seniority.evidence(), seniority.method())

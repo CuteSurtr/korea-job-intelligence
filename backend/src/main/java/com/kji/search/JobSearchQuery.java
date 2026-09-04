@@ -11,6 +11,7 @@ public record JobSearchQuery(
         String locationCity,
         String sourceCode,
         String roleFamily,
+        List<String> sectors,
         List<String> seniorityBuckets,
         Integer maxYearsExperience,
         Double minCareerValue,
@@ -27,6 +28,7 @@ public record JobSearchQuery(
 
     public JobSearchQuery {
         lifecycleStates = lifecycleStates == null ? List.of() : List.copyOf(lifecycleStates);
+        sectors = sectors == null ? List.of() : List.copyOf(sectors);
         seniorityBuckets = seniorityBuckets == null ? List.of() : List.copyOf(seniorityBuckets);
         sort = sort == null ? SortOrder.BEST_MATCH : sort;
         page = Math.max(0, page);
@@ -41,6 +43,7 @@ public record JobSearchQuery(
                 normalize(locationCity),
                 normalize(sourceCode),
                 normalize(roleFamily),
+                joinSorted(sectors),
                 joinSorted(seniorityBuckets),
                 String.valueOf(maxYearsExperience),
                 String.valueOf(minCareerValue),

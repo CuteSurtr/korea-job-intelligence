@@ -54,6 +54,7 @@ public class JobEnrichmentService {
                 job.getId(),
                 snapshotId,
                 sourceId,
+                job.getCompany() == null ? null : job.getCompany().getCanonicalName(),
                 job.getCanonicalTitle(),
                 job.getDescription(),
                 record.rawExperience(),
@@ -72,7 +73,8 @@ public class JobEnrichmentService {
                 intelligence.getYearsExperienceMax(),
                 intelligence.getRemotePolicy(),
                 intelligence.getEmploymentType(),
-                intelligence.getDegreeRequired());
+                intelligence.getDegreeRequired(),
+                intelligence.getSector());
 
         ScoringService.Scores scores = scoringService.score(new ScoringInput(
                 job.getId(),

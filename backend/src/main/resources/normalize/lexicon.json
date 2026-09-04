@@ -134,11 +134,53 @@
     "학력 무관"
   ],
   "educationLevels": [
-    { "terms": ["고졸", "high school"], "level": "HIGH_SCHOOL" },
-    { "terms": ["초대졸", "전문학사", "associate"], "level": "ASSOCIATE" },
-    { "terms": ["대졸", "학사", "학사학위", "bachelor", "bachelors", "b.s.", "bs degree"], "level": "BACHELOR" },
-    { "terms": ["석사", "석사학위", "master", "masters", "m.s."], "level": "MASTER" },
-    { "terms": ["박사", "박사학위", "ph.d", "phd", "doctorate"], "level": "DOCTORATE" }
+    {
+      "terms": [
+        "고졸",
+        "high school"
+      ],
+      "level": "HIGH_SCHOOL"
+    },
+    {
+      "terms": [
+        "초대졸",
+        "전문학사",
+        "associate"
+      ],
+      "level": "ASSOCIATE"
+    },
+    {
+      "terms": [
+        "대졸",
+        "학사",
+        "학사학위",
+        "bachelor",
+        "bachelors",
+        "b.s.",
+        "bs degree"
+      ],
+      "level": "BACHELOR"
+    },
+    {
+      "terms": [
+        "석사",
+        "석사학위",
+        "master",
+        "masters",
+        "m.s."
+      ],
+      "level": "MASTER"
+    },
+    {
+      "terms": [
+        "박사",
+        "박사학위",
+        "ph.d",
+        "phd",
+        "doctorate"
+      ],
+      "level": "DOCTORATE"
+    }
   ],
   "educationPreferredMarkers": [
     "우대",
@@ -148,17 +190,85 @@
     "nice to have"
   ],
   "employmentTypes": [
-    { "terms": ["정규직", "full-time", "full time", "fulltime", "permanent"], "value": "FULL_TIME" },
-    { "terms": ["계약직", "contract", "contractor", "fixed-term"], "value": "CONTRACT" },
-    { "terms": ["인턴", "internship", "intern"], "value": "INTERNSHIP" },
-    { "terms": ["파트타임", "아르바이트", "part-time", "part time"], "value": "PART_TIME" },
-    { "terms": ["프리랜서", "freelance"], "value": "FREELANCE" },
-    { "terms": ["병역특례", "전문연구요원", "산업기능요원"], "value": "MILITARY_SERVICE" }
+    {
+      "terms": [
+        "정규직",
+        "full-time",
+        "full time",
+        "fulltime",
+        "permanent"
+      ],
+      "value": "FULL_TIME"
+    },
+    {
+      "terms": [
+        "계약직",
+        "contract",
+        "contractor",
+        "fixed-term"
+      ],
+      "value": "CONTRACT"
+    },
+    {
+      "terms": [
+        "인턴",
+        "internship",
+        "intern"
+      ],
+      "value": "INTERNSHIP"
+    },
+    {
+      "terms": [
+        "파트타임",
+        "아르바이트",
+        "part-time",
+        "part time"
+      ],
+      "value": "PART_TIME"
+    },
+    {
+      "terms": [
+        "프리랜서",
+        "freelance"
+      ],
+      "value": "FREELANCE"
+    },
+    {
+      "terms": [
+        "병역특례",
+        "전문연구요원",
+        "산업기능요원"
+      ],
+      "value": "MILITARY_SERVICE"
+    }
   ],
   "remotePolicies": [
-    { "terms": ["재택근무", "원격근무", "fully remote", "remote"], "value": "REMOTE" },
-    { "terms": ["하이브리드", "hybrid"], "value": "HYBRID" },
-    { "terms": ["오피스", "출근", "on-site", "onsite", "in office"], "value": "ONSITE" }
+    {
+      "terms": [
+        "재택근무",
+        "원격근무",
+        "fully remote",
+        "remote"
+      ],
+      "value": "REMOTE"
+    },
+    {
+      "terms": [
+        "하이브리드",
+        "hybrid"
+      ],
+      "value": "HYBRID"
+    },
+    {
+      "terms": [
+        "오피스",
+        "출근",
+        "on-site",
+        "onsite",
+        "in office"
+      ],
+      "value": "ONSITE"
+    }
   ],
   "seniorityExcluded": [
     "시니어",
@@ -177,54 +287,527 @@
     "architect"
   ],
   "roleFamilies": [
-    { "terms": ["백엔드", "서버 개발", "서버개발", "backend", "back-end", "back end", "server engineer", "server developer"], "value": "BACKEND" },
-    { "terms": ["프론트엔드", "frontend", "front-end", "front end"], "value": "FRONTEND" },
-    { "terms": ["풀스택", "fullstack", "full-stack", "full stack"], "value": "FULLSTACK" },
-    { "terms": ["플랫폼", "platform engineer", "infrastructure engineer", "sre", "site reliability"], "value": "PLATFORM" },
-    { "terms": ["데브옵스", "devops", "cloud engineer"], "value": "DEVOPS" },
-    { "terms": ["데이터 엔지니어", "데이터엔지니어", "data engineer", "data platform"], "value": "DATA_INFRASTRUCTURE" },
-    { "terms": ["머신러닝", "ml engineer", "machine learning engineer", "mlops"], "value": "MACHINE_LEARNING" },
-    { "terms": ["안드로이드", "android", "ios", "모바일", "mobile engineer"], "value": "MOBILE" },
-    { "terms": ["보안", "security engineer", "정보보안"], "value": "SECURITY" },
-    { "terms": ["qa", "품질", "test engineer"], "value": "QA" },
-    { "terms": ["임베디드", "embedded", "펌웨어", "firmware"], "value": "EMBEDDED" }
+    {
+      "terms": [
+        "백엔드",
+        "서버 개발",
+        "서버개발",
+        "backend",
+        "back-end",
+        "back end",
+        "server engineer",
+        "server developer"
+      ],
+      "value": "BACKEND"
+    },
+    {
+      "terms": [
+        "프론트엔드",
+        "frontend",
+        "front-end",
+        "front end"
+      ],
+      "value": "FRONTEND"
+    },
+    {
+      "terms": [
+        "풀스택",
+        "fullstack",
+        "full-stack",
+        "full stack"
+      ],
+      "value": "FULLSTACK"
+    },
+    {
+      "terms": [
+        "플랫폼",
+        "platform engineer",
+        "infrastructure engineer",
+        "sre",
+        "site reliability"
+      ],
+      "value": "PLATFORM"
+    },
+    {
+      "terms": [
+        "데브옵스",
+        "devops",
+        "cloud engineer"
+      ],
+      "value": "DEVOPS"
+    },
+    {
+      "terms": [
+        "데이터 엔지니어",
+        "데이터엔지니어",
+        "data engineer",
+        "data platform"
+      ],
+      "value": "DATA_INFRASTRUCTURE"
+    },
+    {
+      "terms": [
+        "머신러닝",
+        "ml engineer",
+        "machine learning engineer",
+        "mlops"
+      ],
+      "value": "MACHINE_LEARNING"
+    },
+    {
+      "terms": [
+        "안드로이드",
+        "android",
+        "ios",
+        "모바일",
+        "mobile engineer"
+      ],
+      "value": "MOBILE"
+    },
+    {
+      "terms": [
+        "보안",
+        "security engineer",
+        "정보보안"
+      ],
+      "value": "SECURITY"
+    },
+    {
+      "terms": [
+        "qa",
+        "품질",
+        "test engineer"
+      ],
+      "value": "QA"
+    },
+    {
+      "terms": [
+        "임베디드",
+        "embedded",
+        "펌웨어",
+        "firmware"
+      ],
+      "value": "EMBEDDED"
+    }
   ],
   "sectionHeadings": [
     {
       "section": "RESPONSIBILITIES",
-      "terms": ["주요업무", "주요 업무", "담당업무", "담당 업무", "업무 내용", "하시게 될 일", "이런 일을 합니다",
-                "what you will do", "what you'll do", "responsibilities", "about the role", "the role"]
+      "terms": [
+        "주요업무",
+        "주요 업무",
+        "담당업무",
+        "담당 업무",
+        "업무 내용",
+        "하시게 될 일",
+        "이런 일을 합니다",
+        "what you will do",
+        "what you'll do",
+        "responsibilities",
+        "about the role",
+        "the role"
+      ]
     },
     {
       "section": "REQUIREMENTS",
-      "terms": ["자격요건", "자격 요건", "필수요건", "필수 요건", "필수 자격", "지원자격", "지원 자격",
-                "이런 분을 찾습니다", "requirements", "qualifications", "what we look for",
-                "must have", "basic qualifications", "minimum qualifications", "who you are"]
+      "terms": [
+        "자격요건",
+        "자격 요건",
+        "필수요건",
+        "필수 요건",
+        "필수 자격",
+        "지원자격",
+        "지원 자격",
+        "이런 분을 찾습니다",
+        "requirements",
+        "qualifications",
+        "what we look for",
+        "must have",
+        "basic qualifications",
+        "minimum qualifications",
+        "who you are"
+      ]
     },
     {
       "section": "PREFERRED",
-      "terms": ["우대사항", "우대 사항", "우대조건", "우대 조건", "이런 분이면 더 좋습니다",
-                "preferred qualifications", "preferred", "nice to have", "bonus points",
-                "plus points", "good to have"]
+      "terms": [
+        "우대사항",
+        "우대 사항",
+        "우대조건",
+        "우대 조건",
+        "이런 분이면 더 좋습니다",
+        "preferred qualifications",
+        "preferred",
+        "nice to have",
+        "bonus points",
+        "plus points",
+        "good to have"
+      ]
     }
   ],
   "salaryPatterns": [
-    { "regex": "(\\d{3,5})\\s*만원\\s*[~-]\\s*(\\d{3,5})\\s*만원", "unit": "KRW_10K", "kind": "RANGE" },
-    { "regex": "연봉\\s*(\\d{3,5})\\s*만원", "unit": "KRW_10K", "kind": "EXACT" },
-    { "regex": "krw\\s*([\\d,]{6,12})\\s*[~-]\\s*krw?\\s*([\\d,]{6,12})", "unit": "KRW", "kind": "RANGE" },
-    { "regex": "\\$\\s*([\\d,]{4,9})\\s*[~-]\\s*\\$?\\s*([\\d,]{4,9})", "unit": "USD", "kind": "RANGE" }
+    {
+      "regex": "(\\d{3,5})\\s*만원\\s*[~-]\\s*(\\d{3,5})\\s*만원",
+      "unit": "KRW_10K",
+      "kind": "RANGE"
+    },
+    {
+      "regex": "연봉\\s*(\\d{3,5})\\s*만원",
+      "unit": "KRW_10K",
+      "kind": "EXACT"
+    },
+    {
+      "regex": "krw\\s*([\\d,]{6,12})\\s*[~-]\\s*krw?\\s*([\\d,]{6,12})",
+      "unit": "KRW",
+      "kind": "RANGE"
+    },
+    {
+      "regex": "\\$\\s*([\\d,]{4,9})\\s*[~-]\\s*\\$?\\s*([\\d,]{4,9})",
+      "unit": "USD",
+      "kind": "RANGE"
+    }
   ],
   "locationCityAliases": [
-    { "terms": ["서울", "seoul"], "city": "Seoul", "region": "Seoul" },
-    { "terms": ["성남", "판교", "seongnam", "pangyo"], "city": "Seongnam", "region": "Gyeonggi" },
-    { "terms": ["경기", "gyeonggi"], "city": null, "region": "Gyeonggi" },
-    { "terms": ["부산", "busan"], "city": "Busan", "region": "Busan" },
-    { "terms": ["대전", "daejeon"], "city": "Daejeon", "region": "Daejeon" },
-    { "terms": ["대구", "daegu"], "city": "Daegu", "region": "Daegu" },
-    { "terms": ["인천", "incheon"], "city": "Incheon", "region": "Incheon" },
-    { "terms": ["광주", "gwangju"], "city": "Gwangju", "region": "Gwangju" },
-    { "terms": ["울산", "ulsan"], "city": "Ulsan", "region": "Ulsan" },
-    { "terms": ["세종", "sejong"], "city": "Sejong", "region": "Sejong" },
-    { "terms": ["제주", "jeju"], "city": "Jeju", "region": "Jeju" }
+    {
+      "terms": [
+        "서울",
+        "seoul"
+      ],
+      "city": "Seoul",
+      "region": "Seoul"
+    },
+    {
+      "terms": [
+        "성남",
+        "판교",
+        "seongnam",
+        "pangyo"
+      ],
+      "city": "Seongnam",
+      "region": "Gyeonggi"
+    },
+    {
+      "terms": [
+        "경기",
+        "gyeonggi"
+      ],
+      "city": null,
+      "region": "Gyeonggi"
+    },
+    {
+      "terms": [
+        "부산",
+        "busan"
+      ],
+      "city": "Busan",
+      "region": "Busan"
+    },
+    {
+      "terms": [
+        "대전",
+        "daejeon"
+      ],
+      "city": "Daejeon",
+      "region": "Daejeon"
+    },
+    {
+      "terms": [
+        "대구",
+        "daegu"
+      ],
+      "city": "Daegu",
+      "region": "Daegu"
+    },
+    {
+      "terms": [
+        "인천",
+        "incheon"
+      ],
+      "city": "Incheon",
+      "region": "Incheon"
+    },
+    {
+      "terms": [
+        "광주",
+        "gwangju"
+      ],
+      "city": "Gwangju",
+      "region": "Gwangju"
+    },
+    {
+      "terms": [
+        "울산",
+        "ulsan"
+      ],
+      "city": "Ulsan",
+      "region": "Ulsan"
+    },
+    {
+      "terms": [
+        "세종",
+        "sejong"
+      ],
+      "city": "Sejong",
+      "region": "Sejong"
+    },
+    {
+      "terms": [
+        "제주",
+        "jeju"
+      ],
+      "city": "Jeju",
+      "region": "Jeju"
+    }
+  ],
+  "sectors": [
+    {
+      "value": "FINTECH",
+      "terms": [
+        "핀테크",
+        "fintech",
+        "간편결제",
+        "전자결제",
+        "결제 플랫폼",
+        "결제플랫폼",
+        "payment platform",
+        "payments platform",
+        "pg사",
+        "지급결제",
+        "송금",
+        "remittance",
+        "마이데이터",
+        "mydata",
+        "인슈어테크",
+        "자산관리 서비스",
+        "로보어드바이저",
+        "robo-advisor",
+        "robo advisor",
+        "페이먼츠",
+        "페이먼트",
+        "페이먼츠사"
+      ]
+    },
+    {
+      "value": "BANKING",
+      "terms": [
+        "인터넷전문은행",
+        "인터넷 전문은행",
+        "은행",
+        "뱅킹",
+        "banking",
+        "bank",
+        "여신",
+        "수신",
+        "코어뱅킹",
+        "core banking",
+        "신용평가",
+        "credit scoring",
+        "대출 심사",
+        "여신심사",
+        "lending platform",
+        "뱅크"
+      ]
+    },
+    {
+      "value": "SECURITIES",
+      "terms": [
+        "증권",
+        "securities",
+        "brokerage",
+        "자산운용",
+        "asset management",
+        "트레이딩 시스템",
+        "trading system",
+        "주문체결",
+        "체결 엔진",
+        "matching engine",
+        "hts",
+        "mts",
+        "퀀트",
+        "quant",
+        "algorithmic trading",
+        "market data",
+        "파생상품",
+        "derivatives"
+      ]
+    },
+    {
+      "value": "CRYPTO",
+      "terms": [
+        "가상자산",
+        "디지털자산",
+        "암호화폐",
+        "블록체인",
+        "blockchain",
+        "crypto",
+        "web3",
+        "defi",
+        "디파이",
+        "거래소",
+        "exchange",
+        "지갑",
+        "custody",
+        "스테이블코인",
+        "stablecoin",
+        "nft"
+      ]
+    },
+    {
+      "value": "INSURANCE",
+      "terms": [
+        "보험",
+        "insurance",
+        "손해보험",
+        "생명보험",
+        "언더라이팅",
+        "underwriting",
+        "보험금 청구",
+        "claims processing",
+        "actuarial",
+        "계리"
+      ]
+    },
+    {
+      "value": "ECOMMERCE",
+      "terms": [
+        "이커머스",
+        "e-commerce",
+        "ecommerce",
+        "커머스",
+        "commerce",
+        "쇼핑몰",
+        "온라인 쇼핑",
+        "marketplace",
+        "물류",
+        "logistics",
+        "풀필먼트",
+        "fulfillment",
+        "배송",
+        "리테일",
+        "retail"
+      ]
+    },
+    {
+      "value": "GAMING",
+      "terms": [
+        "게임",
+        "gaming",
+        "game studio",
+        "게임 서버",
+        "게임서버",
+        "game server",
+        "모바일 게임",
+        "mmorpg",
+        "게임 클라이언트",
+        "unity",
+        "unreal"
+      ]
+    },
+    {
+      "value": "AI_ML",
+      "terms": [
+        "인공지능",
+        "ai 스타트업",
+        "llm",
+        "대규모 언어 모델",
+        "foundation model",
+        "생성형 ai",
+        "generative ai",
+        "mlops",
+        "머신러닝 플랫폼",
+        "ml platform",
+        "컴퓨터 비전",
+        "computer vision",
+        "자연어처리",
+        "nlp"
+      ]
+    },
+    {
+      "value": "HEALTHCARE",
+      "terms": [
+        "헬스케어",
+        "healthcare",
+        "의료",
+        "medical",
+        "digital health",
+        "디지털 헬스",
+        "바이오",
+        "bio",
+        "제약",
+        "pharmaceutical",
+        "emr",
+        "병원"
+      ]
+    },
+    {
+      "value": "MOBILITY",
+      "terms": [
+        "모빌리티",
+        "mobility",
+        "자율주행",
+        "autonomous driving",
+        "차량 공유",
+        "ride hailing",
+        "라이드헤일링",
+        "내비게이션",
+        "navigation",
+        "물류 배차"
+      ]
+    },
+    {
+      "value": "EDUCATION",
+      "terms": [
+        "에듀테크",
+        "edtech",
+        "교육",
+        "education",
+        "이러닝",
+        "e-learning",
+        "lms"
+      ]
+    },
+    {
+      "value": "SECURITY",
+      "terms": [
+        "정보보안",
+        "보안 솔루션",
+        "cybersecurity",
+        "사이버 보안",
+        "침해대응",
+        "취약점 진단",
+        "security platform"
+      ]
+    },
+    {
+      "value": "MEDIA",
+      "terms": [
+        "콘텐츠",
+        "content platform",
+        "웹툰",
+        "webtoon",
+        "미디어",
+        "media",
+        "스트리밍",
+        "streaming",
+        "ott",
+        "음악",
+        "music platform"
+      ]
+    },
+    {
+      "value": "ENTERPRISE_SAAS",
+      "terms": [
+        "saas",
+        "b2b 솔루션",
+        "협업 툴",
+        "collaboration tool",
+        "erp",
+        "crm",
+        "그룹웨어",
+        "groupware",
+        "업무 자동화",
+        "workflow automation"
+      ]
+    }
   ]
 }
