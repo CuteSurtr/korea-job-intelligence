@@ -17,6 +17,8 @@ evidence, and ranks them for a specific candidate.
 - [Provenance rules](#provenance-rules)
 - [Results from a real run](#results-from-a-real-run)
 - [Running it](#running-it)
+  - [If the build dies](#if-the-build-dies)
+- [Tracking applications](#tracking-applications)
 - [Deploying the console to Vercel](#deploying-the-console-to-vercel)
 - [Configuration](#configuration)
 - [API](#api)
@@ -316,6 +318,35 @@ service declares a healthcheck and `restart: unless-stopped`, and the project is
 appears as a single **korea-job-intelligence** group in Docker Desktop that you can start and
 stop from the UI and that comes back after a reboot.
 
+A migrated database holds nothing but the source registry, so every console page opens on an
+empty state. Fill it from the collected fixtures in `collected/`:
+
+```bash
+printf 'INTERNAL_API_TOKEN=%s\n' "$(openssl rand -hex 32)" > .env
+docker compose up -d
+node tools/seed.mjs
+```
+
+That maps each collected file to import-schema NDJSON and posts it to the import boundary, the
+same path a real collector takes, so normalization, deduplication and scoring all run. It
+prints what each source contributed:
+
+```
+source    received  new  updated  merged  failed  status
+--------  --------  ---  -------  ------  ------  ---------
+freehire  20        20   0        0       0       SUCCEEDED
+indeed    10        10   0        0       0       SUCCEEDED
+jobkorea  64        64   0        0       0       SUCCEEDED
+linkedin  10        10   0        0       0       SUCCEEDED
+pathsdog  30        30   0        0       0       SUCCEEDED
+saramin   137       102  0        35      0       SUCCEEDED
+
+236 jobs, 35 merged as duplicates, 0 failures.
+```
+
+Re-running it updates rather than duplicates, and `--only pathsdog,saramin` narrows it to
+named sources. The internal token is read from `INTERNAL_API_TOKEN` or from a local `.env`.
+
 The one thing worth setting is the internal API token. Ingestion endpoints stay disabled and
 answer `401` until you provide one, which is deliberate: the system ships with no usable
 credential rather than a predictable default. Create a local `.env` next to the compose file,
@@ -325,6 +356,37 @@ which is gitignored and never committed:
 printf 'INTERNAL_API_TOKEN=%s
 ' "$(openssl rand -hex 32)" > .env
 docker compose up -d
+```
+
+### If the build dies
+
+Compose builds both images at once, so a Gradle compile and an `npm ci` run side by side in
+the same VM. On Docker Desktop that VM is often smaller than either tool assumes, and when it
+runs out the BuildKit worker is killed. The message names neither memory nor the step:
+
+```
+target backend: failed to receive status: rpc error: code = Unavailable desc = error reading from server: EOF
+```
+
+The backend image caps its own build JVMs, so the usual remaining fix is to stop the two
+builds overlapping:
+
+```bash
+docker compose build backend
+docker compose build frontend
+docker compose up -d
+```
+
+If it still dies, raise Docker Desktop's memory (Settings → Resources) to 4 GB, and check that
+the disk is not full with `docker system df`. A wedged build cache clears with
+`docker builder prune -f`.
+
+Port already in use, on either 3000 or 8080, is a separate thing: something else on the
+machine holds it. Find it with `netstat -ano | findstr :3000` on Windows or
+`lsof -i :3000` elsewhere, or move this stack out of the way:
+
+```bash
+echo "FRONTEND_PORT=3001" >> .env
 ```
 
 Add the observability stack when you want it:
@@ -342,7 +404,11 @@ For backend development, run the dependencies in Docker and the application from
 docker compose up -d postgres redis
 cd backend && ./gradlew bootRun
 cd frontend && npm install && npm run dev
+node tools/seed.mjs
 ```
+
+`bootRun` reads `INTERNAL_API_TOKEN` from its own environment rather than from the compose
+`.env`, so export the same value in the shell you start it from if you intend to seed.
 
 The Compose project is named, so two checkouts of this repository would fight over the same
 Docker Desktop group. If you keep a second copy, give it its own project and ports:
@@ -350,6 +416,37 @@ Docker Desktop group. If you keep a second copy, give it its own project and por
 ```bash
 docker compose -p kji-second up -d
 ```
+
+## Tracking applications
+
+The console writes, so an application is tracked and moved from the pages that show the work
+rather than from a terminal.
+
+**From a posting.** Every job page says whether it is already tracked. If it is not, pick a
+starting status, say why it is worth tracking, and the note is recorded against the
+application's first transition. If it is, the same control moves it and links through to the
+record. Tracking is keyed on the job and the profile and updates in place, so pressing it twice
+moves one application rather than creating a second.
+
+**On the record.** `/applications/{id}` is the whole application in one form: status and the
+note that explains the change, applied and follow-up dates, resume and cover letter versions,
+contact, referral, interview stage and notes. Below it is the status history, every change with
+the status it came from. That history is written by the API when the status moves and cannot be
+edited from the form, which is the point of keeping it.
+
+**From the list.** `/applications` carries a status control on each row, because triage is
+almost always a status change and nothing else. Moving a row sends the status alone and leaves
+every other field untouched, and returns to whatever filter the list was showing.
+
+The forms post to server actions and navigate; none of it needs JavaScript in the browser. A
+write that the API refuses is reported with what the API said, rather than being swallowed.
+
+Writing needs the shared token. The API guards every write to `/api/applications` the same way
+it guards ingestion, and the console sends the token from its own environment, so it stays on
+the server and a browser never holds it. Compose passes `INTERNAL_API_TOKEN` to both, so the
+`.env` you create for seeding already covers this. A console started without it still shows
+everything, says so above each form, and disables the controls rather than letting you fill in
+a form that would only be rejected.
 
 ## Deploying the console to Vercel
 
@@ -373,11 +470,13 @@ changing it takes effect on redeploy without a code change. The `output: "standa
 is applied only when `DOCKER_BUILD=1`, which the Dockerfile sets, so a Vercel build produces a
 normal Next.js output.
 
-Before pointing a public console at a real backend, note that the read API has no
-authentication. `/api/jobs` and `/api/companies` are a searchable mirror of job-board content,
-and `/api/applications` and `/api/dashboard` expose the candidate profile, application
-statuses, notes and contacts. Deploy it behind access control, or restrict the deployed API to
-the job and company endpoints, before it is reachable from the open internet.
+Before pointing a public console at a real backend, note what is and is not authenticated.
+Everything that changes state needs the shared token: the whole internal API, and every write
+to `/api/applications`. Reads do not. `/api/jobs` and `/api/companies` are a searchable mirror
+of job-board content, but `/api/applications` and `/api/dashboard` also read out the candidate
+profile, application statuses, notes and contacts, and anyone who can reach the API can read
+those. Deploy it behind access control, or restrict the deployed API to the job and company
+endpoints, before it is reachable from the open internet.
 
 Trigger a direct ingestion run against an employer board:
 
@@ -406,7 +505,7 @@ credentials.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `INTERNAL_API_TOKEN` | empty | Required by every `/api/internal/**` endpoint. Empty means those endpoints are disabled and answer `401`. Set it to `<64-hex-chars-from-openssl-rand-hex-32>` to enable ingestion |
+| `INTERNAL_API_TOKEN` | empty | Required by every `/api/internal/**` endpoint and by every write to `/api/applications`. Empty means ingestion and the CRM are read-only and answer `401`. Set it to `<64-hex-chars-from-openssl-rand-hex-32>`. The console needs the same value: Compose passes it through, and its server actions send it, so it never reaches a browser |
 | `POSTGRES_DB`, `POSTGRES_USER` | `kji`, `kji` | Local database name and user |
 | `POSTGRES_PASSWORD` | `kji` | Local-only database password. Replace with `<local-postgres-password>` for anything beyond your own machine |
 | `CACHE_ENABLED` | `true` | Redis is an accelerator; the system serves correctly without it |
@@ -440,7 +539,10 @@ so adding a board is configuration rather than code.
 | GET | `/api/search-runs/{id}` | One run with counters and its recorded failures |
 | POST | `/api/internal/ingestion/import` | NDJSON import boundary |
 | POST | `/api/internal/ingestion/run` | Trigger a direct-source run |
-| GET, POST, PATCH | `/api/applications` | Application CRM with status history |
+| GET | `/api/applications` | Application CRM, filtered by `status` or by `jobId` |
+| GET | `/api/applications/{id}` | One application with its full status history |
+| POST | `/api/applications` | Start tracking a job, or move the application that already tracks it |
+| PATCH | `/api/applications/{id}` | Change status and details, recording the transition |
 | GET | `/api/dashboard` | Aggregate counters |
 | GET | `/actuator/health`, `/actuator/prometheus` | Health and metrics |
 
@@ -452,12 +554,52 @@ Filters on the job list: `keyword`, `company`, `state`, `location`, `source`, `r
 
 ## Testing and CI
 
-98 tests. Provider adapters run against recorded fixtures, so CI never depends on a live job
-site. Everything else runs against real PostgreSQL through Testcontainers.
+```bash
+cd backend  && ./gradlew clean build   # 106 backend tests, plus the coverage floors
+cd frontend && npm test                # 75 console tests
+cd frontend && npm run lint            # ESLint, flat config
+node tools/smoke.mjs                   # the two halves against each other, stack running
+cd frontend && npm run test:e2e        # the CRM forms in a browser, stack running
+```
+
+**Backend, 106 tests.** Provider adapters run against recorded fixtures, so CI never depends on
+a live job site. Everything else runs against real PostgreSQL, in a container started by
+Testcontainers. Where there is no Docker, point the suite at a PostgreSQL you already run and
+the same 98 tests pass:
 
 ```bash
-cd backend && ./gradlew clean build
+KJI_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/kji_test ./gradlew test
 ```
+
+That database is truncated between tests, so give it one kept for testing rather than the one
+the application uses.
+
+**Console, 75 tests.** Vitest renders each page as a server component against fixtures captured
+from a running backend, so the shapes under test are the real DTOs rather than a guess. The
+suite covers the rendered rows, the filters each page sends to the API, the empty states, and
+the three ways a page can fail to show content: an unreachable backend, an API error, and a row
+that does not exist. The write path is covered at the seam that matters: what body each server
+action sends for a given form, how a date input becomes an instant, which statuses are refused
+before the API is called, and what the console says when a write is rejected.
+
+**End to end.** `tools/smoke.mjs` drives a running console over HTTP against a running backend
+holding seeded rows, and fails if any page comes back empty, broken, or apologising. The unit
+suites test each side against a stub and so cannot catch the two drifting apart; this can.
+
+**In a browser.** The CRM forms post to server actions, and a server action only runs when a
+browser submits the form Next rendered, so `frontend/e2e` drives the real thing in Chromium:
+track a job from its posting, edit the whole record, triage from the list, and check the API
+holds what the forms claimed. Point it at a stack that is already up and seeded:
+
+```bash
+cd frontend && npx playwright install chromium && npm run test:e2e
+```
+
+Where a machine already has a Chromium and cannot download Playwright's own build, set
+`PLAYWRIGHT_CHROMIUM_PATH` at that binary.
+
+Coverage is verified in the build, not merely reported: `jacocoTestCoverageVerification` runs
+as part of `check` with floors at 75% line and 50% branch against 80.7% and 57.8% measured.
 
 What the suite deliberately covers: normalization of Korean legal-form and experience
 variants, deadline sentinels, deduplication including the same-source guard, company
@@ -466,12 +608,11 @@ closure evidence, reopening, circuit opening, provenance from a claim back to it
 scoring separation and explanation, cache degradation with Redis absent, and the module
 dependency rules.
 
-Coverage is verified in the build, not merely reported: `jacocoTestCoverageVerification` runs
-as part of `check` with floors at 75% line and 50% branch against 80.7% and 57.8% measured.
-
-Two workflows. Backend: build, test, coverage summary, artifacts, image build, then start the
-image against a real PostgreSQL to prove it migrates and serves. Frontend: typecheck,
-production dependency audit, build, image build.
+Three workflows. Backend: build, test, coverage summary, artifacts, image build, then start the
+image against a real PostgreSQL to prove it migrates and serves. Frontend: production
+dependency audit, typecheck, lint, test, build, image build. End to end: build the whole stack
+with Compose, wait for every healthcheck, seed it, run the smoke test, then drive the CRM
+forms in Chromium.
 
 ## Repository layout
 
@@ -480,7 +621,7 @@ backend/     Spring Boot modular monolith
 frontend/    Next.js operator console
 docs/        Architecture decision records, schema, source coverage, run log
 ops/         Prometheus and Grafana configuration
-tools/       Out-of-band collectors that emit NDJSON for the import boundary
+tools/       seed.mjs, smoke.mjs, and the out-of-band collector that emits import NDJSON
 collected/   Provider-shaped input for the recorded run, replayable
 ```
 

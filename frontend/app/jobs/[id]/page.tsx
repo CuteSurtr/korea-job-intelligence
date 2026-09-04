@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BackendError } from "../../components/BackendError";
 import {
@@ -5,30 +6,40 @@ import {
   OrUnknown,
   ScoreCell,
   SeniorityBadge,
+  StatusBadge,
   Unknown,
 } from "../../components/Badges";
-import { fetchJson } from "../../lib/api";
+import { Flash, WriteDisabled, param } from "../../components/Flash";
+import { trackJob } from "../../lib/actions";
+import { APPLICATION_STATUSES, statusLabel } from "../../lib/applications";
+import { canWrite, fetchJson, isNotFound } from "../../lib/api";
 import {
   formatDate,
   formatDateTime,
   formatDeadline,
   formatExperience,
 } from "../../lib/format";
-import type { JobDetail, JobScore } from "../../lib/types";
+import type { Application, JobDetail, JobScore, PageResponse } from "../../lib/types";
 
 export const dynamic = "force-dynamic";
 
 export default async function JobDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
+  const query = await searchParams;
 
   let detail: JobDetail;
   try {
     detail = await fetchJson<JobDetail>(`/api/jobs/${id}`);
   } catch (error) {
+    if (isNotFound(error)) {
+      notFound();
+    }
     return (
       <>
         <h1>Job {id}</h1>
@@ -39,6 +50,18 @@ export default async function JobDetailPage({
 
   const job = detail.job;
   const intelligence = detail.intelligence;
+
+  // Whether this job is already tracked decides between offering to start and offering to move.
+  // A failure here must not take the posting down with it, so it degrades to the untracked form.
+  let tracked: Application | null = null;
+  try {
+    const existing = await fetchJson<PageResponse<Application>>("/api/applications", {
+      jobId: job.id,
+    });
+    tracked = existing.content[0] ?? null;
+  } catch {
+    tracked = null;
+  }
 
   return (
     <>
@@ -56,6 +79,51 @@ export default async function JobDetailPage({
           </>
         ) : null}
       </p>
+
+      <Flash saved={param(query, "saved")} error={param(query, "error")} />
+      <WriteDisabled />
+
+      <form action={trackJob} className="track-form">
+        <input type="hidden" name="jobId" value={job.id} />
+        {tracked ? (
+          <>
+            <span className="track-label">
+              Tracked as <StatusBadge status={tracked.status} />
+            </span>
+            <label className="sr-only" htmlFor="track-status">
+              Move this application to
+            </label>
+            <select id="track-status" name="status" defaultValue={tracked.status}>
+              {APPLICATION_STATUSES.map((status) => (
+                <option key={status} value={status}>
+                  {statusLabel(status)}
+                </option>
+              ))}
+            </select>
+            <input name="note" placeholder="why it moved" />
+            <button type="submit" disabled={!canWrite()}>Move</button>
+            <Link className="badge reset" href={`/applications/${tracked.id}`}>
+              Open the application
+            </Link>
+          </>
+        ) : (
+          <>
+            <span className="track-label">Not tracked yet</span>
+            <label className="sr-only" htmlFor="track-status">
+              Track this job as
+            </label>
+            <select id="track-status" name="status" defaultValue="INTERESTED">
+              {APPLICATION_STATUSES.map((status) => (
+                <option key={status} value={status}>
+                  {statusLabel(status)}
+                </option>
+              ))}
+            </select>
+            <input name="note" placeholder="why it is worth tracking" />
+            <button type="submit" disabled={!canWrite()}>Track</button>
+          </>
+        )}
+      </form>
 
       <div className="detail-grid">
         <Field label="Role family" value={job.roleFamily?.toLowerCase().replace(/_/g, " ")} />

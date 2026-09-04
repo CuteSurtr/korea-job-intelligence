@@ -61,6 +61,9 @@ services:
         condition: service_healthy
     environment:
       BACKEND_URL: http://backend:8080
+      # The console writes through the API's guarded endpoints. Its server actions read this
+      # and send it themselves, so the token stays on the server and never reaches a browser.
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-}
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     healthcheck:

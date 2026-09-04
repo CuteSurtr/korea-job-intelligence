@@ -1,7 +1,8 @@
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BackendError } from "../../components/BackendError";
 import { LifecycleBadge, OrUnknown, RiskBadge, ScoreCell } from "../../components/Badges";
-import { fetchJson } from "../../lib/api";
+import { fetchJson, isNotFound } from "../../lib/api";
 import { formatDate, formatDateTime } from "../../lib/format";
 import type { Company, Job, PageResponse } from "../../lib/types";
 
@@ -25,6 +26,9 @@ export default async function CompanyDetailPage({
       sort: "NEWEST",
     });
   } catch (error) {
+    if (isNotFound(error)) {
+      notFound();
+    }
     return (
       <>
         <h1>Company {id}</h1>

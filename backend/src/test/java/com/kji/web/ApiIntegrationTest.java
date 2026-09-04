@@ -187,6 +187,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
         Long jobId = jobRepository.findAll().get(0).getId();
 
         String created = mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"jobId":%d,"status":"INTERESTED","note":"Looks like a fit"}
@@ -199,6 +200,7 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
         long applicationId = objectMapper.readTree(created).get("id").asLong();
 
         mockMvc.perform(patch("/api/applications/{id}", applicationId)
+                        .header("X-Internal-Token", "test-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"jobId":%d,"status":"APPLIED","resumeVersion":"v3",
@@ -215,6 +217,146 @@ class ApiIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/applications").param("status", "APPLIED"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1));
+    }
+
+    @Test
+    @DisplayName("the application list answers whether one job is already tracked")
+    void applicationsCanBeLookedUpByJob() throws Exception {
+        Long tracked = jobRepository.findAll().get(0).getId();
+        Long untracked = jobRepository.findAll().get(1).getId();
+
+        // The console asks this before showing a job, to decide between "track" and "open".
+        mockMvc.perform(get("/api/applications").param("jobId", String.valueOf(tracked)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(0));
+
+        mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"jobId":%d,"status":"INTERESTED"}
+                                """.formatted(tracked)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/applications").param("jobId", String.valueOf(tracked)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].jobId").value(tracked))
+                // the lookup carries the history, so the job page can show the last change
+                .andExpect(jsonPath("$.content[0].history.length()").value(1));
+
+        mockMvc.perform(get("/api/applications").param("jobId", String.valueOf(untracked)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(0));
+
+        // the status filter still narrows a job lookup
+        mockMvc.perform(get("/api/applications")
+                        .param("jobId", String.valueOf(tracked))
+                        .param("status", "APPLIED"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(0));
+    }
+
+    @Test
+    @DisplayName("posting the same job twice updates the application rather than duplicating it")
+    void repeatedCreateUpdatesInPlace() throws Exception {
+        Long jobId = jobRepository.findAll().get(0).getId();
+        String body = """
+                {"jobId":%d,"status":"%s"}
+                """;
+
+        String first = mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body.formatted(jobId, "INTERESTED")))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        String second = mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body.formatted(jobId, "READY_TO_APPLY")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("READY_TO_APPLY"))
+                .andReturn().getResponse().getContentAsString();
+
+        assertThat(objectMapper.readTree(second).get("id").asLong())
+                .isEqualTo(objectMapper.readTree(first).get("id").asLong());
+
+        mockMvc.perform(get("/api/applications"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1));
+    }
+
+    @Test
+    @DisplayName("an unknown application status is refused with the statuses that would work")
+    void unknownStatusIsRefused() throws Exception {
+        Long jobId = jobRepository.findAll().get(0).getId();
+
+        mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"jobId":%d,"status":"MAYBE_LATER"}
+                                """.formatted(jobId)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("invalid_request"))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.allOf(
+                        org.hamcrest.Matchers.containsString("MAYBE_LATER"),
+                        org.hamcrest.Matchers.containsString("READY_TO_APPLY"))));
+    }
+
+    @Test
+    @DisplayName("reading applications is open, but changing one needs the shared token")
+    void applicationWritesRequireTheToken() throws Exception {
+        Long jobId = jobRepository.findAll().get(0).getId();
+        String body = """
+                {"jobId":%d,"status":"INTERESTED"}
+                """.formatted(jobId);
+
+        // The read API is a mirror of job-board content and the console fetches it on every
+        // page, so listing and detail stay open.
+        mockMvc.perform(get("/api/applications"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/api/applications").param("jobId", String.valueOf(jobId)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/applications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("unauthorized"));
+
+        mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "the-wrong-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isUnauthorized());
+
+        // nothing was recorded by either refused write
+        mockMvc.perform(get("/api/applications"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(0));
+
+        String created = mockMvc.perform(post("/api/applications")
+                        .header("X-Internal-Token", "test-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        long applicationId = objectMapper.readTree(created).get("id").asLong();
+
+        mockMvc.perform(patch("/api/applications/{id}", applicationId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"status":"REJECTED"}
+                                """))
+                .andExpect(status().isUnauthorized());
+
+        // the refused patch left the status where it was
+        mockMvc.perform(get("/api/applications/{id}", applicationId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("INTERESTED"));
     }
 
     @Test

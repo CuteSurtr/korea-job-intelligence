@@ -1,0 +1,107 @@
+name: End to end
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - "collected/**"
+      - "tools/**"
+      - "docker-compose.yml"
+      - ".github/workflows/e2e.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - "collected/**"
+      - "tools/**"
+      - "docker-compose.yml"
+      - ".github/workflows/e2e.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: seeded stack
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      # The import endpoints answer 401 without a token, which is what seeding goes through.
+      - name: Generate an internal token
+        run: printf 'INTERNAL_API_TOKEN=%s\n' "$(openssl rand -hex 32)" > .env
+
+      - name: Build and start the stack
+        run: docker compose up -d --build
+
+      # Every service is named rather than derived from the running set, so a stack that
+      # started nothing, or a service whose health is still unreported, fails here instead of
+      # passing an empty list as "all healthy".
+      - name: Wait for every service to report healthy
+        run: |
+          expected="postgres redis backend frontend"
+          for i in $(seq 1 60); do
+            running=$(docker compose ps --format '{{.Service}} {{.Health}}')
+            missing=""
+            for service in $expected; do
+              echo "$running" | grep -qx "$service healthy" || missing="$missing $service"
+            done
+            if [ -z "$missing" ]; then
+              echo "all services healthy"
+              exit 0
+            fi
+            echo "waiting on:$missing"
+            sleep 5
+          done
+          echo "services never became healthy"
+          docker compose ps
+          exit 1
+
+      - name: Seed the collected fixtures through the import boundary
+        run: node tools/seed.mjs
+
+      - name: Drive the console against the backend
+        run: node tools/smoke.mjs
+
+      # The CRM forms post to server actions, which only run when a browser submits the form
+      # Next rendered. Nothing short of a browser exercises that.
+      - name: Install the console's test dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Chromium
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Drive the CRM forms in a browser
+        working-directory: frontend
+        run: npm run test:e2e
+        env:
+          FRONTEND_URL: http://localhost:3000
+          BACKEND_URL: http://localhost:8080
+
+      - name: Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            frontend/playwright-report/
+            frontend/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Service logs on failure
+        if: failure()
+        run: docker compose logs --tail 120
+
+      - name: Stop the stack
+        if: always()
+        run: docker compose down -v

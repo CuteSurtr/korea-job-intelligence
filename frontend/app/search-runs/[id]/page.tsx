@@ -1,6 +1,7 @@
+import { notFound } from "next/navigation";
 import { BackendError } from "../../components/BackendError";
 import { StatusBadge } from "../../components/Badges";
-import { fetchJson } from "../../lib/api";
+import { fetchJson, isNotFound } from "../../lib/api";
 import { formatDateTime } from "../../lib/format";
 import type { SearchRun } from "../../lib/types";
 
@@ -17,6 +18,9 @@ export default async function SearchRunDetailPage({
   try {
     run = await fetchJson<SearchRun>(`/api/search-runs/${id}`);
   } catch (error) {
+    if (isNotFound(error)) {
+      notFound();
+    }
     return (
       <>
         <h1>Search run {id}</h1>
