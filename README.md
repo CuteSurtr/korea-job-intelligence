@@ -17,6 +17,7 @@ evidence, and ranks them for a specific candidate.
 - [Provenance rules](#provenance-rules)
 - [Results from a real run](#results-from-a-real-run)
 - [Running it](#running-it)
+  - [If the build dies](#if-the-build-dies)
 - [Tracking applications](#tracking-applications)
 - [Deploying the console to Vercel](#deploying-the-console-to-vercel)
 - [Configuration](#configuration)
@@ -355,6 +356,37 @@ which is gitignored and never committed:
 printf 'INTERNAL_API_TOKEN=%s
 ' "$(openssl rand -hex 32)" > .env
 docker compose up -d
+```
+
+### If the build dies
+
+Compose builds both images at once, so a Gradle compile and an `npm ci` run side by side in
+the same VM. On Docker Desktop that VM is often smaller than either tool assumes, and when it
+runs out the BuildKit worker is killed. The message names neither memory nor the step:
+
+```
+target backend: failed to receive status: rpc error: code = Unavailable desc = error reading from server: EOF
+```
+
+The backend image caps its own build JVMs, so the usual remaining fix is to stop the two
+builds overlapping:
+
+```bash
+docker compose build backend
+docker compose build frontend
+docker compose up -d
+```
+
+If it still dies, raise Docker Desktop's memory (Settings → Resources) to 4 GB, and check that
+the disk is not full with `docker system df`. A wedged build cache clears with
+`docker builder prune -f`.
+
+Port already in use, on either 3000 or 8080, is a separate thing: something else on the
+machine holds it. Find it with `netstat -ano | findstr :3000` on Windows or
+`lsof -i :3000` elsewhere, or move this stack out of the way:
+
+```bash
+echo "FRONTEND_PORT=3001" >> .env
 ```
 
 Add the observability stack when you want it:
