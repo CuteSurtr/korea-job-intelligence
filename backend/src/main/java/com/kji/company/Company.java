@@ -45,6 +45,15 @@ public class Company {
     @Column(name = "company_type", length = 48)
     private String companyType;
 
+    @Column(name = "stage")
+    private String stage;
+
+    @Column(name = "stage_evidence")
+    private String stageEvidence;
+
+    @Column(name = "stage_assessed_at")
+    private java.time.Instant stageAssessedAt;
+
     @Column(name = "founded_on")
     private LocalDate foundedOn;
 
@@ -134,6 +143,28 @@ public class Company {
 
     public String getIndustry() {
         return industry;
+    }
+
+    /** Records a stage only when there is evidence, and never downgrades a name match. */
+    public void applyStage(String stage, String evidence, java.time.Instant at) {
+        if (stage == null) {
+            return;
+        }
+        if (CompanyStageClassifier.LARGE.equals(this.stage)
+                && !CompanyStageClassifier.LARGE.equals(stage)) {
+            return;
+        }
+        this.stage = stage;
+        this.stageEvidence = evidence;
+        this.stageAssessedAt = at;
+    }
+
+    public String getStage() {
+        return stage;
+    }
+
+    public String getStageEvidence() {
+        return stageEvidence;
     }
 
     public String getCompanyType() {

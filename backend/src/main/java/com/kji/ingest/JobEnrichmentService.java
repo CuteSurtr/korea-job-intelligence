@@ -11,6 +11,7 @@ import com.kji.job.Job;
 import com.kji.job.JobRepository;
 import com.kji.scoring.ScoreResult;
 import com.kji.scoring.ScoringInput;
+import com.kji.company.CompanyStageClassifier;
 import com.kji.scoring.ScoringService;
 import com.kji.source.RawJobRecord;
 import java.math.BigDecimal;
@@ -28,6 +29,7 @@ public class JobEnrichmentService {
 
     private final IntelligenceExtractor intelligenceExtractor;
     private final ScoringService scoringService;
+    private final CompanyStageClassifier stageClassifier;
     private final JobSkillRepository jobSkillRepository;
     private final SkillRepository skillRepository;
     private final JobRepository jobRepository;
@@ -36,20 +38,43 @@ public class JobEnrichmentService {
 
     public JobEnrichmentService(IntelligenceExtractor intelligenceExtractor,
                                 ScoringService scoringService,
+                                CompanyStageClassifier stageClassifier,
                                 JobSkillRepository jobSkillRepository,
                                 SkillRepository skillRepository,
                                 JobRepository jobRepository,
                                 Clock clock) {
         this.intelligenceExtractor = intelligenceExtractor;
         this.scoringService = scoringService;
+        this.stageClassifier = stageClassifier;
         this.jobSkillRepository = jobSkillRepository;
         this.skillRepository = skillRepository;
         this.jobRepository = jobRepository;
         this.clock = clock;
     }
 
+    /**
+     * Records how large the employer is, from its name and from where the posting was found.
+     *
+     * <p>An employer's own board is the signal that matters here, and only ingestion knows
+     * which source a record arrived on, so the decision is made at this seam rather than
+     * inside the company module.
+     */
+    private void applyCompanyStage(Job job, boolean foundOnEmployerBoard) {
+        if (job.getCompany() == null) {
+            return;
+        }
+        CompanyStageClassifier.Stage stage =
+                stageClassifier.classify(job.getCompany().getCanonicalName(), foundOnEmployerBoard);
+        if (stage.isKnown()) {
+            job.getCompany().applyStage(stage.value(), stage.evidence(), Instant.now(clock));
+        }
+        job.applyCompanyStage(job.getCompany().getStage());
+    }
+
     @Transactional
-    public void enrich(Job job, RawJobRecord record, Long snapshotId, Long sourceId) {
+    public void enrich(Job job, RawJobRecord record, Long snapshotId, Long sourceId,
+                       boolean foundOnEmployerBoard) {
+        applyCompanyStage(job, foundOnEmployerBoard);
         JobIntelligence intelligence = intelligenceExtractor.extract(new IntelligenceInput(
                 job.getId(),
                 snapshotId,

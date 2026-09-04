@@ -20,6 +20,7 @@ import com.kji.normalize.TextNormalizer;
 import com.kji.normalize.TitleNormalizer;
 import com.kji.snapshot.JobSnapshot;
 import com.kji.snapshot.JobSnapshotRepository;
+import com.kji.source.AdapterKind;
 import com.kji.source.RawJobRecord;
 import com.kji.source.Source;
 import com.kji.source.SourceRepository;
@@ -149,7 +150,8 @@ public class RecordIngestor {
                 snapshotWrite.snapshot().getId(), snapshotWrite.contentChanged());
         lifecycleService.refreshSourceCount(job);
 
-        enrichmentService.enrich(job, record, snapshotWrite.snapshot().getId(), source.getId());
+        enrichmentService.enrich(job, record, snapshotWrite.snapshot().getId(), source.getId(),
+                source.getAdapterKind() == AdapterKind.ATS);
 
         jobRepository.updateSearchDocument(job.getId(), job.getCanonicalTitle(),
                 job.getCompany().getCanonicalName(), job.getDescription());

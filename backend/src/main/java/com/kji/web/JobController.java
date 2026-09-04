@@ -37,6 +37,8 @@ public class JobController {
             @RequestParam(required = false) String roleFamily,
             @RequestParam(required = false) String sector,
             @RequestParam(required = false) Boolean financialOnly,
+            @RequestParam(required = false) String companyStage,
+            @RequestParam(required = false) Boolean excludeLarge,
             @RequestParam(required = false) String seniority,
             @RequestParam(required = false) Integer maxYearsExperience,
             @RequestParam(required = false) Double minCareerValue,
@@ -51,7 +53,8 @@ public class JobController {
             @RequestParam(defaultValue = "25") int size) {
 
         JobSearchQuery query = new JobSearchQuery(keyword, company, parseStates(state), location,
-                source, roleFamily, resolveSectors(sector, financialOnly), splitUpper(seniority),
+                source, roleFamily, resolveSectors(sector, financialOnly), companyStage, excludeLarge,
+                splitUpper(seniority),
                 maxYearsExperience, minCareerValue,
                 minCandidateFit, remotePolicy, degreeRequired, companyRisk, postedWithinDays,
                 openOnly, parseSort(sort), page, size);

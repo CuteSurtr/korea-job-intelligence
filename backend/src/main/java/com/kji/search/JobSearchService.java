@@ -74,6 +74,18 @@ public class JobSearchService {
                 predicates.add(builder.equal(root.get("roleFamily"),
                         query.roleFamily().trim().toUpperCase(Locale.ROOT)));
             }
+            if (notBlank(query.companyStage())) {
+                predicates.add(builder.equal(root.get("companyStage"),
+                        query.companyStage().trim().toUpperCase(Locale.ROOT)));
+            }
+            if (Boolean.TRUE.equals(query.excludeLarge())) {
+                // "Not one of the names everyone already knows" includes the employers we have
+                // no stage for at all, so this is a negation rather than a stage equality: an
+                // unknown company is exactly the kind of thing being looked for.
+                predicates.add(builder.or(
+                        builder.isNull(root.get("companyStage")),
+                        builder.notEqual(root.get("companyStage"), "LARGE")));
+            }
             if (!query.sectors().isEmpty()) {
                 // Which sectors count as, say, financial is a policy the web layer decides and
                 // expands before it gets here; searching only has to match the list it is given.

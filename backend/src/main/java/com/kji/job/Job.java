@@ -105,6 +105,9 @@ public class Job {
     @Column(name = "sector")
     private String sector;
 
+    @Column(name = "company_stage")
+    private String companyStage;
+
     @Column(name = "seniority_bucket", length = 1)
     private String seniorityBucket;
 
@@ -292,6 +295,14 @@ public class Job {
         this.candidateFitScore = candidateFitScore;
         this.applicationPriorityScore = applicationPriorityScore;
         this.scoredAt = scoredAt;
+    }
+
+    public void applyCompanyStage(String companyStage) {
+        this.companyStage = companyStage;
+    }
+
+    public String getCompanyStage() {
+        return companyStage;
     }
 
     public String getSector() {

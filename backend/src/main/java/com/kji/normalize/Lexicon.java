@@ -131,6 +131,17 @@ public class Lexicon {
         return data.sectors();
     }
 
+    /**
+     * Names that mark an employer as one of the large, well-known ones.
+     *
+     * <p>Terms are matched against a company's name, so each has to be specific enough that it
+     * cannot catch an unrelated small company: a term that is an ordinary word would mark the
+     * very employers this list exists to exclude.
+     */
+    public List<String> largeEmployers() {
+        return data.largeEmployers();
+    }
+
     public List<LocationAlias> locationCityAliases() {
         return data.locationCityAliases();
     }
@@ -206,6 +217,7 @@ public class Lexicon {
             List<String> seniorityExcluded,
             List<TermMapping> roleFamilies,
             List<TermMapping> sectors,
+            List<String> largeEmployers,
             List<SectionHeading> sectionHeadings,
             List<RawSalaryPattern> salaryPatterns,
             List<LocationAlias> locationCityAliases
